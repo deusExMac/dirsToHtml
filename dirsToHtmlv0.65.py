@@ -39,7 +39,7 @@ import fnmatch
 
 
 # This variable holds the html code BEFORE writing it into the file
-htmlCode = '<html><head><link rel="stylesheet" href="${CSSFILE}"></head><body><div id="container">\n<div id="cHeader">Manolis M. Tzagarakis<br><div id="headerText">${INTROTEXT}</div></div> <div id="content"> <ol id="nestedlist">'
+htmlCode = '<html><head><link rel="stylesheet" href="${CSSFILE}"></head><body><div id="container">\n<div id="cHeader">${TITLE}<br><div id="headerText">${INTROTEXT}</div></div> <div id="content"> <ol id="nestedlist">'
 
 # Colors to choose from if color cycling is enabled (-c)
 colorPalette = ['#4287f5', '#801408', '#08259c', '#4560d1', '#0a690a', '#9c5f1e', '#9c1e87', '#1313f2', '#f21313', '#34ba4a', '#19084a', '#27889c', '#317534', '#e8740e', '#000000',
@@ -164,9 +164,9 @@ excludedList = []
 includedList = []
 cssFile = 'style.css'
 introText = ''
-
+titleText = ''
 try:
-    opts, args = getopt.getopt(sys.argv[1:],"vd:eo:hcs:ax:i:ST:")
+    opts, args = getopt.getopt(sys.argv[1:],"vd:eo:hcs:ax:i:SI:T:")
     for o, a in opts:
         if o in ['-v']:
            verbose = True
@@ -202,13 +202,15 @@ try:
         if o in ['-s']:
              cssFile = a
              
-        if o in ['-T']:
+        if o in ['-I']:
             if (os.path.isfile(a)):
                with open(a) as f:
                     introText = f.read()
             else:
                  introText = a
-            
+                 
+        if o in ['-T']:
+              titleText = a
                         
 except getopt.GetoptError as e:
        print("Usage: dirTraverse [-v] [-d directory] [-o output file] [-e] [-G] [-c] [-s] [-a] [-x pattern]")
@@ -226,6 +228,7 @@ print("\t-Debug mode:", debugMode )
 print("\t-Excluded file list:", excludedList)
 print("\t-Included file list:", includedList)
 print("\t-Style sheet:", cssFile)
+print("\t-Title text:", titleText)
 print("\t-Intro text:", introText)
 
 if (not os.path.isdir(rootDir)):
@@ -236,7 +239,7 @@ if (not os.path.isdir(rootDir)):
 htmlCode = htmlCode.replace("${CSSFILE}", cssFile)
 htmlCode = htmlCode.replace("${BGCOLOR}", random.choice(backgroundPalette) )
 htmlCode = htmlCode.replace("${INTROTEXT}", introText )
-
+htmlCode = htmlCode.replace("${TITLE}", titleText )
 if (debugMode):
      print("html code start", htmlCode)
      
