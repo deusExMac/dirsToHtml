@@ -117,8 +117,11 @@ def scanDir(root=".//", lvl=1, vrb=False, henc=False, colorCycling=False, recDir
 
         ldirs += 1
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )+ '-' + str(ldirs)
-        #dirNav.append( '<a href="#' + dId + '">' + folderLink(d, henc, clr) + "</a>")
-        dirNav.append( '<a href="#' + dId + '">' + d + "</a>")
+        if colorCycling:
+           dirNav.append( '<a href="#' + dId + '">' + folderLink(d, henc, clr) + "</a>")
+        else:   
+           dirNav.append( '<a href="#' + dId + '">' + d + "</a>")
+           
         htmlCode = htmlCode + "<li id=\"" + dId + "\" class=\"dre child\">[" +  folderLink(d, henc, clr) + ']\n<ol>\n'
         if (recDir):
             nd, nf = scanDir( os.path.join(root, d), lvl+1, vrb, henc, colorCycling, recDir, xList, iList, dirNav)
