@@ -93,6 +93,25 @@ list-style-image:url(t3.png);
  float: right;
  font-family: Verdana, Arial, Helvetica, sans-serif;
  font-size:10px;
- 
- 
+ color: navy;
+ font-weight: normal;
+}
+
+#dirnav {
+  margin-top:50px;
+  margin-bottom:50px;
+}
+
+#dirnav ul {
+column-count: 3;
+}
+
+#dirnav li {
+    font-family: Verdana, Arial, Helvetica, sans-serif;    
+    font-size:12px;
+}
+
+#content {
+
+  border-top: solid 1px blue;
 }
