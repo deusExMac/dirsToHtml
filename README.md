@@ -7,6 +7,7 @@ Traverses a directory structure on the disk and create a html document (index.ht
 The general idea is to offer an convenient way to browse the directory/files
 
 Some command line arguments (not yet exahaustive):
+
 -d [directory] : directory to start traversing
 
 -o [output file]: file to write html into
