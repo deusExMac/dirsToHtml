@@ -88,3 +88,11 @@ list-style-image:url(t3.png);
  font-weight: normal;
  font-size:14px;
 }
+
+#about {
+ float: right;
+ font-family: Verdana, Arial, Helvetica, sans-serif;
+ font-size:10px;
+ 
+ 
+}
