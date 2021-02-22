@@ -19,4 +19,4 @@ Some command line arguments (not yet exahaustive):
 ...and others. Sorry, no time to fully complete the list.
 
 -v0.65b@20022021
-For any comment/improvement please contact: tzagara@gmail.com
+For comments/improvements please contact: tzagara@upatras.gr
