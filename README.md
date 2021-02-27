@@ -21,4 +21,4 @@ Some command line arguments (not yet exahaustive):
 -v0.65b@20022021
 For comments/improvements please contact: tzagara@upatras.gr
 
-This has been develped in about 2 days. I apologize for any error, bad design decisions or omissions. Such problems are exclusively my fault.
+This has been developed in about 2 days. I apologize for any error, bad design decision or omission. Such problems are exclusively mine.
