@@ -1,3 +1,8 @@
+# Version
+
+-v0.65b@20022021
+For comments/improvements please contact: tzagara@upatras.gr
+
 # dirsToHtml
 
 A python program that creates a html documents that allows navigating local directory structure and the containing files.
@@ -20,10 +25,8 @@ Some command line arguments (not yet exahaustive):
 
 ...and others. Sorry, no time to fully complete the list.
 
--v0.65b@20022021
-For comments/improvements please contact: tzagara@upatras.gr
-
 This has been developed in about 2 days. I apologize for any error, bad design decision or omission. Such problems are exclusively mine.
+
 
 # Example
 
