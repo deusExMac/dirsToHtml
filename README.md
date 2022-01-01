@@ -2,7 +2,7 @@
 
 A python program that creates a html documents that allows navigating local directory structure and the containing files.
 
-# Descriptio
+# Description
 This program attempts to do the following:
 Traverses a directory structure on the disk and creates a html document (default file name index.html) linking to the files found inside these folders. The overall aim is to make a directory structure traversable via Web-links and make browsing easier.
 
