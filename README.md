@@ -24,3 +24,15 @@ Some command line arguments (not yet exahaustive):
 For comments/improvements please contact: tzagara@upatras.gr
 
 This has been developed in about 2 days. I apologize for any error, bad design decision or omission. Such problems are exclusively mine.
+
+# Example
+
+The included file 
+```ruby
+index.html
+```
+contains an example of what kind of file the program produces. File index.html refers to local files on the development machine when the program was executed. Hence, links will not work on your machine.
+
+# Use cases
+
+This program is usefull if you want to sent an entire local directory structure on your disk to people and would like to allow these people to navigate easily the files and directories.
