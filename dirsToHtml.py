@@ -63,7 +63,7 @@ def fileLink(filePath, fn="", henc=False):
        nVal = nVal.replace(' ', '%20')
        nVal = nVal.replace('/', '\\')
        
-    return '<a href="' + nVal + '" target="_blank" rel="noopener noreferrer">' + fn + '</a>'  
+    return '<a href="file://' + nVal + '" target="_blank" rel="noopener noreferrer">' + fn + '</a>'  
 
 
 def excludeFile(fn, xList):
