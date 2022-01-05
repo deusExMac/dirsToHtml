@@ -35,7 +35,8 @@ In its simplest form, run the program with the following arguments
 ```ruby
 dirsToHtml -d C:\\someFolder
 ```
-This will traverse recursively the folder C:\someFolder and generate the file index.html with links to all encounterred files and folders.
+This will traverse recursively the folder C:\someFolder and generate the file index.html with links to all encounterred files and folders. Absolute and relative paths are supported.
+
 NOTE: paths need to escape all  \  characters.
 
 # Example
