@@ -28,6 +28,16 @@ Some command line arguments (not yet exahaustive):
 This has been developed in about 2 days. I apologize for any error, bad design decision or omission. Such problems are exclusively mine.
 
 
+# How to run
+
+In its simplest form, run the program with the following arguments
+
+```ruby
+dirsToHtml -d C:\\someFolder
+```
+This will traverse recursively the folder C:\someFolder and generate the file index.html with links to all encounterred files and folders.
+NOTE: paths need to escape all  \  characters.
+
 # Example
 
 The included file 
