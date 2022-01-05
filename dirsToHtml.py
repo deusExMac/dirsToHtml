@@ -282,7 +282,7 @@ nD, nF = scanDir( rootDir, 1, verbose, htmlEncode, cCycling, recursiveD, exclude
 
 # Note how we intitialized htmlCode in order to understand WHY we HAVE to
 # add these closing tags.
-htmlCode = htmlCode + "</ul></div> <div id=\"footer\"><a href=\"#topPage\">Προς την κορυφή της σελίδας</a></div> </div></body></html>"
+htmlCode = htmlCode + "</ul></div> <div id=\"footer\"><a href=\"#topPage\">Top of page</a></div> </div></body></html>"
 
 dN = '<ul id="dnav">'
 for l in dirNavList:
