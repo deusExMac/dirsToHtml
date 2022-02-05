@@ -179,17 +179,17 @@ def printHelp():
 # Initialize and parse options - if any
 #
 verbose = False
-rootDir = ".\\"
+rootDir = "//Users//manolistzagarakis//EAP//2021-2022//PLS60//"
 htmlEncode = False
 outputfile = "index.html"
 debugMode = False
-cCycling = False
+cCycling = True
 recursiveD = True
 relativeP = True
 excludedList = []
 includedList = []
 cssFile = 'html/style.css'
-introText = ''
+introText = 'This is an example. Lorem Ipsum amet...'
 titleText = ''
 try:
     opts, args = getopt.getopt(sys.argv[1:],"vd:eo:hcs:ax:i:SI:T:")
