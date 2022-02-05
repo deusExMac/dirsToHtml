@@ -113,7 +113,8 @@ def includeFile(fn, iList):
 #   henc: html encoding of special characters
 #   colorCycling: should color for directories be cycled randomly (per level)?
 #
-def scanDir(root=".//", lvl=1, vrb=False, henc=False, colorCycling=False, recDir = True, xList=[], iList=[], dirNav=None):
+def scanDir(root=".//", lvl=1, vrb=False, henc=False, colorCycling=False,
+            recDir = True, xList=[], iList=[], dirNav=None):
     global htmlCode, colorPalette, backgroundPalette
     clr = '#000000'
     if colorCycling:
