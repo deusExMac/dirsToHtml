@@ -1,0 +1,21 @@
+dir1
+ |
+ |____dir2
+       |____file2.1
+ |____dir3
+       |____dir3.1
+       |____dir3.2
+ |____dir4
+ |____file1
+ |____file2
+ 
+ { dir1: { dir2: {files:[file2.1]},
+           dir3: {dir3.1:{}, 
+                  dir3.2:{}, 
+                  files:{} 
+                 },
+           dir4: {}                     
+          },
+   files: [file1, file2]          
+ 
+ }
