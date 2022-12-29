@@ -1,6 +1,6 @@
 # Version
 
--v0.65b@20022021
+-v0.8b@29122022
 For comments/improvements please contact: tzagara@upatras.gr
 
 # dirsToHtml
@@ -13,7 +13,7 @@ Traverses a directory structure on the disk and creates a html document (default
 
 The general idea is to offer an convenient way to browse the directory/files
 
-Some command line arguments (not yet exahaustive):
+[TODO: This list of option does not refer to current version] Some command line arguments (not yet exahaustive):
 
 -d [directory] : directory to start traversing
 
