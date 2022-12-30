@@ -186,11 +186,13 @@ def main():
   
   dL = []
   fL = []
-  d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1,
-                                                      args['maxlevel'], True,
-                                                      args['urlencode'], True, not args['nonrecursive'],
-                                                args['excluded'], args['included'], dL, fL,
-                                                "<li id=\"${ID}\"><details><summary>[${DIRNAME}]</summary><ul>\n", "</ul></details></li>", "<li class=\"fle\">${LINK}</li>\n","")
+  d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
+                                                      args['maxlevel'], args['excluded'], args['included'],
+                                                      dL, fL, args['urlencode'],            
+                                                      "<li id=\"${ID}\"><details><summary>[${DIRNAME}]</summary><ul>\n",
+                                                      "</ul></details></li>",
+                                                      "<li class=\"fle\">${LINK}</li>\n",
+                                                      "", False)
 
 
   htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )

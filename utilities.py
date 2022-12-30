@@ -23,6 +23,7 @@ def normalizedPathJoin(base, pth):
 #
 # TODO: Has not been tested.
 def nameComplies( on, xP='', iP='', dbg=False ):
+    #print(xP, iP)
     if xP!= "" and re.search(xP, on) is not None:
        if dbg:
               print( lvl*"-", "EXCLUDING:[", on, "] lvl:", lvl )               
@@ -53,22 +54,22 @@ def makeHtmlLink(itemPath, displayAnchor, urlEncode):
 
 
 
-def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
-                     colorCycling=False, recursive = True,
-                     exclusionPattern="", inclusionPattern="",
-                     dirList=None, fileList=None, prolog="", epilog="",
-                     fprolog="", fepilog=""):
+def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
+                      exclusionPattern="", inclusionPattern="",
+                      dirList=None, fileList=None,
+                      encodeUrl=False,                      
+                      prolog="", epilog="",
+                      fprolog="", fepilog="", vrb=False):
     
            
     if maxLevel > 0:
-       if lvl > maxLevel:
-          if vrb: 
-             print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
+       if lvl > maxLevel: 
           return(-1, 0, "")
         
     try:      
       path, dirs, files = next( os.walk(root) )
-    except:
+    except Exception as wEx:
+      print('Exception during walk:', str(wEx) )  
       return(-2,0, "")
     
     nDirs  = 0 
@@ -80,9 +81,7 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     # Does a depth first search (DFS) approach
     for encounteredDirectory in dirs:
          
-        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern):
-           if vrb:
-              print('IGNORING', encounteredDirectory) 
+        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern): 
            continue
             
         directoryPath = normalizedPathJoin(root, encounteredDirectory) 
@@ -95,10 +94,14 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory)
              
         if recursive:
-            nd, nf, fmtC = traverseDirectory( directoryPath, lvl+1,
-                                              maxLevel, vrb, encodeUrl, colorCycling,
-                                              recursive, exclusionPattern, inclusionPattern,
-                                              dirList, fileList, prolog, epilog, fprolog, fepilog)
+            nd, nf, fmtC = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
+                                              exclusionPattern, inclusionPattern,
+                                              dirList, fileList,
+                                              encodeUrl,
+                                              prolog, epilog, 
+                                              fprolog, fepilog, vrb)  
+                                               
+                                                
             
             formatedContents = formatedContents + fmtC
             if nd >= 0 and nf >= 0:
@@ -117,8 +120,6 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     for encounteredFile in files:
 
         if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
-           if vrb:
-              print('IGNORING', encounteredFile) 
            continue
         
         filePath = normalizedPathJoin(root, encounteredFile)          
