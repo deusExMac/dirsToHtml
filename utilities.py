@@ -118,7 +118,7 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
 
         if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
            if vrb:
-              print('IGNORING', encounteredDirectory) 
+              print('IGNORING', encounteredFile) 
            continue
         
         filePath = normalizedPathJoin(root, encounteredFile)          

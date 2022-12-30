@@ -188,8 +188,8 @@ def main():
   fL = []
   d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1,
                                                       args['maxlevel'], True,
-                                                      args['urlencode'], True, True,
-                                                "", "", dL, fL,
+                                                      args['urlencode'], True, not args['nonrecursive'],
+                                                args['excluded'], args['included'], dL, fL,
                                                 "<li id=\"${ID}\"><details><summary>[${DIRNAME}]</summary><ul>\n", "</ul></details></li>", "<li class=\"fle\">${LINK}</li>\n","")
 
 

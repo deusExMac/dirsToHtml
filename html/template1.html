@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title>"${TITLE}"</title>
+<title>${TITLE}</title>
 
 <style>
 
@@ -87,7 +87,7 @@
 }
 
 .tree details[open] > summary::before{
-  content : 'âˆ’';
+  content : '-’';
 }
 
 .dir {font-size:20px; color:green}
@@ -108,6 +108,7 @@
 
 
 <body>
+
 <div id="container">
 
 <ul class="tree">
@@ -116,14 +117,14 @@
       <summary class="dir">${INITIALDIRECTORY}</summary>
         <ul>
            ${FILESTRUCTURE}
-        </ul>         
+        </ul>
       </details>
-    </li>      
+    </li>
 </ul>
 
 </div>
 
-    
+
 </body>
 
 </html>
