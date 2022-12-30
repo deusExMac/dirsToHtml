@@ -38,9 +38,9 @@ def nameComplies( on, xP='', iP='', dbg=False ):
 
 
 
-def makeHtmlLink(itemPath, displayAnchor, htmlEncode):
+def makeHtmlLink(itemPath, displayAnchor, urlEncode):
     
-    if htmlEncode:
+    if urlEncode:
       return '<a href="' + urllib.parse.quote(itemPath.encode('utf8') ) + '" target="_blank" rel="noopener noreferrer">' + displayAnchor + '</a>' 
 
     # TODO: Do we need encode/decode here???
@@ -53,7 +53,7 @@ def makeHtmlLink(itemPath, displayAnchor, htmlEncode):
 
 
 
-def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeHtml=False,
+def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
                      colorCycling=False, recursive = True,
                      exclusionPattern="", inclusionPattern="",
                      dirList=None, fileList=None, prolog="", epilog="",
@@ -92,11 +92,11 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeHtml=Fals
         
         # Generate a unique id; used for html elements
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
-        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeHtml) ).replace('${DIRNAME}', encounteredDirectory)
+        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory)
              
         if recursive:
             nd, nf, fmtC = traverseDirectory( directoryPath, lvl+1,
-                                              maxLevel, vrb, encodeHtml, colorCycling,
+                                              maxLevel, vrb, encodeUrl, colorCycling,
                                               recursive, exclusionPattern, inclusionPattern,
                                               dirList, fileList, prolog, epilog, fprolog, fepilog)
             
@@ -126,7 +126,7 @@ def traverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeHtml=Fals
         nFiles +=1
         fileList.append(filePath)
         
-        formatedContents = formatedContents + fprolog.replace('${LINK}', makeHtmlLink(filePath, encounteredFile, encodeHtml)).replace('${FILENAME}', encounteredFile) + fepilog
+        formatedContents = formatedContents + fprolog.replace('${LINK}', makeHtmlLink(filePath, encounteredFile, encodeUrl)).replace('${FILENAME}', encounteredFile) + fepilog
         
         
     return nDirs, nFiles, formatedContents

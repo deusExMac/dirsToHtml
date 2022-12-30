@@ -87,7 +87,9 @@ def printHelp():
 
 def main():
 
-  # Parse command line arguments
+  # 
+  # Parse command line arguments - if ant
+  #
   try:
       
    cmdArgParser = argparse.ArgumentParser(description='Command line arguments', add_help=False)
@@ -107,6 +109,7 @@ def main():
    cmdArgParser.add_argument('-s', '--cssfile', default="html/style.css")
    cmdArgParser.add_argument('-I', '--introduction', default="")
    cmdArgParser.add_argument('-T', '--title', default="")
+   cmdArgParser.add_argument('-e', '--urlencode', action='store_true')
 
    cmdArgParser.add_argument('-G', '--debug', action='store_true')
 
@@ -116,15 +119,14 @@ def main():
   
    knownArgs, unknownArgs = cmdArgParser.parse_known_args()
    args = vars( knownArgs )
+   
   except Exception as argumentException:
     print('Argument error:', str(argumentException))
     sys.exit(-4)
 
 
     
-  #
-  # Initialize and parse options - if any
-  #
+  
 
   print("\n>>>Program starting with following options:")
   print("\t-Root directory:", args['directory'])
@@ -184,8 +186,9 @@ def main():
   
   dL = []
   fL = []
-  d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1, args['maxlevel'], True,
-                                                False, True, True,
+  d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1,
+                                                      args['maxlevel'], True,
+                                                      args['urlencode'], True, True,
                                                 "", "", dL, fL,
                                                 "<li id=\"${ID}\"><details><summary>[${DIRNAME}]</summary><ul>\n", "</ul></details></li>", "<li class=\"fle\">${LINK}</li>\n","")
 
