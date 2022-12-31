@@ -150,7 +150,9 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                                               encodeUrl,
                                               prolog, epilog, 
                                               fprolog, fepilog, vrb)  
-                                               
+
+            # Upate total number of directories and files that will
+            # be propagated upwards.
             # subDirData[0] will also carry any error encountered
             # during traversal of subdirectories.
             if subDirData[0] >= 0:
