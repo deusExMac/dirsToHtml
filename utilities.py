@@ -134,11 +134,11 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                nDirs += nd
                nFiles += nf
 
-        formatedContents = formatedContents.replace('${NDIRS}', str(nd))
-        formatedContents = formatedContents.replace('${NFILES}', str(nf) )
+        #formatedContents = formatedContents.replace('${NDIRS}', str(nd))
+        #formatedContents = formatedContents.replace('${NFILES}', str(nf) )
             
-        formatedContents = formatedContents.replace('${LNDIRS}', str(lnd))
-        formatedContents = formatedContents.replace('${LNFILES}', str(lnf))
+        formatedContents = formatedContents.replace('${LNDIRS}', str(lnd)).replace('${NDIRS}', str(nd))
+        formatedContents = formatedContents.replace('${LNFILES}', str(lnf)).replace('${NFILES}', str(nf) )
         
         formatedContents = formatedContents + epilog
         # TODO: if error indicates that max level was reached,
