@@ -144,6 +144,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         # formatted display of subdirectory 
         subDirData = (0,0,0,0, "")
         if recursive:
+            # go into subdirectory and traverse it
             subDirData = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
                                               exclusionPattern, inclusionPattern,
                                               dirList, fileList,
