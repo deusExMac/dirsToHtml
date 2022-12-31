@@ -191,7 +191,7 @@ def main():
                                                       dL, fL, args['urlencode'],            
                                                       "<li id=\"${ID}\"><details><summary>[${DIRNAME}] (${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</summary><ul>\n",
                                                       "</ul></details></li>",
-                                                      "<li class=\"fle\">${LINK}</li>\n",
+                                                      "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       "", False)
 
 
@@ -203,7 +203,11 @@ def main():
   htmlTemplate = htmlTemplate.replace("${FILESTRUCTURE}", traversalResult )
   htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
   htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
-  print("\n#Directories:", d, "#Files:", f)
+
+  print('\nDirectory [', args['directory'] , ']:')
+  print("\tTotal number of directories:", d)
+  print("\tTotal number of files:", f)
+  
   with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
       f.write(htmlTemplate)
 

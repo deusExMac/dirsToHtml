@@ -76,6 +76,23 @@ def fileInfo( filePath ):
 
 
 
+def formatFile(fpath, fname, prolog, epilog, encUrl=False):
+
+    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath) + epilog
+    fMeta = fileInfo(fpath)
+    if fMeta:
+       formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
+
+    return( formatedContents )
+
+
+
+
+
+
+
+
+
 def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                       exclusionPattern="", inclusionPattern="",
                       dirList=None, fileList=None,
@@ -86,19 +103,25 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
            
     if maxLevel > 0:
        if lvl > maxLevel: 
-          return(-1, 0, "")
-        
+          return(-1, 0, 0, 0, "")
+
+
+    # Gather directories and files in directory identified by
+    # path root.
+    #
+    # In case of error, quit returning special status
     try:      
-      path, dirs, files = next( os.walk(root) )
+      path, dirs, files = next( os.walk(root) )    
     except Exception as wEx:
       print('Exception during walk:', str(wEx) )  
-      return(-2,0, "")
+      return(-2, 0, 0, 0, "")
+
     
     nDirs  = 0 # TOTAL number of directories
     nFiles = 0 # TOTAL number of files
-    lnDirs = 0 # local number of directories
-    lnFiles = 0 # local number of files
-    formatedContents = ""
+    lnDirs = 0 # local number of directories i.e. number of directories in directory NOT including its subdirs
+    lnFiles = 0 # local number of files i.e. number of files in directory NOT including files in its subdirs
+    formatedContents = "" # Formated directory and files
 
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
@@ -109,46 +132,41 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
            continue
             
         directoryPath = normalizedPathJoin(root, encounteredDirectory) 
+        dirList.append(directoryPath)
 
         nDirs +=1
-        lnDirs += 1
-        dirList.append(directoryPath)
+        lnDirs += 1       
         
-        # Generate a unique id; used for html elements
-        dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
-        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory)
-
-        lnd = 0
-        lnf = 0
+        # The semantics in order: 
+        # total number of directories, total number of files, local number of dirs, local number of files,
+        # formatted display of subdirectory 
+        subDirData = (0,0,0,0, "")
         if recursive:
-            nd, nf, lnd, lnf, fmtC = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
+            subDirData = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
                                               exclusionPattern, inclusionPattern,
                                               dirList, fileList,
                                               encodeUrl,
                                               prolog, epilog, 
                                               fprolog, fepilog, vrb)  
                                                
-                                                          
-            formatedContents = formatedContents + fmtC
-            if nd >= 0 and nf >= 0:
-               nDirs += nd
-               nFiles += nf
+            # subDirData[0] will also carry any error encountered
+            # during traversal of subdirectories.
+            if subDirData[0] >= 0:
+               nDirs += subDirData[0]
+               nFiles += subDirData[1]
 
-        #formatedContents = formatedContents.replace('${NDIRS}', str(nd))
-        #formatedContents = formatedContents.replace('${NFILES}', str(nf) )
-            
-        formatedContents = formatedContents.replace('${LNDIRS}', str(lnd)).replace('${NDIRS}', str(nd))
-        formatedContents = formatedContents.replace('${LNFILES}', str(lnf)).replace('${NFILES}', str(nf) )
+        # Prepare the entry for one single directory encountered
         
+        dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
+        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory) + subDirData[4]
+        formatedContents = formatedContents.replace('${LNDIRS}', str(subDirData[2])).replace('${NDIRS}', str(subDirData[0]))
+        formatedContents = formatedContents.replace('${LNFILES}', str(subDirData[3])).replace('${NFILES}', str(subDirData[1]) )
         formatedContents = formatedContents + epilog
         # TODO: if error indicates that max level was reached,
         #       just break - no reason to continue
 
     
-
-    
-        
-        
+  
     # Process all files in current directory
     for encounteredFile in files:
 
@@ -159,14 +177,15 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
  
         nFiles +=1
         lnFiles += 1
+        
         fileList.append(filePath)
-          
-        formatedContents = formatedContents + fprolog.replace('${LINK}', makeHtmlLink(filePath, encounteredFile, encodeUrl)).replace('${FILENAME}', encounteredFile) + fepilog
-        fMeta = fileInfo(filePath)
-        if fMeta:
-           formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
 
-    
+        formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, fepilog, encodeUrl)
+        
+    # nDirs: total directories up to this point, nFiles: total files up to this point
+    # lnDirs:  number of directories in this directory only, lnFiles: number of files
+    # in this directory only, formatedContents: complete formated content up to this
+    # point
     return nDirs, nFiles, lnDirs, lnFiles, formatedContents
 
 
