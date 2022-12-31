@@ -186,18 +186,23 @@ def main():
   
   dL = []
   fL = []
-  d, f, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
+  d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details><summary>[${DIRNAME}]</summary><ul>\n",
+                                                      "<li id=\"${ID}\"><details><summary>[${DIRNAME}] (${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</summary><ul>\n",
                                                       "</ul></details></li>",
                                                       "<li class=\"fle\">${LINK}</li>\n",
                                                       "", False)
 
 
+  #
+  # Replace pseudovariables for source directory in the template file - 
+  # source directory is not returned by traversals.
+  #
   htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
   htmlTemplate = htmlTemplate.replace("${FILESTRUCTURE}", traversalResult )
-
+  htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
+  htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
   print("\n#Directories:", d, "#Files:", f)
   with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
       f.write(htmlTemplate)

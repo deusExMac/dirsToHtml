@@ -4,7 +4,7 @@ import re
 import random
 
 import urllib.parse
-
+import datetime
 
 # Joins and creates a path string to file
 # with fixed slashes/backslashes
@@ -53,6 +53,28 @@ def makeHtmlLink(itemPath, displayAnchor, urlEncode):
 
 
 
+def fileInfo( filePath ):
+    fInf = {}
+    try:
+      fSz = os.path.getsize(filePath)
+    except Exception as fszEx:
+          fz = -1
+
+    try:
+       lmd = datetime.datetime.fromtimestamp(os.path.getmtime(filePath)) 
+       flmd = lmd.strftime("%d/%m/%Y, %H:%M:%S")
+    except Exception as dtmEx:
+        flmd = ''
+
+    fInf['size'] = str(fSz)
+    fInf['lastmodified'] = flmd
+
+    return(fInf)
+
+
+
+
+
 
 def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                       exclusionPattern="", inclusionPattern="",
@@ -72,8 +94,10 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
       print('Exception during walk:', str(wEx) )  
       return(-2,0, "")
     
-    nDirs  = 0 
-    nFiles = 0 
+    nDirs  = 0 # TOTAL number of directories
+    nFiles = 0 # TOTAL number of files
+    lnDirs = 0 # local number of directories
+    lnFiles = 0 # local number of files
     formatedContents = ""
 
     # Process all directories in current directory.
@@ -87,33 +111,42 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         directoryPath = normalizedPathJoin(root, encounteredDirectory) 
 
         nDirs +=1
+        lnDirs += 1
         dirList.append(directoryPath)
         
         # Generate a unique id; used for html elements
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
         formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory)
-             
+
+        lnd = 0
+        lnf = 0
         if recursive:
-            nd, nf, fmtC = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
+            nd, nf, lnd, lnf, fmtC = traverseDirectory( directoryPath, lvl+1, recursive, maxLevel,
                                               exclusionPattern, inclusionPattern,
                                               dirList, fileList,
                                               encodeUrl,
                                               prolog, epilog, 
                                               fprolog, fepilog, vrb)  
                                                
-                                                
-            
+                                                          
             formatedContents = formatedContents + fmtC
             if nd >= 0 and nf >= 0:
                nDirs += nd
                nFiles += nf
 
+        formatedContents = formatedContents.replace('${NDIRS}', str(nd))
+        formatedContents = formatedContents.replace('${NFILES}', str(nf) )
+            
+        formatedContents = formatedContents.replace('${LNDIRS}', str(lnd))
+        formatedContents = formatedContents.replace('${LNFILES}', str(lnf))
+        
         formatedContents = formatedContents + epilog
         # TODO: if error indicates that max level was reached,
         #       just break - no reason to continue
 
+    
 
-
+    
         
         
     # Process all files in current directory
@@ -125,12 +158,16 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         filePath = normalizedPathJoin(root, encounteredFile)          
  
         nFiles +=1
+        lnFiles += 1
         fileList.append(filePath)
-        
+          
         formatedContents = formatedContents + fprolog.replace('${LINK}', makeHtmlLink(filePath, encounteredFile, encodeUrl)).replace('${FILENAME}', encounteredFile) + fepilog
-        
-        
-    return nDirs, nFiles, formatedContents
+        fMeta = fileInfo(filePath)
+        if fMeta:
+           formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
+
+    
+    return nDirs, nFiles, lnDirs, lnFiles, formatedContents
 
 
 
