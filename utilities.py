@@ -328,9 +328,7 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
         
         
         directoryPath = normalizedPathJoin(root, encounteredDirectory)
-
-        
-          
+       
         if recursive:
             directoryContents[encounteredDirectory]  = jsonTraverseDirectory( directoryPath, lvl+1,
                                               maxLevel, vrb, encodeUrl, colorCycling,
