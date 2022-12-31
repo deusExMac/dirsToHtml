@@ -123,6 +123,8 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
     lnFiles = 0 # local number of files i.e. number of files in directory NOT including files in its subdirs
     formatedContents = "" # Formated directory and files
 
+
+
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
     # Does a depth first search (DFS) approach
@@ -156,15 +158,12 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                nFiles += subDirData[1]
 
         # Prepare the entry for one single directory encountered
-        
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
         formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${LINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory) + subDirData[4]
         formatedContents = formatedContents.replace('${LNDIRS}', str(subDirData[2])).replace('${NDIRS}', str(subDirData[0]))
         formatedContents = formatedContents.replace('${LNFILES}', str(subDirData[3])).replace('${NFILES}', str(subDirData[1]) )
         formatedContents = formatedContents + epilog
-        # TODO: if error indicates that max level was reached,
-        #       just break - no reason to continue
-
+        
     
   
     # Process all files in current directory
@@ -181,7 +180,11 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         fileList.append(filePath)
 
         formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, fepilog, encodeUrl)
-        
+
+
+    # Return data to upper directory
+    #
+    # The tuple returned has the following data
     # nDirs: total directories up to this point, nFiles: total files up to this point
     # lnDirs:  number of directories in this directory only, lnFiles: number of files
     # in this directory only, formatedContents: complete formated content up to this
