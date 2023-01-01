@@ -120,6 +120,12 @@ def main():
    cmdArgParser.add_argument('-G', '--debug', action='store_true')
 
    
+   # What to do: export or search? 
+   cmdArgParser.add_argument('-m', '--mode', default="export")
+
+   # Export format
+   cmdArgParser.add_argument('-f', '--exportformat', default="html")
+   
    # We only parse known arguments (see previous add_argument calls) i.e. arguments
    # that the app requires for starting.
   
@@ -144,21 +150,13 @@ def main():
   print("\t-Debug mode:", "???" )
   print("\t-Excluded file list:", args['excluded'])
   print("\t-Included file list:", args['included'])
+  print("\t-Mode:", args['mode'])
+  print("\t-Format:", args['exportformat'])
   print("\t-Template file:", args['htmltemplate'])
   print("\t-Style sheet:", args['cssfile'])
   print("\t-Title text:", args['introduction'])
   print("\t-Intro text:", args['title'])
 
-
-  # Check if introdution is a file. If so, read its contents
-  # and use this as the introduction to the html export.
-  if (os.path.isfile(args['introduction'])):
-    try:
-      with open(args['introduction']) as f:
-         args['introduction'] = f.read() # replace it
-    except Exception as introLoadEx:
-         print('ERROR: Error reading file [', args['introduction'], ']')
-         sys.exit(-1)
 
 
   if (not os.path.isdir(args['directory'])):
@@ -166,65 +164,78 @@ def main():
       sys.exit(-2)
 
 
-
+  
   ###################################################
   #
   # jsonTraverseDirectory
   #
   ###################################################
-  
-  dCnts = utilities.jsonTraverseDirectory(args['directory'],
-                                          1,
-                                          args['maxlevel'],
-                                          False,
-                                          True,
-                                          True,
-                                          True,
-                                          "(?i).ds_store", "")
-  print( json.dumps(dCnts) )
-  with open("fsStructure.json", "w") as outfile:
-      json.dump(dCnts, outfile)
 
-  if args['displayoutput']:
-     outputFullPath = os.path.join(os.getcwd(), 'fsStructure.json')
-     webbrowser.open('file://' + outputFullPath)
+  if args['mode'] == 'export':
+
+     if args['exportformat'] == 'json': 
+        dCnts = utilities.jsonTraverseDirectory(args['directory'],
+                                                1,
+                                                not args['nonrecursive'],
+                                                args['maxlevel'],
+                                                "(?i)\.ds_store",
+                                                "",
+                                                args['urlencode'])
+                                          
+        print( json.dumps(dCnts) )
+        with open("fsStructure.json", "w") as outfile:
+          json.dump(dCnts, outfile)
+
+        if args['displayoutput']:
+           outputFullPath = os.path.join(os.getcwd(), 'fsStructure.json')
+           webbrowser.open('file://' + outputFullPath)
      
-  sys.exit(-1)
+        #sys.exit(-1)
+           
+     elif args['exportformat'] == 'html':
   
-  
-  
-
-
-  ###################################################
-  #
-  # traverseDirectory (html output)
-  #
-  ###################################################
+          ###################################################
+          #
+          # traverseDirectory (html output)
+          #
+          ###################################################
    
+          
+         
+          # Read template file. Exit in case of error
+          htmlTemplate = ""
+          try:
+            with open( args['htmltemplate'], 'r', encoding='utf8') as content_file:
+                 htmlTemplate = content_file.read()
+          except Exception as rdEx:
+                 print('Error reading template html file [', args['htmltemplate'],']:', str(rdEx))
+                 sys.exit(-3)
 
-  # Read template file. Exit in case of error
-  htmlTemplate = ""
-  try:
-    with open( args['htmltemplate'], 'r', encoding='utf8') as content_file:
-      htmlTemplate = content_file.read()
-  except Exception as rdEx:
-      print('Error reading template html file [', args['htmltemplate'],']:', str(rdEx))
-      sys.exit(-3)
+
+          # Check if introdution is a file. If so, read its contents
+          # and use this as the introduction to the html export.
+          if (os.path.isfile(args['introduction'])):
+              try:
+                with open(args['introduction']) as f:
+                     args['introduction'] = f.read() # replace it
+              except Exception as introLoadEx:
+                     print('ERROR: Error reading file [', args['introduction'], ']')
+                     sys.exit(-1)
 
 
-  #    
-  # Replace all pseudovariables in the template file
-  #
-  htmlTemplate = htmlTemplate.replace("${CSSFILE}", args['cssfile'])
-  htmlTemplate = htmlTemplate.replace("${BGCOLOR}", random.choice(backgroundPalette) )
-  htmlTemplate = htmlTemplate.replace("${INTROTEXT}", args['introduction'] )
-  htmlTemplate = htmlTemplate.replace("${TITLE}", args['title'] )
+          #    
+          # Replace all pseudovariables in the template file
+          #
+          htmlTemplate = htmlTemplate.replace("${CSSFILE}", args['cssfile'])
+          htmlTemplate = htmlTemplate.replace("${BGCOLOR}", random.choice(backgroundPalette) )
+          htmlTemplate = htmlTemplate.replace("${INTROTEXT}", args['introduction'] )
+          htmlTemplate = htmlTemplate.replace("${TITLE}", args['title'] )
 
 
   
-  dL = []
-  fL = []
-  d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
+          dL = []
+          fL = []
+          d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
                                                       "<li id=\"${ID}\"><details><summary>[${DIRNAME}] (${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</summary><ul>\n",
@@ -233,27 +244,27 @@ def main():
                                                       "", False)
 
 
-  #
-  # Replace pseudovariables for source directory in the template file - 
-  # source directory is not returned by traversals.
-  #
-  htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
-  htmlTemplate = htmlTemplate.replace("${FILESTRUCTURE}", traversalResult )
-  htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
-  htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
+          #
+          # Replace pseudovariables for source directory in the template file - 
+          # source directory is not returned by traversals.
+          #
+          htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
+          htmlTemplate = htmlTemplate.replace("${FILESTRUCTURE}", traversalResult )
+          htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
+          htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
 
-  print('\nDirectory [', args['directory'] , ']:')
-  print("\tTotal number of directories:", d)
-  print("\tTotal number of files:", f)
+          print('\nDirectory [', args['directory'] , ']:')
+          print("\tTotal number of directories:", d)
+          print("\tTotal number of files:", f)
   
-  with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
-      f.write(htmlTemplate)
+          with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
+               f.write(htmlTemplate)
 
-  if args['displayoutput']:
-     outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
-     webbrowser.open('file://' + outputFullPath)
-  
-  sys.exit(-5)
+          if args['displayoutput']:
+             outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
+             webbrowser.open('file://' + outputFullPath)
+     
+  sys.exit(0)
 
 
 

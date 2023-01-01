@@ -329,12 +329,24 @@ def traverseDirectoryToList(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl
 
 
 
+
+
+
+'''
+root=".//", lvl=1, recursive = True, maxLevel=-1,
+                      exclusionPattern="", inclusionPattern="",
+                      dirList=None, fileList=None,
+                      encodeUrl=False,                      
+                      prolog="", epilog="",
+                      fprolog="", fepilog="", vrb=False
+
+'''
+
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 
-def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
-                            colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern=""):
+def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
+                          exclusionPattern="", inclusionPattern="", encodeUrl=False):
     
     if maxLevel > 0:
        if lvl > maxLevel:
@@ -364,10 +376,14 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
         #directoryPath = normalizedPathJoin(root, encounteredDirectory)
        
         if recursive:
-            directoryContents[encounteredDirectory]  = jsonTraverseDirectory( directoryPath, lvl+1,
-                                              maxLevel, vrb, encodeUrl, colorCycling,
-                                              recursive, exclusionPattern,
-                                              inclusionPattern)
+            directoryContents[encounteredDirectory]  = jsonTraverseDirectory( directoryPath,
+                                                                              lvl+1,
+                                                                              recursive,
+                                                                              maxLevel,
+                                                                              exclusionPattern,
+                                                                              inclusionPattern,
+                                                                              encodeUrl)
+                                              
             
             
             
