@@ -1,10 +1,15 @@
 import os
 import os.path
+import platform
+
 import re
 import random
 
 import urllib.parse
 import datetime
+
+
+
 
 # Joins and creates a path string to file
 # with fixed slashes/backslashes
@@ -13,6 +18,8 @@ def normalizedPathJoin(base, pth):
        return( pth.replace("\\", "/") )
     
     return( os.path.join(base, pth).replace("\\", "/") )
+
+
 
 
 # Checks if obect name on complies to exclusion and inclusion pattern.
@@ -51,6 +58,35 @@ def makeHtmlLink(itemPath, displayAnchor, urlEncode):
        return '<a href="' + itemPath.encode('utf8').decode() + '" target="_blank" rel="noopener noreferrer">' + displayAnchor + '</a>' 
     
 
+#
+# Taken from here:
+#   https://stackoverflow.com/questions/237079/how-do-i-get-file-creation-and-modification-date-times
+#
+# For an explanation see:
+#   http://stackoverflow.com/a/39501288/1709587
+#
+def fileCreationDate(filePath):
+  try:  
+    epochTime = -1
+    if platform.system() == 'windows':
+        epochTime = os.path.getctime(filePath)
+    else:
+        stat = os.stat(filePath)
+        try:
+            epochTime = stat.st_birthtime
+        except AttributeError:
+            # We're probably on Linux. No easy way to get creation dates here,
+            # so we'll settle for when its content was last modified.
+            epochTime = stat.st_mtime
+
+    return( datetime.datetime.fromtimestamp(epochTime).strftime("%d/%m/%Y, %H:%M:%S") )    
+
+  except Exception as fcEx:
+      print('Exception getting creation date:', str(fcEx))
+      return('')  
+  
+ 
+
 
 
 def fileInfo( filePath ):
@@ -66,7 +102,10 @@ def fileInfo( filePath ):
     except Exception as dtmEx:
         flmd = ''
 
+    
+
     fInf['size'] = str(fSz)
+    fInf['creationdate'] = fileCreationDate(filePath) 
     fInf['lastmodified'] = flmd
 
     return(fInf)
@@ -347,13 +386,16 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
            fMeta = fileInfo(filePath)
            fileList.append( {'path':encounteredFile,
                              'size':fMeta['size'],
-                             'lastmodified':fMeta['lastmodified']})
+                             'lastmodified':fMeta['lastmodified'],
+                             'creationdate': fMeta['creationdate']
+                             })
         except Exception as szEx:
            # TODO: specialize exceptions. Might get a "File name too long"
            # exception
            ileList.append( {'path':encounteredFile,
                             'size':'-1',
-                            'lastmodified':'---'}) 
+                            'lastmodified':'---',
+                            'creationdate': '---'}) 
 
     directoryContents['__files'] = fileList
     
