@@ -49,7 +49,10 @@ import json
 import re
 import io
 import random
-import fnmatch
+#import fnmatch
+
+import webbrowser
+
 
 import utilities
 
@@ -111,6 +114,9 @@ def main():
    cmdArgParser.add_argument('-T', '--title', default="")
    cmdArgParser.add_argument('-e', '--urlencode', action='store_true')
 
+   # Automatically open outfile with a browser displaying it.
+   cmdArgParser.add_argument('-D', '--displayoutput', action='store_true')
+   
    cmdArgParser.add_argument('-G', '--debug', action='store_true')
 
    
@@ -166,17 +172,34 @@ def main():
   # jsonTraverseDirectory
   #
   ###################################################
-
-  dCnts = utilities.jsonTraverseDirectory(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
+  
+  dCnts = utilities.jsonTraverseDirectory(args['directory'],
+                                          1,
+                                          args['maxlevel'],
+                                          False,
+                                          True,
+                                          True,
+                                          True,
+                                          "(?i).ds_store", "")
   print( json.dumps(dCnts) )
   with open("fsStructure.json", "w") as outfile:
       json.dump(dCnts, outfile)
 
+  if args['displayoutput']:
+     outputFullPath = os.path.join(os.getcwd(), 'fsStructure.json')
+     webbrowser.open('file://' + outputFullPath)
+     
   sys.exit(-1)
+  
+  
+  
 
 
-
-
+  ###################################################
+  #
+  # traverseDirectory (html output)
+  #
+  ###################################################
    
 
   # Read template file. Exit in case of error
@@ -188,6 +211,7 @@ def main():
       print('Error reading template html file [', args['htmltemplate'],']:', str(rdEx))
       sys.exit(-3)
 
+
   #    
   # Replace all pseudovariables in the template file
   #
@@ -197,15 +221,6 @@ def main():
   htmlTemplate = htmlTemplate.replace("${TITLE}", args['title'] )
 
 
-
-
-
-
-  ###################################################
-  #
-  # traverseDirectory (html output)
-  #
-  ###################################################
   
   dL = []
   fL = []
@@ -234,7 +249,10 @@ def main():
   with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
       f.write(htmlTemplate)
 
-
+  if args['displayoutput']:
+     outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
+     webbrowser.open('file://' + outputFullPath)
+  
   sys.exit(-5)
 
 

@@ -92,21 +92,20 @@ def fileCreationDate(filePath):
 def fileInfo( filePath ):
     fInf = {}
     try:
-      fSz = os.path.getsize(filePath)
+      fInf['size']  = str(os.path.getsize(filePath))
     except Exception as fszEx:
-          fz = -1
+          fInf['size'] = "-1"
 
     try:
        lmd = datetime.datetime.fromtimestamp(os.path.getmtime(filePath)) 
-       flmd = lmd.strftime("%d/%m/%Y, %H:%M:%S")
+       fInf['creationdate'] = lmd.strftime("%d/%m/%Y, %H:%M:%S")
     except Exception as dtmEx:
-        flmd = ''
+        fInf['creationdate'] = ''
 
-    
-
-    fInf['size'] = str(fSz)
-    fInf['creationdate'] = fileCreationDate(filePath) 
-    fInf['lastmodified'] = flmd
+    try:
+       fInf['lastmodified'] = fileCreationDate(filePath)
+    except Exception as fcdEx:
+        fInf['lastmodified'] = ''
 
     return(fInf)
 
