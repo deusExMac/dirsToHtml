@@ -160,6 +160,25 @@ def main():
       sys.exit(-2)
 
 
+
+  ###################################################
+  #
+  # jsonTraverseDirectory
+  #
+  ###################################################
+
+  dCnts = utilities.jsonTraverseDirectory(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
+  print( json.dumps(dCnts) )
+  with open("fsStructure.json", "w") as outfile:
+      json.dump(dCnts, outfile)
+
+  sys.exit(-1)
+
+
+
+
+   
+
   # Read template file. Exit in case of error
   htmlTemplate = ""
   try:
@@ -176,6 +195,10 @@ def main():
   htmlTemplate = htmlTemplate.replace("${BGCOLOR}", random.choice(backgroundPalette) )
   htmlTemplate = htmlTemplate.replace("${INTROTEXT}", args['introduction'] )
   htmlTemplate = htmlTemplate.replace("${TITLE}", args['title'] )
+
+
+
+
 
 
   ###################################################

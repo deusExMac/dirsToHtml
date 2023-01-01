@@ -300,8 +300,8 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
     
     if maxLevel > 0:
        if lvl > maxLevel:
-          if vrb: 
-             print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
+          #if vrb: 
+             #print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
           return({})
         
     try:      
@@ -318,16 +318,12 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
     # Does a depth first search (DFS) approach
     for encounteredDirectory in dirs:
         
-        if vrb:
-            print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
-
-        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern):
-           if vrb:
-              print('IGNORING', encounteredDirectory) 
+        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern): 
            continue
-        
-        
-        directoryPath = normalizedPathJoin(root, encounteredDirectory)
+            
+        directoryPath = normalizedPathJoin(root, encounteredDirectory) 
+    
+        #directoryPath = normalizedPathJoin(root, encounteredDirectory)
        
         if recursive:
             directoryContents[encounteredDirectory]  = jsonTraverseDirectory( directoryPath, lvl+1,
@@ -341,21 +337,23 @@ def jsonTraverseDirectory(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=F
     
     fileList = []
     for encounteredFile in files:
+        
         if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
-           print('IGNORING', encounteredFile) 
            continue
         
-        #fullPath = normalizedPathJoin(root, encounteredFile)
-        
-        if vrb:
-           print( lvl*"-", fullPath, "lvl:", lvl )
+        filePath = normalizedPathJoin(root, encounteredFile)  
 
         try:
-           fileList.append( {'path':encounteredFile, 'size':os.path.getsize(fullPath)})
+           fMeta = fileInfo(filePath)
+           fileList.append( {'path':encounteredFile,
+                             'size':fMeta['size'],
+                             'lastmodified':fMeta['lastmodified']})
         except Exception as szEx:
            # TODO: specialize exceptions. Might get a "File name too long"
            # exception
-           fileList.append( {'path':encounteredFile, 'size':-3}) 
+           ileList.append( {'path':encounteredFile,
+                            'size':'-1',
+                            'lastmodified':'---'}) 
 
     directoryContents['__files'] = fileList
     
