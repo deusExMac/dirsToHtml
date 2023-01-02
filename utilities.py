@@ -9,6 +9,9 @@ import urllib.parse
 import datetime
 
 
+import clrprint
+
+
 
 
 # Joins and creates a path string to file
@@ -42,6 +45,32 @@ def nameComplies( on, xP='', iP='', dbg=False ):
        return(False)
 
     return(True)
+
+
+
+
+# This is a special one, like nameComplies, but only
+# for use in the searchDirectory function.
+# This function not only checks for compliance - it
+# also replaces the matches with a special string to
+# enable formated output later on.
+#
+# Returns empty string if on does not comply and
+# on with matches replaced if it complies
+# TODO: Not yet used!
+def searchNameComplies(on, xP='', iP='', matchReplacement='', dbg=False):
+    
+    if xP!= "" and re.search(xP, on) is not None:
+       if dbg:
+          print( lvl*"-", "EXCLUDING:[", on, "] lvl:", lvl )               
+       return('')
+    
+    result = re.subn(iP, matchReplacement, on)
+    if result[1] > 0:
+       return(result[0])
+
+    # This means no match 
+    return('')
 
 
 
@@ -454,12 +483,16 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         if vrb:
             print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
-        directoryPath = normalizedPathJoin(root, encounteredDirectory) 
-        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern):
+        directoryPath = normalizedPathJoin(root, encounteredDirectory)
+        matchedPath = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'[\1]', False)
+        if matchedPath == '':
            if vrb:
               print('IGNORING DIRECTRORY', encounteredDirectory)              
-        else:           
-           print('FOUND DIRECTORY MATCH:[', directoryPath, '] ', sep='' ) 
+        else:
+           #print('Inclusion pattern:', inclusionPattern) 
+           #res = re.subn(inclusionPattern, r'[\1]', directoryPath)
+           #print(res)
+           print('FOUND DIRECTORY MATCH:[', normalizedPathJoin(root, matchedPath) , '] ', sep='' ) 
                   
         if recursive:
             searchDirectories( directoryPath, lvl+1,
