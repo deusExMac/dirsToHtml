@@ -150,7 +150,9 @@ def main():
   #
   if args['searchquery']:
      args['mode'] = 'search'
-     args['included'] = args['searchquery'][0]
+     # make a capturing group from regex given
+     # TODO: check if it is already a capturing group
+     args['included'] = '(' + args['searchquery'][0] + ')' 
   else:
      args['mode'] = 'export' 
   

@@ -12,6 +12,46 @@ import datetime
 import clrprint
 
 
+# Obsolete: needs to be removed.
+def formatedPrint(iStr, delim, color='red'):
+    #print(iStr)
+    #print('BASE: [', os.path.basename(iStr), ']' )
+    
+    delimSeen = False
+    for c in iStr:
+        if c == delim:
+           delimSeen = not delimSeen
+           continue
+
+        if delimSeen:
+           clrprint.clrprint(c, clr=color, end='')
+        else:
+            print(c, end='')
+
+    print()
+
+
+
+
+def printPath(parent, resourceName, delim, color='red'):
+    print( parent,'/', sep='', end='')
+    delimSeen = False
+    for c in resourceName:
+        if c == delim:
+           delimSeen = not delimSeen
+           continue
+
+        if delimSeen:
+           clrprint.clrprint(c, clr=color, end='')
+        else:
+            print(c, end='')
+
+    print()
+
+
+
+
+
 
 
 # Joins and creates a path string to file
@@ -357,20 +397,6 @@ def traverseDirectoryToList(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl
 
 
 
-
-
-
-
-'''
-root=".//", lvl=1, recursive = True, maxLevel=-1,
-                      exclusionPattern="", inclusionPattern="",
-                      dirList=None, fileList=None,
-                      encodeUrl=False,                      
-                      prolog="", epilog="",
-                      fprolog="", fepilog="", vrb=False
-
-'''
-
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 
@@ -484,7 +510,9 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
             print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
         directoryPath = normalizedPathJoin(root, encounteredDirectory)
-        matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'[\1]', False)
+        #print('\tdirectory:', directoryPath)
+        parentPath = os.path.dirname( directoryPath )
+        matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedDirName == '':
            if vrb:
               print('IGNORING DIRECTRORY', encounteredDirectory)              
@@ -492,7 +520,9 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
            #print('Inclusion pattern:', inclusionPattern) 
            #res = re.subn(inclusionPattern, r'[\1]', directoryPath)
            #print(res)
-           print('FOUND DIRECTORY MATCH:[', normalizedPathJoin(root, matchedDirName) , '] ', sep='' ) 
+           #print('FOUND DIRECTORY MATCH:[',  , '] ', sep='' )
+           #formatedPrint(normalizedPathJoin(root, matchedDirName), '$', 'yellow' )
+           printPath(parentPath, matchedDirName, '/', 'yellow')
                   
         if recursive:
             searchDirectories( directoryPath, lvl+1,
@@ -506,33 +536,16 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     fileList = []
     for encounteredFile in files:
 
-        fullPath = normalizedPathJoin(root, encounteredFile) 
-        matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'[\1]', False)
+        fullPath = normalizedPathJoin(root, encounteredFile)
+        parentPath = os.path.dirname( fullPath )
+        matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedFileName == '':
            continue
         else:
-            print('FOUND FILE MATCH:[', normalizedPathJoin(root, matchedFileName) , '] Size:', os.path.getsize(fullPath), sep='' )
+            printPath( parentPath, matchedFileName, '/', 'purple' ) 
+            #formatedPrint( normalizedPathJoin(root, matchedFileName), '$', 'red' ) 
+            #print('FOUND FILE MATCH:[', , '] Size:', os.path.getsize(fullPath), sep='' )
 
-        '''    
-        if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
-           if vrb: 
-              print('IGNORING FILE', encounteredFile) 
-           continue
-        
-        
-        
-        if vrb:
-           print( lvl*"-", fullPath, "lvl:", lvl )
-
-          
-        try:
-           #fileList.append( {'path':encounteredFile, 'size':os.path.getsize(fullPath)})
-           print('FOUND FILE:[', fullPath, '] Size:', os.path.getsize(fullPath), sep='' )
-        except Exception as szEx:
-           # TODO: specialize exceptions. Might get a "File name too long"
-           # exception
-           print('FOUND MATCH:[', fullPath, '] Size: error getting size', sep='' )
-        '''
     
     return None
 

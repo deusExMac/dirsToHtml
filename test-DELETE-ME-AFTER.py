@@ -5,7 +5,6 @@ import clrprint
 
 def formatedPrint3(iStr, delim, color='red'):
     delimSeen = False
-    endDelimSeen = False
     for c in iStr:
         if c == delim:
            delimSeen = not delimSeen
@@ -61,9 +60,10 @@ s='abcdefghijklmnopqrtuvwxyz'
 #s='123456789'
 s='kabcsss'
 
+sourceString = input('Give source string:')
 searchfor = input('Search for what?')
 
-result = re.subn(searchfor, r'|\1|', s)
+result = re.subn(searchfor, r'/\1/', sourceString)
 if result[1] <= 0:
    print('Not found. Exiting')
    sys.exit(-2)
@@ -82,7 +82,7 @@ while True:
          break 
 
       try:
-          nextPos = normalized[idx:].index('|')
+          nextPos = normalized[idx:].index('/')
       except Exception as idxEx:
           break
         
@@ -96,4 +96,4 @@ while True:
 print(normalized)      
 print(6*'=')
 formatedPrint2(normalized, matchPos)
-formatedPrint3(normalized, '|', 'green')
+formatedPrint3(normalized, '/', 'yellow')
