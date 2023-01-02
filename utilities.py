@@ -542,7 +542,7 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         if matchedFileName == '':
            continue
         else:
-            printPath( parentPath, matchedFileName, '/', 'purple' ) 
+            printPath( parentPath, matchedFileName, '/', 'red' ) 
             #formatedPrint( normalizedPathJoin(root, matchedFileName), '$', 'red' ) 
             #print('FOUND FILE MATCH:[', , '] Size:', os.path.getsize(fullPath), sep='' )
 
