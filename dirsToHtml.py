@@ -114,17 +114,25 @@ def main():
    cmdArgParser.add_argument('-T', '--title', default="")
    cmdArgParser.add_argument('-e', '--urlencode', action='store_true')
 
+   # search related
+   # searchquery is interpreted as a regular expression
+   cmdArgParser.add_argument('searchquery', nargs=argparse.REMAINDER, default=[])
+
+   
    # Automatically open outfile with a browser displaying it.
    cmdArgParser.add_argument('-D', '--displayoutput', action='store_true')
    
    cmdArgParser.add_argument('-G', '--debug', action='store_true')
 
-   
-   # What to do: export or search? 
-   cmdArgParser.add_argument('-m', '--mode', default="export")
 
+   
+   # What to do: export or simple search? 
+   #cmdArgParser.add_argument('-m', '--mode', default="export")
    # Export format
+   # Two values supported: html and json
    cmdArgParser.add_argument('-f', '--exportformat', default="html")
+
+
    
    # We only parse known arguments (see previous add_argument calls) i.e. arguments
    # that the app requires for starting.
@@ -137,7 +145,14 @@ def main():
     sys.exit(-4)
 
 
-    
+  #
+  # Set mode appropriately based on arguments
+  #
+  if args['searchquery']:
+     args['mode'] = 'search'
+     args['included'] = args['searchquery'][0]
+  else:
+     args['mode'] = 'export' 
   
 
   print("\n>>>Program starting with following options:")
@@ -264,7 +279,7 @@ def main():
              outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
              webbrowser.open('file://' + outputFullPath)
      
-  sys.exit(0)
+  #sys.exit(0)
 
 
 
@@ -273,8 +288,9 @@ def main():
   # searchDirectories
   #
   ###################################################
-  utilities.searchDirectories(args['directory'], 1, args['maxlevel'], False, True, True, True, "", args['included'])
-  sys.exit(-3)
+  if args['mode'] == 'search':
+     utilities.searchDirectories(args['directory'], 1, args['maxlevel'], False, True, True, True, "", args['included'])
+     sys.exit(-3)
 
 
 
@@ -284,9 +300,9 @@ def main():
   #
   ###################################################
 
-  dCnts = utilities.jsonTraverseDirectory(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
-  print( json.dumps(dCnts) )
-  sys.exit(-1)
+  #dCnts = utilities.jsonTraverseDirectory(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
+  #print( json.dumps(dCnts) )
+  #sys.exit(-1)
 
 
 
@@ -295,7 +311,8 @@ def main():
   # traverseDirectoryToList
   #
   ###################################################
-  
+
+  '''
   dL = []
   fL = []
 
@@ -305,7 +322,7 @@ def main():
   fL = sorted(fL, reverse=True, key=lambda d: d['size'])
 
   sys.exit(-1) 
-
+  '''
 
 
 
