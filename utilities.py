@@ -484,15 +484,15 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
             print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
         directoryPath = normalizedPathJoin(root, encounteredDirectory)
-        matchedPath = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'[\1]', False)
-        if matchedPath == '':
+        matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'[\1]', False)
+        if matchedDirName == '':
            if vrb:
               print('IGNORING DIRECTRORY', encounteredDirectory)              
         else:
            #print('Inclusion pattern:', inclusionPattern) 
            #res = re.subn(inclusionPattern, r'[\1]', directoryPath)
            #print(res)
-           print('FOUND DIRECTORY MATCH:[', normalizedPathJoin(root, matchedPath) , '] ', sep='' ) 
+           print('FOUND DIRECTORY MATCH:[', normalizedPathJoin(root, matchedDirName) , '] ', sep='' ) 
                   
         if recursive:
             searchDirectories( directoryPath, lvl+1,
@@ -505,12 +505,21 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     
     fileList = []
     for encounteredFile in files:
+
+        fullPath = normalizedPathJoin(root, encounteredFile) 
+        matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'[\1]', False)
+        if matchedFileName == '':
+           continue
+        else:
+            print('FOUND FILE MATCH:[', normalizedPathJoin(root, matchedFileName) , '] Size:', os.path.getsize(fullPath), sep='' )
+
+        '''    
         if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
            if vrb: 
               print('IGNORING FILE', encounteredFile) 
            continue
         
-        fullPath = normalizedPathJoin(root, encounteredFile)
+        
         
         if vrb:
            print( lvl*"-", fullPath, "lvl:", lvl )
@@ -523,7 +532,7 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
            # TODO: specialize exceptions. Might get a "File name too long"
            # exception
            print('FOUND MATCH:[', fullPath, '] Size: error getting size', sep='' )
-   
+        '''
     
     return None
 
