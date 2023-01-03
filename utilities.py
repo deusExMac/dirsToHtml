@@ -177,7 +177,7 @@ def formatFile(fpath, fname, prolog, epilog, encUrl=False):
     return( formatedContents )
 
 
-
+# Opens a file using the default application.
 def openFile(filePath):
 
     if sys.platform.lower() == 'windows':
@@ -474,8 +474,6 @@ root=".//", lvl=1, recursive = True, maxLevel=-1,
                       prolog="", epilog="",
                       fprolog="", fepilog="", vrb=False
 '''
-
-
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 

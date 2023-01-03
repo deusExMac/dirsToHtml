@@ -311,13 +311,18 @@ def main():
 
          if command == 'q':
             break
+         try:
+           command = int(command)
+         except Exception as iEx:
+             continue
 
-         print('Opening', results[int(command)])
-         #import subprocess
-         #subprocess.call(('open', results[int(command)]))
-         #os.startfile(results[int(command)])
-         utilities.openFile( results[int(command)] )
-         #subprocess.Popen([results[int(command)]],shell=True)
+         if (command <= 0) or (command > len(results)):
+            print('Invalid. Number of results ', len(results)) 
+            continue
+        
+         print('Opening', results[command-1])
+         utilities.openFile( results[command-1] )
+         
           
      print('Encountered:', ntotal, 'Found:', nfound)
 
