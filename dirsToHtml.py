@@ -291,7 +291,11 @@ def main():
   #
   ###################################################
   if args['mode'] == 'search':
-     utilities.searchDirectories(args['directory'], 1, args['maxlevel'], False, True, True, True, "", args['included'])
+     results=[] 
+     ntotal, nfound = utilities.searchDirectories(args['directory'], 1, args['maxlevel'], False, True, True, True, "", args['included'], results)
+     print('Encountered:', ntotal, 'Found:', nfound)
+
+     print(results)
      sys.exit(-3)
 
 

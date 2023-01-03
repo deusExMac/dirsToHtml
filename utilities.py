@@ -50,7 +50,15 @@ def printPath(parent, resourceName, delim, color='red'):
 
 
 
-
+def printPath2(parent, resourceName, delim, color='red'):
+    print( parent,'/', sep='', end='')
+    parts = resourceName.split(delim)
+    for idx, p in enumerate(parts):
+        if idx%2 == 1:
+           clrprint.clrprint(p, clr=color, end='')
+        else:
+           print( p, end='')
+    print('')     
 
 
 
@@ -486,7 +494,7 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 # 
 def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
                             colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern=""):
+                            inclusionPattern="", matchingPaths=[]):
     
     if maxLevel > 0:
        if lvl > maxLevel:
@@ -500,7 +508,9 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
       return (None)
     
 
-
+    nScanned = 0
+    nFound = 0
+    
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
     # Does a depth first search (DFS) approach
@@ -509,8 +519,8 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         if vrb:
             print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
-        directoryPath = normalizedPathJoin(root, encounteredDirectory)
-        #print('\tdirectory:', directoryPath)
+        nScanned += 1 
+        directoryPath = normalizedPathJoin(root, encounteredDirectory)        
         parentPath = os.path.dirname( directoryPath )
         matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedDirName == '':
@@ -522,13 +532,18 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
            #print(res)
            #print('FOUND DIRECTORY MATCH:[',  , '] ', sep='' )
            #formatedPrint(normalizedPathJoin(root, matchedDirName), '$', 'yellow' )
-           printPath(parentPath, matchedDirName, '/', 'yellow')
+           nFound += 1
+           matchingPaths.append(directoryPath)
+           print(nFound, ') ', end='')
+           printPath2(parentPath, matchedDirName, '/', 'yellow')
                   
         if recursive:
-            searchDirectories( directoryPath, lvl+1,
+            ns, nf = searchDirectories( directoryPath, lvl+1,
                              maxLevel, vrb, encodeUrl, colorCycling,
-                             recursive, exclusionPattern, inclusionPattern)
-            
+                             recursive, exclusionPattern, inclusionPattern, matchingPaths)
+            if ns >=0:
+               nScanned += ns
+               nFound += nf
             
             
     # Process all files in current directory
@@ -536,17 +551,21 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     fileList = []
     for encounteredFile in files:
 
+        nScanned += 1
         fullPath = normalizedPathJoin(root, encounteredFile)
         parentPath = os.path.dirname( fullPath )
         matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedFileName == '':
            continue
         else:
-            printPath( parentPath, matchedFileName, '/', 'red' ) 
+            nFound += 1
+            matchingPaths.append(fullPath)
+            print(nFound, ') ', end='')
+            printPath2( parentPath, matchedFileName, '/', 'red' ) 
             #formatedPrint( normalizedPathJoin(root, matchedFileName), '$', 'red' ) 
             #print('FOUND FILE MATCH:[', , '] Size:', os.path.getsize(fullPath), sep='' )
 
     
-    return None
+    return nScanned, nFound
 
 
