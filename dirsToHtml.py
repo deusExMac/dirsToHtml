@@ -292,8 +292,17 @@ def main():
   ###################################################
   if args['mode'] == 'search':
      results=[] 
-     ntotal, nfound = utilities.searchDirectories(args['directory'], 1, args['maxlevel'], False, True, True, True, "", args['included'], results, 0)
-     print(results) 
+     ntotal, nfound = utilities.searchDirectories(args['directory'], 1,
+                                                  args['maxlevel'],
+                                                  False,
+                                                  False,
+                                                  True,
+                                                  not args['nonrecursive'],
+                                                  args['excluded'],
+                                                  args['included'],
+                                                  results)
+     #print(results)
+     print('Encountered:', ntotal, 'Found:', nfound)
      if nfound > 0:
        while True:
          command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')
@@ -304,14 +313,15 @@ def main():
             break
 
          print('Opening', results[int(command)])
-         import subprocess
+         #import subprocess
          #subprocess.call(('open', results[int(command)]))
-         os.startfile(results[int(command)])
+         #os.startfile(results[int(command)])
+         utilities.openFile( results[int(command)] )
          #subprocess.Popen([results[int(command)]],shell=True)
           
      print('Encountered:', ntotal, 'Found:', nfound)
 
-     print(results)
+     #print(results)
      sys.exit(-3)
 
 

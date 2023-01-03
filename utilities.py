@@ -1,6 +1,8 @@
 import os
 import os.path
+import sys
 import platform
+import subprocess
 
 import re
 import random
@@ -23,7 +25,7 @@ import clrprint
 # Used to display matching directory or file paths when
 # doing a search.
 
-def printPath2(parent, resourceName, delim, color='red'):
+def printPath(parent, resourceName, delim, color='red'):
     print( parent,'/', sep='', end='')
     parts = resourceName.split(delim)
     for idx, p in enumerate(parts):
@@ -108,6 +110,7 @@ def makeHtmlLink(itemPath, displayAnchor, urlEncode):
        return '<a href="' + itemPath.encode('utf8').decode() + '" target="_blank" rel="noopener noreferrer">' + displayAnchor + '</a>' 
     
 
+
 #
 # Taken from here:
 #   https://stackoverflow.com/questions/237079/how-do-i-get-file-creation-and-modification-date-times
@@ -175,7 +178,13 @@ def formatFile(fpath, fname, prolog, epilog, encUrl=False):
 
 
 
+def openFile(filePath):
 
+    if sys.platform.lower() == 'windows':
+       os.startfile(filePath)
+    else:
+        opener = "open" if sys.platform.lower() == "darwin" else "xdg-open"
+        subprocess.call([opener, filePath])
 
 
 
@@ -457,9 +466,14 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
 
 
-
-
-
+'''
+root=".//", lvl=1, recursive = True, maxLevel=-1,
+                      exclusionPattern="", inclusionPattern="",
+                      dirList=None, fileList=None,
+                      encodeUrl=False,                      
+                      prolog="", epilog="",
+                      fprolog="", fepilog="", vrb=False
+'''
 
 
 # Traverses directory and returns directory structure as a json object.
@@ -467,33 +481,34 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 # 
 def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
                             colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern="", matchingPaths=[], nF=0):
+                            inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0):
     
     if maxLevel > 0:
        if lvl > maxLevel:
           if vrb: 
              print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
-          return(None)
+          return((-1, 0))
         
     try:      
       path, dirs, files = next( os.walk(root) )
     except:
-      return (None)
+      return ( (-2, 0) )
     
     #print('Entering searchDirectories with', nF)
-    nScanned = 0
-    nFound = nF
+    nScanned = scannedCount
+    nFound = matchCount
     
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
     # Does a depth first search (DFS) approach
     for encounteredDirectory in dirs:
         
-        if vrb:
-            print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
-
+        
         nScanned += 1 
-        directoryPath = normalizedPathJoin(root, encounteredDirectory)        
+        if vrb:
+            print( lvl*"-", nScanned, ')', normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
+
+        directoryPath = normalizedPathJoin(root, encounteredDirectory)
         parentPath = os.path.dirname( directoryPath )
         matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedDirName == '':
@@ -503,27 +518,28 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
            nFound += 1
            matchingPaths.append(directoryPath)
            print(nFound, ') ', sep='', end='')
-           printPath2(parentPath, matchedDirName, '/', 'yellow')
+           printPath(parentPath, matchedDirName, '/', 'yellow')
                   
         if recursive:
-            #print('Calling searchDirectories with', nFound)
-            ns, nf = searchDirectories( directoryPath, lvl+1,
+            nScanned, nFound = searchDirectories( directoryPath, lvl+1,
                              maxLevel, vrb, encodeUrl, colorCycling,
-                             recursive, exclusionPattern, inclusionPattern, matchingPaths, nFound)
-            if ns >=0:
-               nScanned = ns
-               #print('--After call Adding', nf, 'to ', nFound)
-               nFound = nf
-               
+                             recursive, exclusionPattern, inclusionPattern,
+                             matchingPaths, nScanned, nFound)
+            if nScanned < 0:
+               if nScanned != -1:
+                  return( nScanned, nFound )
+                
             
             
     # Process all files in current directory
-    
     fileList = []
     for encounteredFile in files:
 
         nScanned += 1
         fullPath = normalizedPathJoin(root, encounteredFile)
+        if vrb:
+            print( lvl*"-", nScanned, ')', fullPath, "lvl:", lvl )
+
         parentPath = os.path.dirname( fullPath )
         matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'/\1/', False)
         if matchedFileName == '':
@@ -532,10 +548,8 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
             nFound += 1
             matchingPaths.append(fullPath)
             print(nFound, ') ', sep='', end='')
-            printPath2( parentPath, matchedFileName, '/', 'red' ) 
+            printPath( parentPath, matchedFileName, '/', 'red' ) 
             
-
-    #print('Returning with', nFound)
     return nScanned, nFound
 
 
