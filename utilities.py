@@ -12,43 +12,16 @@ import datetime
 import clrprint
 
 
-# Obsolete: needs to be removed.
-def formatedPrint(iStr, delim, color='red'):
-    #print(iStr)
-    #print('BASE: [', os.path.basename(iStr), ']' )
-    
-    delimSeen = False
-    for c in iStr:
-        if c == delim:
-           delimSeen = not delimSeen
-           continue
-
-        if delimSeen:
-           clrprint.clrprint(c, clr=color, end='')
-        else:
-            print(c, end='')
-
-    print()
 
 
 
 
-def printPath(parent, resourceName, delim, color='red'):
-    print( parent,'/', sep='', end='')
-    delimSeen = False
-    for c in resourceName:
-        if c == delim:
-           delimSeen = not delimSeen
-           continue
-
-        if delimSeen:
-           clrprint.clrprint(c, clr=color, end='')
-        else:
-            print(c, end='')
-
-    print()
-
-
+# Prints path formated so that 
+# substrings enclosed by delim in the directory or file name
+# is displayed with different color.
+#
+# Used to display matching directory or file paths when
+# doing a search.
 
 def printPath2(parent, resourceName, delim, color='red'):
     print( parent,'/', sep='', end='')
@@ -494,7 +467,7 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 # 
 def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
                             colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern="", matchingPaths=[]):
+                            inclusionPattern="", matchingPaths=[], nF=0):
     
     if maxLevel > 0:
        if lvl > maxLevel:
@@ -507,9 +480,9 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     except:
       return (None)
     
-
+    #print('Entering searchDirectories with', nF)
     nScanned = 0
-    nFound = 0
+    nFound = nF
     
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
@@ -526,24 +499,22 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         if matchedDirName == '':
            if vrb:
               print('IGNORING DIRECTRORY', encounteredDirectory)              
-        else:
-           #print('Inclusion pattern:', inclusionPattern) 
-           #res = re.subn(inclusionPattern, r'[\1]', directoryPath)
-           #print(res)
-           #print('FOUND DIRECTORY MATCH:[',  , '] ', sep='' )
-           #formatedPrint(normalizedPathJoin(root, matchedDirName), '$', 'yellow' )
+        else:           
            nFound += 1
            matchingPaths.append(directoryPath)
-           print(nFound, ') ', end='')
+           print(nFound, ') ', sep='', end='')
            printPath2(parentPath, matchedDirName, '/', 'yellow')
                   
         if recursive:
+            #print('Calling searchDirectories with', nFound)
             ns, nf = searchDirectories( directoryPath, lvl+1,
                              maxLevel, vrb, encodeUrl, colorCycling,
-                             recursive, exclusionPattern, inclusionPattern, matchingPaths)
+                             recursive, exclusionPattern, inclusionPattern, matchingPaths, nFound)
             if ns >=0:
-               nScanned += ns
-               nFound += nf
+               nScanned = ns
+               #print('--After call Adding', nf, 'to ', nFound)
+               nFound = nf
+               
             
             
     # Process all files in current directory
@@ -560,12 +531,11 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         else:
             nFound += 1
             matchingPaths.append(fullPath)
-            print(nFound, ') ', end='')
+            print(nFound, ') ', sep='', end='')
             printPath2( parentPath, matchedFileName, '/', 'red' ) 
-            #formatedPrint( normalizedPathJoin(root, matchedFileName), '$', 'red' ) 
-            #print('FOUND FILE MATCH:[', , '] Size:', os.path.getsize(fullPath), sep='' )
+            
 
-    
+    #print('Returning with', nFound)
     return nScanned, nFound
 
 
