@@ -56,6 +56,39 @@ def formatedPrint(iStr, matchPos, clr='red'):
            clrprint.clrprint( iStr[p+1: matchPos[index+1]], clr='red', end='')   
 
 
+def getDelimPositions( s, delim ):
+
+    mP = []
+    currP = 0
+    source = s
+    
+    while True:
+     if source[currP:] == '':
+        return( mP )
+
+     try:
+          nextP = source[currP:].index(delim)
+     except Exception as idxEx:
+          mP.append( (currP, len(s), '1') )
+          return(mP)
+
+     #mP.append(currP+nextP)
+
+     if mP:
+        prev = mP[-1]
+        mP.append( ( prev[1], currP-1, '0') )
+    
+     mP.append( (currP, currP+nextP-1, '1') )
+     currP += (nextP+1) 
+
+    return(mP)
+    
+
+
+
+
+
+
 s='abcdefghijklmnopqrtuvwxyz'
 #s='123456789'
 s='kabcsss'
@@ -68,10 +101,23 @@ if result[1] <= 0:
    print('Not found. Exiting')
    sys.exit(-2)
 
-
-
 normalized = result[0]
 
+parts = normalized.split('/')
+for idx, p in enumerate(parts):
+    if idx%2 == 1:
+       clrprint.clrprint(p, clr='red', end='')
+    else:
+       print( p, end='')
+print('')       
+
+sys.exit(-1)
+
+dP = getDelimPositions( normalized, '/' )
+print(dP)
+for p in dP:
+    print(p, '::', normalized[p[0]:p[1]])
+    
 idx = 0
 matchPos = []
 fromto = []
@@ -84,9 +130,9 @@ while True:
       try:
           nextPos = normalized[idx:].index('/')
       except Exception as idxEx:
+          
           break
-        
-      
+              
       matchPos.append(idx+nextPos)
       if fromto:
           fromto.append( (idx, idx+nextPos) )
