@@ -152,27 +152,27 @@ def main():
      args['mode'] = 'search'
      # make a capturing group from regex given
      # TODO: check if it is already a capturing group
-     args['included'] = '(' + args['searchquery'][0] + ')' 
+     args['included'] =  args['searchquery'][0]  
   else:
      args['mode'] = 'export' 
   
-
-  print("\n>>>Program starting with following options:")
-  print("\t-Root directory:", args['directory'])
-  print("\t-Max level:", args['maxlevel'])
-  print("\t-Recursive directories:", not args['nonrecursive'])
-  print("\t-Output file:", args['outputhtmlfile'])
-  print("\t-Html encoding:", "???")
-  print("\t-Color cycling:", "???")
-  print("\t-Debug mode:", "???" )
-  print("\t-Excluded file list:", args['excluded'])
-  print("\t-Included file list:", args['included'])
-  print("\t-Mode:", args['mode'])
-  print("\t-Format:", args['exportformat'])
-  print("\t-Template file:", args['htmltemplate'])
-  print("\t-Style sheet:", args['cssfile'])
-  print("\t-Title text:", args['introduction'])
-  print("\t-Intro text:", args['title'])
+  if args['debug']:
+     print("\n>>>Program starting with following options:")
+     print("\t-Root directory:", args['directory'])
+     print("\t-Max level:", args['maxlevel'])
+     print("\t-Recursive directories:", not args['nonrecursive'])
+     print("\t-Output file:", args['outputhtmlfile'])
+     print("\t-Html encoding:", "???")
+     print("\t-Color cycling:", "???")
+     print("\t-Debug mode:", "???" )
+     print("\t-Excluded file list:", args['excluded'])
+     print("\t-Included file list:", args['included'])
+     print("\t-Mode:", args['mode'])
+     print("\t-Format:", args['exportformat'])
+     print("\t-Template file:", args['htmltemplate'])
+     print("\t-Style sheet:", args['cssfile'])
+     print("\t-Title text:", args['introduction'])
+     print("\t-Intro text:", args['title'])
 
 
 
@@ -190,7 +190,8 @@ def main():
 
   if args['mode'] == 'export':
 
-     if args['exportformat'] == 'json': 
+     if args['exportformat'] == 'json':
+        print('Exporting in json format') 
         dCnts = utilities.jsonTraverseDirectory(args['directory'],
                                                 1,
                                                 not args['nonrecursive'],
@@ -217,7 +218,7 @@ def main():
           #
           ###################################################
    
-          
+          print('Exporting in html') 
          
           # Read template file. Exit in case of error
           htmlTemplate = ""
@@ -291,6 +292,8 @@ def main():
   #
   ###################################################
   if args['mode'] == 'search':
+     print('Searching for', args['included'])
+     args['included'] = '(' + args['included'] + ')'  
      results=[] 
      ntotal, nfound = utilities.searchDirectories(args['directory'], 1,
                                                   args['maxlevel'],
@@ -302,7 +305,7 @@ def main():
                                                   args['included'],
                                                   results)
      #print(results)
-     print('Encountered:', ntotal, 'Found:', nfound)
+     #print('Encountered:', ntotal, 'Found:', nfound)
      if nfound > 0:
        while True:
          command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')

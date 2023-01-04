@@ -37,6 +37,7 @@ def printPath(parent, resourceName, delim, color='red'):
 
 
 
+
 # Joins and creates a path string to file
 # with fixed slashes/backslashes
 def normalizedPathJoin(base, pth):
@@ -80,7 +81,6 @@ def nameComplies( on, xP='', iP='', dbg=False ):
 #
 # Returns empty string if on does not comply and
 # on with matches replaced if it complies
-# TODO: Not yet used!
 def searchNameComplies(on, xP='', iP='', matchReplacement='', dbg=False):
     
     if xP!= "" and re.search(xP, on) is not None:
@@ -94,6 +94,8 @@ def searchNameComplies(on, xP='', iP='', matchReplacement='', dbg=False):
 
     # This means no match 
     return('')
+
+
 
 
 
@@ -141,7 +143,7 @@ def fileCreationDate(filePath):
  
 
 
-
+# File metadata
 def fileInfo( filePath ):
     fInf = {}
     try:
@@ -166,7 +168,8 @@ def fileInfo( filePath ):
 
 
 
-
+# Replaces pseudovariables for file entries
+# when displaying fs contents in html
 def formatFile(fpath, fname, prolog, epilog, encUrl=False):
 
     formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath) + epilog
@@ -175,6 +178,9 @@ def formatFile(fpath, fname, prolog, epilog, encUrl=False):
        formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
 
     return( formatedContents )
+
+
+
 
 
 # Opens a file using the default application.
@@ -515,7 +521,7 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         else:           
            nFound += 1
            matchingPaths.append(directoryPath)
-           print(nFound, ') ', sep='', end='')
+           print('\t', nFound, ') ', sep='', end='')
            printPath(parentPath, matchedDirName, '/', 'yellow')
                   
         if recursive:
@@ -545,7 +551,7 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
         else:
             nFound += 1
             matchingPaths.append(fullPath)
-            print(nFound, ') ', sep='', end='')
+            print('\t', nFound, ') ', sep='', end='')
             printPath( parentPath, matchedFileName, '/', 'red' ) 
             
     return nScanned, nFound
