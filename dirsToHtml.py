@@ -256,7 +256,7 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details><summary>[${DIRNAME}] (${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</summary><ul>\n",
+                                                      "<li id=\"${ID}\"><details><summary class='folder'>[${DIRNAME}] <span class='detail'>(${LEVEL}, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>\n",
                                                       "</ul></details></li>",
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       "", False)

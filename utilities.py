@@ -170,9 +170,9 @@ def fileInfo( filePath ):
 
 # Replaces pseudovariables for file entries
 # when displaying fs contents in html
-def formatFile(fpath, fname, prolog, epilog, encUrl=False):
+def formatFile(fpath, fname, prolog, epilog, level, encUrl=False):
 
-    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath) + epilog
+    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath).replace('${LEVEL}', str(level)) + epilog
     fMeta = fileInfo(fpath)
     if fMeta:
        formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
@@ -211,7 +211,7 @@ def openFile(filePath):
 
 #
 # TODO: 1) Do we need epilog and fepilog??? 2) Check PSEUDOs - check DIRLINK etc
-#
+#       3) Change name to indicate formated output 
 def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                       exclusionPattern="", inclusionPattern="",
                       dirList=None, fileList=None,
@@ -281,7 +281,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
         # Prepare the entry for one single directory encountered
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
-        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${DIRLINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory) + subDirData[4]
+        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${DIRLINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory).replace('${LEVEL}', str(lvl)) + subDirData[4]
         formatedContents = formatedContents.replace('${LNDIRS}', str(subDirData[2])).replace('${NDIRS}', str(subDirData[0]))
         formatedContents = formatedContents.replace('${LNFILES}', str(subDirData[3])).replace('${NFILES}', str(subDirData[1]) )
         formatedContents = formatedContents + epilog
@@ -301,7 +301,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         
         fileList.append(filePath)
 
-        formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, fepilog, encodeUrl)
+        formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, fepilog, lvl, encodeUrl)
 
 
     # Return data to upper directory
@@ -312,103 +312,6 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
     # in this directory only, formatedContents: complete formated content up to this
     # point
     return nDirs, nFiles, lnDirs, lnFiles, formatedContents
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# DELETE traverseDirectoryToList
-
-
-# Traverses directory and returns paths to encountered directories and files
-# in separate lists. Files are returned as dict, containing two keys: path and size.
-# 
-def traverseDirectoryToList(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
-                            colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern="", rootObj={}):
-    
-    if maxLevel > 0:
-       if lvl > maxLevel:
-          if vrb: 
-             print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
-          return([], [])
-        
-    try:      
-      path, dirs, files = next( os.walk(root) )
-    except:
-      return ([], [])
-    
-
-    directoryList = []
-    fileList = []
-
-    # Process all directories in current directory.
-    # If recursive is True, traverse into each directory
-    # Does a depth first search (DFS) approach
-    for encounteredDirectory in dirs:
-        
-        if vrb:
-            print( lvl*"-", normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
-
-        if not nameComplies(encounteredDirectory, exclusionPattern, inclusionPattern):
-           if vrb:
-              print('IGNORING', encounteredDirectory) 
-           continue
-        
-        
-        directoryPath = normalizedPathJoin(root, encounteredDirectory)
-
-        dirEntry = {'path':directoryPath, 'nFiles':-1} 
-        #directoryList.append(directoryPath)
-        directoryList.append(dirEntry)
-        
-        # Generate a unique id; used for html elements
-          
-        if recursive:
-            dL, fL = traverseDirectoryToList( directoryPath, lvl+1,
-                                              maxLevel, vrb, encodeUrl, colorCycling,
-                                              recursive, exclusionPattern,
-                                              inclusionPattern, dirEntry)
-            
-            directoryList.extend(dL)
-            fileList.extend(fL)
-            
-             
-
-    # Process all files in current directory
-    nF = 0
-    for encounteredFile in files:
-        if not nameComplies(encounteredFile, exclusionPattern, inclusionPattern):
-           print('IGNORING', encounteredFile) 
-           continue
-        nF += 1
-        fullPath = normalizedPathJoin(root, encounteredFile)
-        
-        if vrb:
-           print( lvl*"-", fullPath, "lvl:", lvl )
-
-        try:
-           fileList.append( {'path':fullPath, 'size':os.path.getsize(fullPath)})
-        except Exception as szEx:
-           # TODO: specialize exceptions. Might get a "File name too long"
-           # exception
-           fileList.append( {'path':fullPath, 'size':-3}) 
-
-    rootObj['nFiles'] = nF    
-    return directoryList, fileList
-
-
-
-
 
 
 
@@ -494,25 +397,13 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
 
 
-'''
-root=".//", lvl=1, recursive = True, maxLevel=-1,
-                      exclusionPattern="", inclusionPattern="",
-                      dirList=None, fileList=None,
-                      encodeUrl=False,                      
-                      prolog="", epilog="",
-                      fprolog="", fepilog="", vrb=False
 
-
-
-def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
-                            colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0):                      
-'''
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 
 def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1, 
-                      exclusionPattern="", inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0, vrb=False):
+                      exclusionPattern="", inclusionPattern="",
+                      matchingPaths=[], scannedCount=0, matchCount=0, vrb=False):
     
     if maxLevel > 0:
        if lvl > maxLevel:
