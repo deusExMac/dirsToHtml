@@ -292,19 +292,26 @@ def main():
   #
   ###################################################
   if args['mode'] == 'search':
+
      print('Searching for', args['included'])
      args['included'] = '(' + args['included'] + ')'  
      results=[] 
-     ntotal, nfound = utilities.searchDirectories(args['directory'], 1,
-                                                  args['maxlevel'],
-                                                  False,
-                                                  False,
-                                                  True,
+     ntotal, nfound = utilities.searchDirectories(args['directory'],
+                                                  1,
                                                   not args['nonrecursive'],
+                                                  args['maxlevel'],
                                                   args['excluded'],
                                                   args['included'],
                                                   results)
+     
+     
      #print(results)
+     absRootPath = args['directory']
+     if not os.path.isabs(args['directory']):
+        absRootPath = os.getcwd()
+
+     #print(absRootPath)
+     
      print('Found:', nfound, 'Checked:', ntotal, '\n')
      if nfound > 0:
        while True:
@@ -322,9 +329,13 @@ def main():
          if (command <= 0) or (command > len(results)):
             print('Invalid. Number of results ', len(results)) 
             continue
-        
-         print('Opening', results[command-1])
-         utilities.openFile( results[command-1] )
+
+         fpath =  results[command-1]
+         if not os.path.isabs(results[command-1]):
+            fpath = os.path.join(absRootPath, results[command-1])
+            
+         print('Opening', os.path.abspath(fpath) )
+         utilities.openFile( os.path.abspath(fpath ) )
          
           
      print('Encountered:', ntotal, 'Found:', nfound)

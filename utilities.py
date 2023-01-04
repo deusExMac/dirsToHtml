@@ -501,13 +501,18 @@ root=".//", lvl=1, recursive = True, maxLevel=-1,
                       encodeUrl=False,                      
                       prolog="", epilog="",
                       fprolog="", fepilog="", vrb=False
+
+
+
+def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
+                            colorCycling=False, recursive = True, exclusionPattern="",
+                            inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0):                      
 '''
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 
-def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False,
-                            colorCycling=False, recursive = True, exclusionPattern="",
-                            inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0):
+def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1, 
+                      exclusionPattern="", inclusionPattern="", matchingPaths=[], scannedCount=0, matchCount=0, vrb=False):
     
     if maxLevel > 0:
        if lvl > maxLevel:
@@ -529,7 +534,7 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
     # Does a depth first search (DFS) approach
     for encounteredDirectory in dirs:
         
-        
+      
         nScanned += 1 
         if vrb:
             print( lvl*"-", nScanned, ')', normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
@@ -548,9 +553,11 @@ def searchDirectories(root=".//", lvl=1, maxLevel=-1, vrb=False, encodeUrl=False
                   
         if recursive:
             nScanned, nFound = searchDirectories( directoryPath, lvl+1,
-                             maxLevel, vrb, encodeUrl, colorCycling,
-                             recursive, exclusionPattern, inclusionPattern,
-                             matchingPaths, nScanned, nFound)
+                                                  recursive, maxLevel, 
+                                                  exclusionPattern, inclusionPattern,
+                                                  matchingPaths, nScanned, nFound, vrb )
+                                                  
+                             
             if nScanned < 0:
                if nScanned != -1:
                   return( nScanned, nFound )
