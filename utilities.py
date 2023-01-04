@@ -186,7 +186,7 @@ def formatFile(fpath, fname, prolog, epilog, encUrl=False):
 # Opens a file using the default application.
 def openFile(filePath):
 
-    if sys.platform.lower() == 'windows':
+    if sys.platform.lower() == 'win32':
        os.startfile(filePath)
     else:
         opener = "open" if sys.platform.lower() == "darwin" else "xdg-open"

@@ -305,7 +305,7 @@ def main():
                                                   args['included'],
                                                   results)
      #print(results)
-     #print('Encountered:', ntotal, 'Found:', nfound)
+     print('Found:', nfound, 'Checked:', ntotal, '\n')
      if nfound > 0:
        while True:
          command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')
