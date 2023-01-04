@@ -209,8 +209,9 @@ def openFile(filePath):
 #####################################################
 
 
-
-
+#
+# TODO: 1) Do we need epilog and fepilog??? 2) Check PSEUDOs - check DIRLINK etc
+#
 def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                       exclusionPattern="", inclusionPattern="",
                       dirList=None, fileList=None,
