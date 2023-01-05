@@ -40,6 +40,9 @@ def printPath(parent, resourceName, delim, color='red'):
 
 # Joins and creates a path string to file
 # with fixed slashes/backslashes
+# TODO: Should make use or .normpath(), relpath(), normcase(), abspath()???? etc.
+#       See: https://docs.python.org/3/library/os.path.html#os.path.normcase
+# 
 def normalizedPathJoin(base, pth):
     if os.path.isabs(pth): 
        return( pth.replace("\\", "/") )
