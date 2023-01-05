@@ -86,6 +86,33 @@ def printHelp():
     sys.exit(0)
 
 
+def strToBytes( amount ):
+    if amount.lower().endswith('k'):
+        try:
+          sz = int( amount[:-1] )*1024
+        except Exception as convEx:
+          return(-3)
+        
+    elif amount.lower().endswith('m'):
+       try:
+          sz = int( amount[:-1] )*1024*1024
+       except Exception as convEx:
+          return(-3)
+
+    elif amount.lower().endswith('g'):
+       try:
+          sz = int( amount[:-1] )*1024*1024*1024
+       except Exception as convEx:
+          return(-3) 
+    else:
+         try:
+          sz = int(amount)
+         except Exception as convEx:
+            return(-3) 
+        
+    return(sz)
+
+
 
 
 def main():
@@ -97,12 +124,14 @@ def main():
       
    cmdArgParser = argparse.ArgumentParser(description='Command line arguments', add_help=False)
 
-   # Directory traversal related
+   # Directory traversal related and criteria
    cmdArgParser.add_argument('-d', '--directory', default="exampleDir")
    cmdArgParser.add_argument('-NR', '--nonrecursive', action='store_true')
    cmdArgParser.add_argument('-X', '--excluded', default="")
    cmdArgParser.add_argument('-C', '--included', default="")
    cmdArgParser.add_argument('-L', '--maxlevel', type=int, default=-1)
+   cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
+   cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
   
    # html related output
 
@@ -295,14 +324,18 @@ def main():
 
      print('Searching for', args['included'])
      args['included'] = '(' + args['included'] + ')'  
-     results=[] 
+     results=[]
+     fCriteria = {'minfilesize': strToBytes(args['minfilesize']),
+                  'maxfilesize': strToBytes(args['maxfilesize'])}
+     
      ntotal, nfound = utilities.searchDirectories(args['directory'],
                                                   1,
                                                   not args['nonrecursive'],
                                                   args['maxlevel'],
-                                                  args['excluded'],
+                                                  args['excluded'],                                                  
                                                   args['included'],
-                                                  results)
+                                                  fCriteria,
+                                                  results, 0, 0, args['debug'])
      
      
      #print(results)

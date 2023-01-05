@@ -147,7 +147,9 @@ def fileCreationDate(filePath):
  
 
 
-# File metadata
+# File metadata.
+# All fields are returned as strings...
+# TODO: should this be changed???
 def fileInfo( filePath ):
     fInf = {}
     try:
@@ -322,6 +324,9 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
 
 
+
+
+
 # Traverses directory and returns directory structure as a json object.
 # directory/file names are relative
 # 
@@ -406,7 +411,7 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 # directory/file names are relative
 # 
 def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1, 
-                      exclusionPattern="", inclusionPattern="",
+                      exclusionPattern="", inclusionPattern="", fileCriteria={},
                       matchingPaths=[], scannedCount=0, matchCount=0, vrb=False):
     
     if maxLevel > 0:
@@ -444,12 +449,12 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
            nFound += 1
            matchingPaths.append(directoryPath)
            print('\t', nFound, ') ', sep='', end='')
-           printPath(parentPath, matchedDirName, '/', 'yellow')
+           printPath(parentPath, matchedDirName, '/', 'green')
                   
         if recursive:
             nScanned, nFound = searchDirectories( directoryPath, lvl+1,
                                                   recursive, maxLevel, 
-                                                  exclusionPattern, inclusionPattern,
+                                                  exclusionPattern, inclusionPattern, fileCriteria,
                                                   matchingPaths, nScanned, nFound, vrb )
                                                   
                              
@@ -473,6 +478,26 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
         if matchedFileName == '':
            continue
         else:
+            # Check file metadata criteria...
+            if fileCriteria:            
+               fileMeta = fileInfo(fullPath)
+               #print('Checking if file [', fullPath, '] meets minimum size criteria ', fileCriteria.get('minfilesize', -1), '...', sep='', end='' )
+               if fileCriteria.get('minfilesize', -1) >= 0:
+                if int(fileMeta['size']) < fileCriteria.get('minfilesize', -1):
+                  #print('No. (', fileMeta['size'], ')' ) 
+                  continue
+
+               #print('YES!. (', fileMeta['size'], ')' )
+               
+               #print('Checking if file [', fullPath, '] meets maximum size criteria ', fileCriteria.get('maxfilesize', -1), '...', sep='', end='' )  
+
+               if  fileCriteria.get('maxfilesize', -1) > 0:
+                if int(fileMeta['size']) > fileCriteria.get('maxfilesize', -1):
+                  #print('No. (', fileMeta['size'], ')' ) 
+                  continue 
+
+               #print('YES!. (', fileMeta['size'], ')' )
+               
             nFound += 1
             matchingPaths.append(fullPath)
             print('\t', nFound, ') ', sep='', end='')
