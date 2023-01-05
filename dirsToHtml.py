@@ -132,6 +132,9 @@ def main():
    cmdArgParser.add_argument('-L', '--maxlevel', type=int, default=-1)
    cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
    cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
+   cmdArgParser.add_argument('-F', '--nofiles', action='store_true')
+   cmdArgParser.add_argument('-Y', '--nodirectories', action='store_true')
+   
   
    # html related output
 
@@ -335,6 +338,8 @@ def main():
                                                   args['maxlevel'],
                                                   args['excluded'],                                                  
                                                   args['included'],
+                                                  not args['nodirectories'],
+                                                  not args['nofiles'],
                                                   fCriteria,
                                                   results, 0, 0, args['debug'])
      

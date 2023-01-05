@@ -242,9 +242,10 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
       return(-2, 0, 0, 0, "")
 
 
+    # sort directory and files
+    #dirs.sort()
+    #files.sort()
 
-    dirs.sort()
-    files.sort()
     
     nDirs  = 0 # TOTAL number of directories
     nFiles = 0 # TOTAL number of files
@@ -415,7 +416,8 @@ def jsonTraverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 # directory/file names are relative
 # 
 def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1, 
-                      exclusionPattern="", inclusionPattern="", fileCriteria={},
+                      exclusionPattern="", inclusionPattern="", 
+                      matchDirectories=True, matchFiles=True, fileCriteria={},
                       matchingPaths=[], scannedCount=0, matchCount=0, vrb=False):
     
     if maxLevel > 0:
@@ -435,33 +437,35 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
     #print('Entering searchDirectories with', nF)
     nScanned = scannedCount
     nFound = matchCount
-    
+
     # Process all directories in current directory.
     # If recursive is True, traverse into each directory
     # Does a depth first search (DFS) approach
     for encounteredDirectory in dirs:
-        
-      
+         
         nScanned += 1 
         if vrb:
             print( lvl*"-", nScanned, ')', normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
         directoryPath = normalizedPathJoin(root, encounteredDirectory)
         parentPath = os.path.dirname( directoryPath )
-        matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'/\1/', False)
-        if matchedDirName == '':
-           if vrb:
-              print('IGNORING DIRECTRORY', encounteredDirectory)              
-        else:           
-           nFound += 1
-           matchingPaths.append(directoryPath)
-           print('\t', nFound, ') ', sep='', end='')
-           printPath(parentPath, matchedDirName, '/', 'green')
+
+        if matchDirectories:
+           matchedDirName = searchNameComplies(encounteredDirectory, exclusionPattern, inclusionPattern, r'/\1/', False)
+           if matchedDirName == '':
+              if vrb:
+                 print('IGNORING DIRECTRORY', encounteredDirectory)              
+           else:           
+              nFound += 1
+              matchingPaths.append(directoryPath)
+              print('\t', nFound, ') ', sep='', end='')
+              printPath(parentPath, matchedDirName, '/', 'green')
                   
         if recursive:
             nScanned, nFound = searchDirectories( directoryPath, lvl+1,
                                                   recursive, maxLevel, 
-                                                  exclusionPattern, inclusionPattern, fileCriteria,
+                                                  exclusionPattern, inclusionPattern, 
+                                                  matchDirectories, matchFiles, fileCriteria,
                                                   matchingPaths, nScanned, nFound, vrb )
                                                   
                              
@@ -473,7 +477,8 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
             
     # Process all files in current directory
     fileList = []
-    for encounteredFile in files:
+    if matchFiles:
+      for encounteredFile in files:
 
         nScanned += 1
         fullPath = normalizedPathJoin(root, encounteredFile)
