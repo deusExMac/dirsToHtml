@@ -44,10 +44,11 @@ def printPath(parent, resourceName, delim, color='red'):
 #       See: https://docs.python.org/3/library/os.path.html#os.path.normcase
 # 
 def normalizedPathJoin(base, pth):
-    if os.path.isabs(pth): 
-       return( pth.replace("\\", "/") )
     
-    return( os.path.join(base, pth).replace("\\", "/") )
+    if os.path.isabs(pth): 
+       return(os.path.normpath(pth) )
+
+    return( os.path.normpath(os.path.join(base, pth)) )
 
 
 
