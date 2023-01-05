@@ -148,7 +148,8 @@ def main():
    cmdArgParser.add_argument('searchquery', nargs=argparse.REMAINDER, default=[])
 
    
-   # Automatically open outfile with a browser displaying it.
+   # Automatically open outfile with a browser displaying it when exporting
+   # directory structure  
    cmdArgParser.add_argument('-D', '--displayoutput', action='store_true')
    
    cmdArgParser.add_argument('-G', '--debug', action='store_true')

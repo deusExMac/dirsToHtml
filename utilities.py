@@ -241,6 +241,10 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
       print('Exception during walk:', str(wEx) )  
       return(-2, 0, 0, 0, "")
 
+
+
+    dirs.sort()
+    files.sort()
     
     nDirs  = 0 # TOTAL number of directories
     nFiles = 0 # TOTAL number of files
@@ -422,8 +426,11 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
         
     try:      
       path, dirs, files = next( os.walk(root) )
-    except:
+    except Exception as walkExc:
+      print('[ERROR]', str(walkExc))  
       return ( (-2, 0) )
+
+    
     
     #print('Entering searchDirectories with', nF)
     nScanned = scannedCount
