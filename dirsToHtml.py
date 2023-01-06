@@ -289,8 +289,8 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details><summary class='folder'>[${DIRNAME}] <span class='detail'>(${LEVEL}, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>\n",
-                                                      "</ul></details></li>",
+                                                      "<li id=\"${ID}\"><details><summary class='folder'>[${DIRNAME}] <span class='detail'>(${LEVEL}, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",
+                                                      "", #"</ul></details></li>",
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       "", False)
 
@@ -300,7 +300,7 @@ def main():
           # source directory is not returned by traversals.
           #
           htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
-          htmlTemplate = htmlTemplate.replace("${FILESTRUCTURE}", traversalResult )
+          htmlTemplate = htmlTemplate.replace("${SUBDIRECTORY}", traversalResult )
           htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
           htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
 
@@ -332,7 +332,7 @@ def main():
      fCriteria = {'minfilesize': strToBytes(args['minfilesize']),
                   'maxfilesize': strToBytes(args['maxfilesize'])}
      
-     ntotal, nfound = utilities.searchDirectories(args['directory'],
+     status, ntotal, nfound = utilities.searchDirectories(args['directory'],
                                                   1,
                                                   not args['nonrecursive'],
                                                   args['maxlevel'],

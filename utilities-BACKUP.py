@@ -292,7 +292,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
         # Prepare the entry for one single directory encountered
         dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
-        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${DIRLINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory).replace('${LEVEL}', str(lvl)).replace('${SUBDIRECTORY}', subDirData[4])
+        formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${DIRLINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory).replace('${LEVEL}', str(lvl)) + subDirData[4]
         formatedContents = formatedContents.replace('${LNDIRS}', str(subDirData[2])).replace('${NDIRS}', str(subDirData[0]))
         formatedContents = formatedContents.replace('${LNFILES}', str(subDirData[3])).replace('${NFILES}', str(subDirData[1]) )
         formatedContents = formatedContents + epilog
@@ -424,13 +424,13 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
        if lvl > maxLevel:
           if vrb: 
              print('Current Level greater than maxLevel', maxLevel, "Not traversing INTO", root) 
-          return((-1, 0, 0))
+          return((-1, 0))
         
     try:      
       path, dirs, files = next( os.walk(root) )
     except Exception as walkExc:
       print('[ERROR]', str(walkExc))  
-      return ( (-2, 0, 0) )
+      return ( (-2, 0) )
 
     
     
@@ -464,16 +464,16 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
               printPath(parentPath, matchedDirName, '/', 'green')
                   
         if recursive:
-            sts, nScanned, nFound = searchDirectories( directoryPath, lvl+1,
+            nScanned, nFound = searchDirectories( directoryPath, lvl+1,
                                                   recursive, maxLevel, 
                                                   exclusionPattern, inclusionPattern, 
                                                   matchDirectories, matchFiles, fileCriteria,
                                                   matchingPaths, nScanned, nFound, vrb )
                                                   
-            # TODO: make this and                 
-            if sts < 0:
-               if sts != -1:
-                  return( sts, nScanned, nFound )
+                             
+            if nScanned < 0:
+               if nScanned != -1:
+                  return( nScanned, nFound )
                 
             
             
@@ -513,10 +513,9 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
     except KeyboardInterrupt:
            print('\n\nKeyboard interrupt seen. Stopping...')
-           return( -5, nScanned, nFound )
 
             
-    return 0, nScanned, nFound
+    return nScanned, nFound
 
 
 
