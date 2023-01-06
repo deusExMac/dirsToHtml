@@ -317,7 +317,7 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
+                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld9.png' style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       False)
 
