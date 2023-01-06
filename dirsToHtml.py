@@ -289,7 +289,7 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
+                                                      "<li id=\"${ID}\"><details open><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       False)
 
@@ -305,7 +305,7 @@ def main():
 
           tod = '<ul>'
           for dEntry in dL:
-              tod = tod + '<li style="line-height: 1em;padding:0px;">' + dEntry['name'] + '</li>'
+              tod = tod + '<li style="line-height: 1em;padding:2px;">' + '<a href="#' + dEntry['id'] + '">' + dEntry['name'] + '</a></li>'
 
           tod = tod + '</ul>'
 
