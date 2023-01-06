@@ -43,6 +43,8 @@
 import os
 import os.path
 import sys, getopt
+
+import configparser
 import argparse
 import json
 
@@ -85,7 +87,12 @@ def printHelp():
     print("-x [pattern]: exclude files having [pattern] in name. You may add as many -x arguments as you like. If [patttern] is a valid file name, patterns are loaded from that file.")
     sys.exit(0)
 
-
+#
+# Takes as input a string that is a data size measurement
+# and converts it to bytes returning is at an integer.
+# The input string may also have a measurement in the form
+# of K, M, G, T for kilo-, mega-, giga-, tera,
+#
 def strToBytes( amount ):
     if amount.lower().endswith('k'):
         try:
@@ -103,7 +110,12 @@ def strToBytes( amount ):
        try:
           sz = int( amount[:-1] )*1024*1024*1024
        except Exception as convEx:
-          return(-3) 
+          return(-3)
+    elif amount.lower().endswith('t'):
+       try:
+          sz = int( amount[:-1] )*1024*1024*1024*1024
+       except Exception as convEx:
+          return(-3)
     else:
          try:
           sz = int(amount)
@@ -117,13 +129,19 @@ def strToBytes( amount ):
 
 def main():
 
+
+   
+
   # 
-  # Parse command line arguments - if ant
+  # Parse command line arguments - if any
   #
   try:
       
    cmdArgParser = argparse.ArgumentParser(description='Command line arguments', add_help=False)
 
+   # Configuration file
+   cmdArgParser.add_argument('-c', '--config', default="fsNavigator.conf")
+    
    # Directory traversal related and criteria
    cmdArgParser.add_argument('-d', '--directory', default="exampleDir")
    cmdArgParser.add_argument('-NR', '--nonrecursive', action='store_true')
@@ -145,6 +163,9 @@ def main():
    cmdArgParser.add_argument('-I', '--introduction', default="")
    cmdArgParser.add_argument('-T', '--title', default="")
    cmdArgParser.add_argument('-e', '--urlencode', action='store_true')
+   # In case directories are displayed hierarchical, should they
+   # appear fully open or closed
+   cmdArgParser.add_argument('-O', '--opendirectories', action='store_true')
 
    # search related
    # searchquery is interpreted as a regular expression
@@ -177,7 +198,13 @@ def main():
     print('Argument error:', str(argumentException))
     sys.exit(-4)
 
-
+  '''
+  configFile = args['config']
+  
+  config = configparser.RawConfigParser(allow_no_value=True)
+  config.read(configFile)
+  '''
+   
   #
   # Set mode appropriately based on arguments
   #
@@ -255,6 +282,7 @@ def main():
          
           # Read template file. Exit in case of error
           htmlTemplate = ""
+          print('Opening template file: [', args['htmltemplate'], ']', sep='')
           try:
             with open( args['htmltemplate'], 'r', encoding='utf8') as content_file:
                  htmlTemplate = content_file.read()
@@ -289,7 +317,7 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details open><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
+                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       False)
 
@@ -305,7 +333,7 @@ def main():
 
           tod = '<ul>'
           for dEntry in dL:
-              tod = tod + '<li style="line-height: 1em;padding:2px;">' + '<a href="#' + dEntry['id'] + '">' + dEntry['name'] + '</a></li>'
+              tod = tod + '<li>' + '<a href="#' + dEntry['id'] + '">' + dEntry['name'] + '</a></li>'
 
           tod = tod + '</ul>'
 

@@ -5,11 +5,33 @@
 
 <style>
     
+            
+.tableOfDictionaries ul li {
+  list-style: none;
+  padding-left: 50px;
+  padding-top:10px;    
+  position: relative;
+}
+
+.tableOfDictionaries ul li:before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 5px;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-size: contain;
+  background-image: url("html/fld5.png");
+}
+    
+
+    
     
 .tableOfDictionaries {
   column-count: 2;
   column-gap: 30px;
-  column-rule: 1px solid lightblue;
+  column-rule: 1px solid green;
   
   margin:20px;
   word-wrap: break-word; 
@@ -37,7 +59,7 @@ h2 {
 }
 
 .tree ul{
-  margin-left  : calc(var(--radius) - var(--spacing));
+  #margin-left  : calc(var(--radius) - var(--spacing));
   padding-left : 0;
 
 }
@@ -58,11 +80,15 @@ h2 {
   top          : calc(var(--spacing) / -2);
   left         : -2px;
   width        : calc(var(--spacing) + 2px);
-  height       : calc(var(--spacing) + 1px);
+  height       : calc(var(--spacing) + 1px);  
   border       : solid green;
+     
   border-width : 0 0 2px 2px;
+  
+  background-image: url("html/fld5.png");    
 }
 
+    
 .tree summary{
   display : block;
   cursor  : pointer;
@@ -83,28 +109,34 @@ h2 {
 
 .tree li::after,
 .tree summary::before{
-  content       : '';
+  content       : background-image: url("fld10.png");
   display       : block;
   position      : absolute;
+  /**    
   top           : calc(var(--spacing) / 2 - var(--radius));
   left          : calc(var(--spacing) - var(--radius) - 1px);
   width         : calc(2 * var(--radius));
   height        : calc(2 * var(--radius));
   border-radius : 50%;
-  background    : #ddd;
+  **/    
+  /*background    : #ddd;*/
+  
 }
 
 .tree summary::before{
-  content     : '+';
+  #content     : '+';
   z-index     : 1;
-  background  : #696;
-  color       : #fff;
-  line-height : calc(2 * var(--radius) - 2px);
-  text-align  : center;
+  #background  : #696;
+  #color       : #fff;
+  
+  #line-height : calc(2 * var(--radius) - 2px);
+  #text-align  : center;
+background-image: url("fld10.png");    
 }
 
 .tree details[open] > summary::before{
-  content : '-';
+  #content : '-';
+  background-image: url("fld10.png");     
 }
 
 .dir {font-size:20px; color:green}
@@ -113,7 +145,7 @@ h2 {
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
-  background-color:#f7f6ab;
+  background-color:#FFB7B2;
   padding:15px;
 }
 
@@ -136,7 +168,7 @@ h2 {
 <div id="container">
 <div class="tableOfDictionaries">
 <h2>Lorem Ipsum Dolor Sit Amet</h2>    
-    <ul><li style="line-height: 1em;padding:2px;"><a href="#d2-463746">anotherDir</a></li><li style="line-height: 1em;padding:2px;"><a href="#d1-923443">SomeDir</a></li><li style="line-height: 1em;padding:2px;"><a href="#d1-611844">YetAnotherDir</a></li><li style="line-height: 1em;padding:2px;"><a href="#d1-731877">untitled folder</a></li></ul>
+    <ul><li><a href="#d2-798713">anotherDir</a></li><li><a href="#d1-589076">SomeDir</a></li><li><a href="#d1-836099">YetAnotherDir</a></li><li><a href="#d1-15776">untitled folder</a></li></ul>
 </div>      
 
 <ul class="tree">
@@ -144,16 +176,16 @@ h2 {
     <details open>
       <summary class="folder">exampleDir(3 - 3)</summary>
         <ul>
-           <li id="d1-923443"><details open><summary class='folder'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 3 | 1, 5 )</span></summary><ul><li id="d2-463746"><details open><summary class='folder'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle"><a href="exampleDir/SomeDir/anotherDir/aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [23/01/2022, 13:51:48])</li>
+           <li id="d1-589076"><details ><summary class='folder'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 3 | 1, 5 )</span></summary><ul><li id="d2-798713"><details ><summary class='folder'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle"><a href="exampleDir/SomeDir/anotherDir/aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [23/01/2022, 13:51:48])</li>
 <li class="fle"><a href="exampleDir/SomeDir/anotherDir/anotherFile.accdb" target="_blank" rel="noopener noreferrer">anotherFile.accdb</a> (520192, [23/01/2022, 13:51:48])</li>
 </ul></details></li>
 <li class="fle"><a href="exampleDir/SomeDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (6148, [27/12/2022, 23:54:12])</li>
 <li class="fle"><a href="exampleDir/SomeDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (20201, [27/12/2022, 07:31:40])</li>
 <li class="fle"><a href="exampleDir/SomeDir/anExcelFile.xlsx" target="_blank" rel="noopener noreferrer">anExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li>
 </ul></details></li>
-<li id="d1-611844"><details open><summary class='folder'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle"><a href="exampleDir/YetAnotherDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [23/01/2022, 13:51:48])</li>
+<li id="d1-836099"><details ><summary class='folder'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle"><a href="exampleDir/YetAnotherDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [23/01/2022, 13:51:48])</li>
 </ul></details></li>
-<li id="d1-731877"><details open><summary class='folder'>untitled folder<span class='detail'>(<font color='red'><i>1</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li>
+<li id="d1-15776"><details ><summary class='folder'>untitled folder<span class='detail'>(<font color='red'><i>1</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li>
 <li class="fle"><a href="exampleDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [28/12/2022, 10:05:24])</li>
 <li class="fle"><a href="exampleDir/HOHOHOanExcelFile.xlsx" target="_blank" rel="noopener noreferrer">HOHOHOanExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li>
 <li class="fle"><a href="exampleDir/randomImage.jpg" target="_blank" rel="noopener noreferrer">randomImage.jpg</a> (15715, [01/01/2023, 12:42:04])</li>
