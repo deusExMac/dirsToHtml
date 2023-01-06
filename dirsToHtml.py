@@ -251,7 +251,7 @@ def main():
           #
           ###################################################
    
-          print('Exporting in html') 
+          print(f'Exporting {args["directory"]} in html...') 
          
           # Read template file. Exit in case of error
           htmlTemplate = ""
