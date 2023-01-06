@@ -353,31 +353,38 @@ def main():
      
      print('Found:', nfound, 'Checked:', ntotal, '\n')
      if nfound > 0:
+
        while True:
-         command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')
-         if command=='':
-            continue
-
-         if command == 'q':
-            break
-         try:
-           command = int(command)
-         except Exception as iEx:
-             continue
-
-         if (command <= 0) or (command > len(results)):
-            print('Invalid. Number of results ', len(results)) 
-            continue
-
-         fpath =  results[command-1]
-         if not os.path.isabs(results[command-1]):
-            fpath = os.path.join(absRootPath, results[command-1])
-            
-         print('Opening', os.path.abspath(fpath) )
-         utilities.openFile( os.path.abspath(fpath ) )
+           
+         try:  
+           command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')
+           if command=='':
+              continue
          
+            
+           if command == 'q':
+              break
+
+           try:
+             command = int(command)
+           except Exception as iEx:
+               continue
+
+           if (command <= 0) or (command > len(results)):
+               print('Invalid. Number of results ', len(results)) 
+               continue
+
+           fpath =  results[command-1]
+           if not os.path.isabs(results[command-1]):
+              fpath = os.path.join(absRootPath, results[command-1])
+            
+           print('Opening', os.path.abspath(fpath) )
+           utilities.openFile( os.path.abspath(fpath ) )
+
+         except KeyboardInterrupt:
+             continue
           
-     print('Encountered:', ntotal, 'Found:', nfound)
+     #print('Encountered:', ntotal, 'Found:', nfound)
 
      #print(results)
      sys.exit(-3)

@@ -438,10 +438,12 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
     nScanned = scannedCount
     nFound = matchCount
 
-    # Process all directories in current directory.
-    # If recursive is True, traverse into each directory
-    # Does a depth first search (DFS) approach
-    for encounteredDirectory in dirs:
+    try:
+        
+      # Process all directories in current directory.
+      # If recursive is True, traverse into each directory
+      # Does a depth first search (DFS) approach
+      for encounteredDirectory in dirs:
          
         nScanned += 1 
         if vrb:
@@ -475,46 +477,47 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
                 
             
             
-    # Process all files in current directory
-    fileList = []
-    if matchFiles:
-      for encounteredFile in files:
+      # Process all files in current directory
+      fileList = []
+      if matchFiles:
+        for encounteredFile in files:
 
-        nScanned += 1
-        fullPath = normalizedPathJoin(root, encounteredFile)
-        if vrb:
+          nScanned += 1
+          fullPath = normalizedPathJoin(root, encounteredFile)
+          if vrb:
             print( lvl*"-", nScanned, ')', fullPath, "lvl:", lvl )
 
-        parentPath = os.path.dirname( fullPath )
-        matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'/\1/', False)
-        if matchedFileName == '':
-           continue
-        else:
+          parentPath = os.path.dirname( fullPath )
+          matchedFileName = searchNameComplies(encounteredFile, exclusionPattern, inclusionPattern, r'/\1/', False)
+          if matchedFileName == '':
+             continue
+          else:
+            # Match found.  
             # Check file metadata criteria...
             if fileCriteria:            
                fileMeta = fileInfo(fullPath)
-               #print('Checking if file [', fullPath, '] meets minimum size criteria ', fileCriteria.get('minfilesize', -1), '...', sep='', end='' )
+               
                if fileCriteria.get('minfilesize', -1) >= 0:
-                if int(fileMeta['size']) < fileCriteria.get('minfilesize', -1):
-                  #print('No. (', fileMeta['size'], ')' ) 
+                if int(fileMeta['size']) < fileCriteria.get('minfilesize', -1): 
                   continue
 
-               #print('YES!. (', fileMeta['size'], ')' )
                
-               #print('Checking if file [', fullPath, '] meets maximum size criteria ', fileCriteria.get('maxfilesize', -1), '...', sep='', end='' )  
-
                if  fileCriteria.get('maxfilesize', -1) > 0:
                 if int(fileMeta['size']) > fileCriteria.get('maxfilesize', -1):
-                  #print('No. (', fileMeta['size'], ')' ) 
                   continue 
-
-               #print('YES!. (', fileMeta['size'], ')' )
                
             nFound += 1
             matchingPaths.append(fullPath)
             print('\t', nFound, ') ', sep='', end='')
             printPath( parentPath, matchedFileName, '/', 'red' ) 
+
+    except KeyboardInterrupt:
+           print('\n\nKeyboard interrupt seen. Stopping...')
+
             
     return nScanned, nFound
+
+
+
 
 
