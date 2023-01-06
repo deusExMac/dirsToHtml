@@ -24,6 +24,8 @@ import clrprint
 #
 # Used to display matching directory or file paths when
 # doing a search.
+#
+# TODO: do an aligned version of printPath???
 
 def printPath(parent, resourceName, delim, color='red'):
     print( parent,'/', sep='', end='')
@@ -515,7 +517,7 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
     except KeyboardInterrupt:
            print('\n\nKeyboard interrupt seen. Stopping...')
-           return( -5, nScanned, nFound )
+           return( -5, nScanned, nFound ) # Control-C seen. Propagate error while recursion is unwinded.
 
             
     return 0, nScanned, nFound
