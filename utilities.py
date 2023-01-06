@@ -176,9 +176,9 @@ def fileInfo( filePath ):
 
 # Replaces pseudovariables for file entries
 # when displaying fs contents in html
-def formatFile(fpath, fname, prolog, epilog, level, encUrl=False):
+def formatFile(fpath, fname, prolog, level, encUrl=False):
 
-    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath).replace('${LEVEL}', str(level)) + epilog
+    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath).replace('${LEVEL}', str(level))
     fMeta = fileInfo(fpath)
     if fMeta:
        formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
@@ -222,8 +222,8 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                       exclusionPattern="", inclusionPattern="",
                       dirList=None, fileList=None,
                       encodeUrl=False,                      
-                      prolog="", epilog="",
-                      fprolog="", fepilog="", vrb=False):
+                      prolog="", 
+                      fprolog="",  vrb=False):
     
            
     if maxLevel > 0:
@@ -243,8 +243,8 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
 
     # sort directory and files
-    #dirs.sort()
-    #files.sort()
+    dirs.sort()
+    files.sort()
 
     
     nDirs  = 0 # TOTAL number of directories
@@ -264,7 +264,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
            continue
             
         directoryPath = normalizedPathJoin(root, encounteredDirectory) 
-        dirList.append(directoryPath)
+        #dirList.append(directoryPath)
 
         nDirs +=1
         lnDirs += 1       
@@ -279,8 +279,8 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                                               exclusionPattern, inclusionPattern,
                                               dirList, fileList,
                                               encodeUrl,
-                                              prolog, epilog, 
-                                              fprolog, fepilog, vrb)  
+                                              prolog,  
+                                              fprolog,  vrb)  
 
             # Upate total number of directories and files that will
             # be propagated upwards.
@@ -291,11 +291,13 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
                nFiles += subDirData[1]
 
         # Prepare the entry for one single directory encountered
-        dId = "d-" + str(lvl) + "-" + str( random.randint(0, 1000000) )
+        dId = "d" + str(lvl) + "-" + str( random.randint(0, 1000000) )
         formatedContents = formatedContents + prolog.replace("${ID}", dId).replace("${DIRLINK}", makeHtmlLink(directoryPath, encounteredDirectory, encodeUrl) ).replace('${DIRNAME}', encounteredDirectory).replace('${LEVEL}', str(lvl)).replace('${SUBDIRECTORY}', subDirData[4])
         formatedContents = formatedContents.replace('${LNDIRS}', str(subDirData[2])).replace('${NDIRS}', str(subDirData[0]))
         formatedContents = formatedContents.replace('${LNFILES}', str(subDirData[3])).replace('${NFILES}', str(subDirData[1]) )
-        formatedContents = formatedContents + epilog
+        #formatedContents = formatedContents + epilog
+        #for k in range(10):
+        dirList.append({'id':dId, 'name':encounteredDirectory})
         
     
   
@@ -312,7 +314,7 @@ def traverseDirectory(root=".//", lvl=1, recursive = True, maxLevel=-1,
         
         fileList.append(filePath)
 
-        formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, fepilog, lvl, encodeUrl)
+        formatedContents = formatedContents + formatFile(filePath, encounteredFile, fprolog, lvl, encodeUrl)
 
 
     # Return data to upper directory

@@ -289,10 +289,9 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details><summary class='folder'>[${DIRNAME}] <span class='detail'>(${LEVEL}, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",
-                                                      "", #"</ul></details></li>",
+                                                      "<li id=\"${ID}\"><details><summary class='folder'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
                                                       "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
-                                                      "", False)
+                                                      False)
 
 
           #
@@ -304,6 +303,14 @@ def main():
           htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
           htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
 
+          tod = '<ul>'
+          for dEntry in dL:
+              tod = tod + '<li style="line-height: 1em;padding:0px;">' + dEntry['name'] + '</li>'
+
+          tod = tod + '</ul>'
+
+          htmlTemplate = htmlTemplate.replace('${TABLEOFDICTIONARIES}', tod)
+          
           print('\nDirectory [', args['directory'] , ']:')
           print("\tTotal number of directories:", d)
           print("\tTotal number of files:", f)
@@ -314,7 +321,11 @@ def main():
           if args['displayoutput']:
              outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
              webbrowser.open('file://' + outputFullPath)
-     
+
+           
+          print(dL)
+
+          
   #sys.exit(0)
 
 

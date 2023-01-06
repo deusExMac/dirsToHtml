@@ -4,7 +4,21 @@
 <title>${TITLE}</title>
 
 <style>
+    
+.tableOfDictionaries {
+  column-count: 3;
+  column-gap: 30px;
+  column-rule: 1px solid lightblue;
+  /*margin:auto;
+  width:50%;  */
+  margin:20px;
+    word-wrap: break-word;
+}
 
+h2 {
+  column-span: all;
+}
+    
 
 .tree{
   --spacing : 1.5rem;
@@ -26,7 +40,7 @@
 }
 
 .tree ul li{
-  border-left : 2px solid #faaf93;
+  border-left : 2px solid green;
 
 }
 
@@ -42,7 +56,7 @@
   left         : -2px;
   width        : calc(var(--spacing) + 2px);
   height       : calc(var(--spacing) + 1px);
-  border       : solid #faaf93;
+  border       : solid green;
   border-width : 0 0 2px 2px;
 }
 
@@ -95,7 +109,7 @@
 #container {
   border: 2px solid #fafab9;
   margin:auto;
-  width:50%;
+  width:70%;
   background-color:${BGCOLOR};
   padding:15px;
 }
@@ -113,7 +127,14 @@
 
 <body>
 
+  
+    
+    
 <div id="container">
+<div class="tableOfDictionaries">
+<h2>Lorem Ipsum Dolor Sit Amet</h2>    
+    ${TABLEOFDICTIONARIES}
+</div>      
 
 <ul class="tree">
   <li>
