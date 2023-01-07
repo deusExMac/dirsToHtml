@@ -421,12 +421,12 @@ def main():
                                                   results, 0, 0, args['debug'])
      
      
-     #print(results)
+     
      absRootPath = args['directory']
      if not os.path.isabs(args['directory']):
         absRootPath = os.getcwd()
 
-     #print(absRootPath)
+     
      
      print('Found:', nfound, 'Checked:', ntotal, '\n')
      if nfound > 0:
@@ -468,36 +468,6 @@ def main():
 
 
 
-  ###################################################
-  #
-  # jsonTraverseDirectory
-  #
-  ###################################################
-
-  #dCnts = utilities.jsonTraverseDirectory(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
-  #print( json.dumps(dCnts) )
-  #sys.exit(-1)
-
-
-
-  ###################################################
-  #
-  # traverseDirectoryToList
-  #
-  ###################################################
-
-  '''
-  
-  dL = []
-  fL = []
-
-  dL, fL = utilities.traverseDirectoryToList(args['directory'], 1, args['maxlevel'], False, True, True, True, "(?i).ds_store", "")
-
-  # Sort based on file size
-  fL = sorted(fL, reverse=True, key=lambda d: d['size'])
-
-  sys.exit(-1) 
-  '''
 
 
 
