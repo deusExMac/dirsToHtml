@@ -389,10 +389,6 @@ def main():
              webbrowser.open('file://' + outputFullPath)
 
            
-          #print(dL)
-
-          
-  #sys.exit(0)
 
 
 
@@ -459,11 +455,8 @@ def main():
            utilities.openFile( os.path.abspath(fpath ) )
 
          except KeyboardInterrupt:
-             continue
-          
-     #print('Encountered:', ntotal, 'Found:', nfound)
+             continue     
 
-     #print(results)
      sys.exit(-3)
 
 
