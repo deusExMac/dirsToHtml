@@ -146,6 +146,8 @@ def generateDefaultConfiguration():
 ###################################################
 #
 # TODO: main() needs serious refacroting.
+#       Currently it is only here to demonstrate
+#       the functions in utilities.py
 #
 ###################################################
 
@@ -218,7 +220,10 @@ def main():
     print('Argument error:', str(argumentException))
     sys.exit(-4)
 
-  
+
+  #
+  # Read configuration file
+  #
   configFile = args['config']
   config = generateDefaultConfiguration()
   if os.path.exists(configFile):
@@ -308,7 +313,6 @@ def main():
          
           # Read template file. Exit in case of error
           htmlTemplate = ""
-          print('Opening template file: [', args['htmltemplate'], ']', sep='')
           try:
             with open( args['htmltemplate'], 'r', encoding='utf8') as content_file:
                  htmlTemplate = content_file.read()
