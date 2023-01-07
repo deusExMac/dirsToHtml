@@ -185,6 +185,16 @@ def formatFile(fpath, fname, prolog, level, encUrl=False):
     if fMeta:
        formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
 
+    
+    filename, fileExtension = os.path.splitext(fpath)
+    #print('Checking if file exists:', 'html/' + fileExtension + '.png')
+    if os.path.exists('html/' + fileExtension[1:] + '.png'):
+       formatedContents = formatedContents.replace('${FILEICON}', 'html/' + fileExtension[1:] + '.png')
+    else: 
+       formatedContents = formatedContents.replace('${FILEICON}', 'html/ukn.png')    
+       
+        
+    #print('fpath:[',  fileExtension[1:],']', sep='' )
     return( formatedContents )
 
 

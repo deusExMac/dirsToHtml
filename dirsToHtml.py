@@ -69,9 +69,14 @@ colorPalette = ['#4287f5', '#801408', '#08259c', '#4560d1', '#0a690a', '#9c5f1e'
                 '#fcad03', '#03a1fc', '#24b332', '#851767', '#156e82', '#8c0a0a', '#b51d39', '#232791', '#6e8c0a', '#cc7a16', '#cc4016', '#051c80', '#9e981e', '#409e1e', '#09979c', '#9c0975']
 
 
-backgroundPalette = ['#f7f6ab', '#faf9a0', '#f2f0fa', '#f2f8fa', '#faf9cd', '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#B5B9FF', '#FF9C##', '#ECD4FF', '#FFFFD1', '#AFF8DB', '#ACE7FF', '#B49FDC',
-                    '#A5F8CE', '#FEC9A7','#faf2d9', '#e3e8e8', '#eafad9', '#fafac8', '#fae7ca']
+#backgroundPalette = ['#f7f6ab', '#faf9a0', '#f2f0fa', '#f2f8fa', '#faf9cd', '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7', '#C7CEEA', '#B5B9FF', '#FF9C##', '#ECD4FF', '#FFFFD1', '#AFF8DB', '#ACE7FF', '#B49FDC',
+#                    '#A5F8CE', '#FEC9A7','#faf2d9', '#e3e8e8', '#eafad9', '#fafac8', '#fae7ca']
 
+backgroundPalette = ['#FAF4B7', '#F9F9F9', '#CDF0EA', '#FFF5E4', '#C8FFD4',
+                     '#FDFDBD', '#F5EFE6', '#E8DFCA', '#AEBDCA', '#D2DAFF',
+                     '#C4DFAA', '#90C8AC', '#F0EBE3', '#FAF0D7', '#68A7AD',
+                     '#F8ECD1','#F3E9DD',  '#F3E9DD', '#C3DBD9', '#D3DEDC',
+                     '#F0ECE3', '#D3E4CD', '#F6EABE', '#FEF5ED']
 
 
 def printHelp():
@@ -317,8 +322,8 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld9.png' style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
-                                                      "<li class=\"fle\">${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
+                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld7.png' style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
+                                                      "<li class=\"fle\"><img src='${FILEICON}' style='margin-left:-7px;margin-right:5px;'>${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       False)
 
 
@@ -351,7 +356,7 @@ def main():
              webbrowser.open('file://' + outputFullPath)
 
            
-          print(dL)
+          #print(dL)
 
           
   #sys.exit(0)
