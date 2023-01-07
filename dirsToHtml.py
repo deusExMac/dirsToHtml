@@ -333,16 +333,24 @@ def main():
           fL = []
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
-                                                      dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld7.png' width=\"24\" height=\"24\"  style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
-                                                      "<li class=\"fle\"><img src='${FILEICON}' width=\"24\" height=\"24\" style='margin-left:-7px;margin-right:5px;'>${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
+                                                      dL, fL, args['urlencode'],
+                                                      config.get('html', 'directoryTemplate', fallback=''),
+                                                      config.get('html', 'fileTemplate', fallback=''),
                                                       False)
+
+
+          # Replace OPENSTATE pseudovariable that specifies if
+          # directories should be shown expanded or not.
+          if args['opendirectories']:
+             traversalResult = traversalResult.replace("${OPENSTATE}", "open")
+          else:
+             traversalResult = traversalResult.replace("${OPENSTATE}", "") 
 
 
           #
           # Replace pseudovariables for source directory in the template file - 
           # source directory is not returned by traversals.
-          #
+          #    
           htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
           htmlTemplate = htmlTemplate.replace("${SUBDIRECTORY}", traversalResult )
           htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
