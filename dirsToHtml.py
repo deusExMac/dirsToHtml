@@ -130,12 +130,18 @@ def strToBytes( amount ):
     return(sz)
 
 
+def generateDefaultConfiguration():
+    cS = configparser.RawConfigParser(allow_no_value=True)
+    cS.add_section('Rules')
+    cS.add_section('Crawler')
+    cS.add_section('Storage')
+    cS.add_section('Shell')
+    return(cS)
+
 
 
 def main():
 
-
-   
 
   # 
   # Parse command line arguments - if any
@@ -203,12 +209,18 @@ def main():
     print('Argument error:', str(argumentException))
     sys.exit(-4)
 
-  '''
-  configFile = args['config']
   
-  config = configparser.RawConfigParser(allow_no_value=True)
-  config.read(configFile)
-  '''
+  configFile = args['config']
+  config = generateDefaultConfiguration()
+  if os.path.exists(configFile):
+     print('Loading configuration from [', configFile, ']', sep='' ) 
+     config.read(configFile)
+     #print( config.get('html', 'directoryTemplate', fallback='${DIRECTORYNAME}') )
+
+     
+
+
+  
    
   #
   # Set mode appropriately based on arguments
@@ -454,6 +466,7 @@ def main():
   ###################################################
 
   '''
+  
   dL = []
   fL = []
 
