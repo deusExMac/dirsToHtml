@@ -140,6 +140,15 @@ def generateDefaultConfiguration():
 
 
 
+
+
+
+###################################################
+#
+# TODO: main() needs serious refacroting.
+#
+###################################################
+
 def main():
 
 
