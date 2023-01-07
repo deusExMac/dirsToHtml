@@ -334,8 +334,8 @@ def main():
           d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],            
-                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld7.png' style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
-                                                      "<li class=\"fle\"><img src='${FILEICON}' style='margin-left:-7px;margin-right:5px;'>${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
+                                                      "<li id=\"${ID}\"><details " + ("open" if args['opendirectories'] else "" ) + "><summary class='folder'><img src='html/fld7.png' width=\"24\" height=\"24\"  style='margin-left:-7px;margin-right:5px;'>${DIRNAME}<span class='detail'>(<font color='red'><i>${LEVEL}</i></font>, ${LNDIRS}, ${LNFILES} | ${NDIRS}, ${NFILES} )</span></summary><ul>${SUBDIRECTORY}</ul></details></li>\n",           
+                                                      "<li class=\"fle\"><img src='${FILEICON}' width=\"24\" height=\"24\" style='margin-left:-7px;margin-right:5px;'>${FILELINK} (${FILESIZE}, [${FILELASTMODIFIED}])</li>\n",
                                                       False)
 
 
