@@ -2,7 +2,50 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title>${TITLE}</title>
+    
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
+<script>
+    
+   function showPath(elem){
+       //alert(elem.innerText);
+       e = document.getElementById("hoveredOver");
+       e.innerText = '[' + elem.innerText + ']';
+   }
+
+    
+   function showTextPath(pth){
+       e = document.getElementById("hoveredOver");
+       e.innerText = '[' + pth + ']';
+   }     
+    
+    
+   $(document).ready(function(){
+
+  //when mouse is over, save initial value and replace with newText
+  function hover_in(newText, $this){
+      
+    console.log(newText);
+    $("#mainText").text( $this.text() )  
+    /*#$this.data('initialText', $this.text());
+    $this.text(newText);*/
+  }
+
+  //when mouse is over, replace with initial value
+  function hover_out($this){
+    //$this.text($this.data('initialText'));
+  }
+
+  $('.fsitem').hover(
+    function(){
+      hover_in("NEW TEXT", $(this));
+    }, 
+    function() {
+      hover_out($(this));
+  });
+});
+       
+    </script>    
 <style>
     
             
@@ -59,7 +102,7 @@ h2 {
 }
 
 .tree ul{
-  margin-left  : calc(var(--radius) - var(--spacing));
+  #margin-left  : calc(var(--radius) - var(--spacing));
   padding-left : 0;
 
 }
@@ -80,11 +123,15 @@ h2 {
   top          : calc(var(--spacing) / -2);
   left         : -2px;
   width        : calc(var(--spacing) + 2px);
-  height       : calc(var(--spacing) + 1px);
+  height       : calc(var(--spacing) + 1px);  
   border       : solid green;
+     
   border-width : 0 0 2px 2px;
+  
+  background-image: url("html/fld5.png");    
 }
 
+    
 .tree summary{
   display : block;
   cursor  : pointer;
@@ -108,31 +155,36 @@ h2 {
   content       : '';
   display       : block;
   position      : absolute;
+  /**    
   top           : calc(var(--spacing) / 2 - var(--radius));
   left          : calc(var(--spacing) - var(--radius) - 1px);
   width         : calc(2 * var(--radius));
   height        : calc(2 * var(--radius));
   border-radius : 50%;
-  background    : #ddd;
+  **/    
+  /*background    : #ddd;*/
+  
 }
 
 .tree summary::before{
-  content     : '+';
+  #content     : '+';
   z-index     : 1;
-  background  : #696;
-  color       : #fff;
-  line-height : calc(2 * var(--radius) - 2px);
-  text-align  : center;
+  #background  : #696;
+  #color       : #fff;
+  
+  #line-height : calc(2 * var(--radius) - 2px);
+  #text-align  : center;
+  background-image: url("fld10.png");    
 }
 
 .tree details[open] > summary::before{
-  content : '-';
+  #content : '-';
+  background-image: url("fld10.png");     
 }
 
 .dir {font-size:20px; color:green}
 
 #container {
-      
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
@@ -144,7 +196,33 @@ h2 {
 .folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}    
  
 .detail{font-size:14px; color:darkgray; font-style:normal italic}
-  
+    
+    
+.floatingmenu {
+    position: fixed; margin-left:87%;
+    background-color:bisque;
+    border: 2px solid navy;
+    z-index     : 999;
+    /*margin:auto;*/
+    width:20%;
+    /*margin-top:40px;*/
+    /*float:right;
+    margin-right:calc(100vh-30px);
+    */
+    top: 50%;
+    /*left: 50%;*/
+    transform: translate(-50%, -50%);
+    
+    }    
+
+.outer{
+    
+    width:100%;
+    height:600px;
+    background-color:white;
+    margin:0 auto;
+    }
+    
     
 </style>
 
@@ -157,8 +235,16 @@ h2 {
 
   
    
+
+<div class="outer"> 
+    
+   <div id="detailsWindow" class="floatingmenu">
+       <span id="mainText">Window with some menus</span>
+       <span id="hoveredOver" style="color:green;">XXXXX</span>
+    </div> 
     
 <div id="container">
+    
 <div class="tableOfDictionaries">
 <h2>Lorem Ipsum Dolor Sit Amet</h2>    
     ${LISTOFDIRECTORIES}
@@ -167,7 +253,9 @@ h2 {
 <ul class="tree">
   <li>
     <details open>
-      <summary class="folder">${INITIALDIRECTORY}(${LNDIRS} - ${LNFILES})</summary>
+      <summary class="folder"><img src="html/fld7.png" style="margin-left:-7px;margin-right:5px;">
+          ${INITIALDIRECTORY}(${LNDIRS} - ${LNFILES})
+      </summary>
         <ul>
            ${SUBDIRECTORY}
         </ul>
@@ -176,6 +264,8 @@ h2 {
 </ul>
 
 </div>
+
+</div> <!--outer div -->
 
 
 </body>

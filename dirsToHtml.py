@@ -179,7 +179,7 @@ def main():
    # html related output
 
    # Template to use.
-   cmdArgParser.add_argument('-P', '--htmltemplate', default="html/template1.html")
+   cmdArgParser.add_argument('-P', '--htmltemplate', default="")
    cmdArgParser.add_argument('-o', '--outputhtmlfile', default="index.html")
    cmdArgParser.add_argument('-s', '--cssfile', default="html/style.css")
    cmdArgParser.add_argument('-I', '--introduction', default="")
@@ -230,6 +230,10 @@ def main():
      print('Loading configuration from [', configFile, ']', sep='' ) 
      config.read(configFile)
      #print( config.get('html', 'directoryTemplate', fallback='${DIRECTORYNAME}') )
+
+     if args['htmltemplate'] != '':
+        #config['htmltemplate'] = args['htmltemplate']
+        config.set('html', 'htmltemplate', args['htmltemplate'] )
 
      
 
@@ -310,20 +314,21 @@ def main():
           ###################################################
    
           print(f'Exporting {args["directory"]} in html...') 
-         
+          print('Using template file:', config.get('html', 'htmltemplate', fallback='html/template1.html'))
           # Read template file. Exit in case of error
           htmlTemplate = ""
           try:
-            with open( args['htmltemplate'], 'r', encoding='utf8') as content_file:
+            with open( config.get('html', 'htmltemplate', fallback='html/template1.html'), 'r', encoding='utf8') as content_file:
                  htmlTemplate = content_file.read()
           except Exception as rdEx:
-                 print('Error reading template html file [', args['htmltemplate'],']:', str(rdEx))
+                 print('Error reading template html file [', config.get('html', 'htmltemplate', fallback='html/template1.html'),']:', str(rdEx))
                  sys.exit(-3)
 
-
+          
+          
           # Check if introdution is a file. If so, read its contents
           # and use this as the introduction to the html export.
-          if (os.path.isfile(args['introduction'])):
+          if (os.path.isfile( args['introduction'])):
               try:
                 with open(args['introduction']) as f:
                      args['introduction'] = f.read() # replace it
