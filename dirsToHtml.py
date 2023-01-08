@@ -375,7 +375,7 @@ def main():
 
           tod = tod + '</ul>'
 
-          htmlTemplate = htmlTemplate.replace('${TABLEOFDICTIONARIES}', tod)
+          htmlTemplate = htmlTemplate.replace('${LISTOFDIRECTORIES}', tod)
           
           print('\nDirectory [', args['directory'] , ']:')
           print("\tTotal number of directories:", d)

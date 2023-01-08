@@ -132,6 +132,7 @@ h2 {
 .dir {font-size:20px; color:green}
 
 #container {
+      
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
@@ -142,7 +143,18 @@ h2 {
     
 .folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}    
  
-.detail{font-size:14px; color:darkgray; font-style:normal italic}    
+.detail{font-size:14px; color:darkgray; font-style:normal italic}
+
+    
+.navaid{
+    position: fixed;
+    top: 20px;
+    float:left;
+    width:120px;
+    height:60px;
+    border:2px red dashed;
+}    
+    
 </style>
 
 </head>
@@ -153,12 +165,12 @@ h2 {
 <body>
 
   
-    
+   
     
 <div id="container">
 <div class="tableOfDictionaries">
 <h2>Lorem Ipsum Dolor Sit Amet</h2>    
-    ${TABLEOFDICTIONARIES}
+    ${LISTOFDIRECTORIES}
 </div>      
 
 <ul class="tree">
@@ -174,7 +186,7 @@ h2 {
 
 </div>
 
-
+<div class="navaid">Go to top of page</div> 
 </body>
 
 </html>

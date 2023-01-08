@@ -189,9 +189,9 @@ def formatFile(fpath, fname, prolog, level, encUrl=False):
     filename, fileExtension = os.path.splitext(fpath)
     #print('Checking if file exists:', 'html/' + fileExtension + '.png')
     if os.path.exists('html/' + fileExtension[1:] + '.png'):
-       formatedContents = formatedContents.replace('${FILEICON}', 'html/' + fileExtension[1:] + '.png')
+       formatedContents = formatedContents.replace('${FILEEXTENSION}', fileExtension[1:])
     else: 
-       formatedContents = formatedContents.replace('${FILEICON}', 'html/ukn.png')    
+       formatedContents = formatedContents.replace('${FILEEXTENSION}', 'ukn')    
        
         
     #print('fpath:[',  fileExtension[1:],']', sep='' )
