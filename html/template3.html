@@ -14,9 +14,9 @@
    }
 
     
-   function showTextPath(pth){
+   function showTextPath(parentPath){
        e = document.getElementById("hoveredOver");
-       e.innerText = '[' + pth + ']';
+       e.innerText = 'Path:' + parentPath ;
    }     
     
     
@@ -26,7 +26,8 @@
   function hover_in(newText, $this){
       
     console.log(newText);
-    $("#mainText").text( $this.text() )  
+    //$("#mainText").text('<b>Name:</b>' + $this.text() ) 
+    $("#mainText").html('<b>Name:</b>' + $this.text())  
     /*#$this.data('initialText', $this.text());
     $this.text(newText);*/
   }
@@ -199,12 +200,12 @@ h2 {
     
     
 .floatingmenu {
-    position: fixed; margin-left:87%;
+    position: fixed; margin-left:83%;
     background-color:bisque;
-    border: 2px solid navy;
+    border: 2px solid #FFE4C4;
     z-index     : 999;
     /*margin:auto;*/
-    width:20%;
+    width:30%;
     /*margin-top:40px;*/
     /*float:right;
     margin-right:calc(100vh-30px);
@@ -214,7 +215,13 @@ h2 {
     transform: translate(-50%, -50%);
     
     }    
-
+    
+    
+.detailsInfo{    
+    padding:10px;
+}
+    
+    
 .outer{
     
     width:100%;
@@ -239,8 +246,11 @@ h2 {
 <div class="outer"> 
     
    <div id="detailsWindow" class="floatingmenu">
-       <span id="mainText">Window with some menus</span>
-       <span id="hoveredOver" style="color:green;">XXXXX</span>
+       <div style="background-color:#4a403d; width:100%;color:white;margin-top:0px">details</div>
+       <div class="detailsInfo">
+          <span id="mainText"><b>Name:</b>Window with some menus</span><br/>
+          <span id="hoveredOver" style="color:green;">XXXXX</span>
+       </div>   
     </div> 
     
 <div id="container">
