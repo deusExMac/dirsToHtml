@@ -180,7 +180,8 @@ def fileInfo( filePath ):
 # when displaying fs contents in html
 def formatFile(fparent, fpath, fname, prolog, level, encUrl=False):
 
-    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath).replace('${LEVEL}', str(level)).replace('${PARENTPATH}', fparent)
+    
+    formatedContents =  prolog.replace('${FILELINK}', makeHtmlLink(fpath, fname, encUrl)).replace('${FILENAME}', fname).replace('${FILEPATH}', fpath).replace('${LEVEL}', str(level)).replace('${PARENTPATH}', fparent.replace('\\', ' / '))
     fMeta = fileInfo(fpath)
     if fMeta:
        formatedContents = formatedContents.replace('${FILESIZE}', fMeta['size']).replace('${FILELASTMODIFIED}', fMeta['lastmodified'])
