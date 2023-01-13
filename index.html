@@ -2,34 +2,33 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title></title>
-    
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
-    
+
    function showPath(elem){
        //alert(elem.innerText);
        e = document.getElementById("hoveredOver");
        e.innerText = '[' + elem.innerText + ']';
    }
 
-    
+
    function showTextPath(parentPath){
        e = document.getElementById("hoveredOver");
-       e.innerText = 'Path:' + parentPath ;
-   }     
-    
-    
+       e.innerText = parentPath ;
+   }
+
+
    $(document).ready(function(){
 
   //when mouse is over, save initial value and replace with newText
   function hover_in(newText, $this){
-      
+
     console.log(newText);
-    //$("#mainText").text('<b>Name:</b>' + $this.text() ) 
-    $("#mainText").html('<b>Name:</b>' + $this.text())  
-    /*#$this.data('initialText', $this.text());
-    $this.text(newText);*/
+
+    $("#mainText").html($this.text())
+
   }
 
   //when mouse is over, replace with initial value
@@ -40,20 +39,20 @@
   $('.fsitem').hover(
     function(){
       hover_in("NEW TEXT", $(this));
-    }, 
+    },
     function() {
       hover_out($(this));
   });
 });
-       
-    </script>    
+
+    </script>
 <style>
-    
-            
+
+
 .tableOfDictionaries ul li {
   list-style: none;
   padding-left: 50px;
-  padding-top:10px;    
+  padding-top:10px;
   position: relative;
 }
 
@@ -68,26 +67,26 @@
   background-size: contain;
   background-image: url("html/fld5.png");
 }
-    
 
-    
-    
+
+
+
 .tableOfDictionaries {
   column-count: 2;
   column-gap: 30px;
   column-rule: 1px solid green;
-  
+
   margin:20px;
-  word-wrap: break-word; 
+  word-wrap: break-word;
   padding:20px;
-  background-color:yellow;   
+  background-color:yellow;
 }
 
-    
+
 h2 {
   column-span: all;
 }
-    
+
 
 .tree{
   --spacing : 1.5rem;
@@ -124,15 +123,15 @@ h2 {
   top          : calc(var(--spacing) / -2);
   left         : -2px;
   width        : calc(var(--spacing) + 2px);
-  height       : calc(var(--spacing) + 1px);  
+  height       : calc(var(--spacing) + 1px);
   border       : solid green;
-     
+
   border-width : 0 0 2px 2px;
-  
-  background-image: url("html/fld5.png");    
+
+  background-image: url("html/fld5.png");
 }
 
-    
+
 .tree summary{
   display : block;
   cursor  : pointer;
@@ -156,15 +155,15 @@ h2 {
   content       : '';
   display       : block;
   position      : absolute;
-  /**    
+  /**
   top           : calc(var(--spacing) / 2 - var(--radius));
   left          : calc(var(--spacing) - var(--radius) - 1px);
   width         : calc(2 * var(--radius));
   height        : calc(2 * var(--radius));
   border-radius : 50%;
-  **/    
+  **/
   /*background    : #ddd;*/
-  
+
 }
 
 .tree summary::before{
@@ -172,15 +171,15 @@ h2 {
   z-index     : 1;
   #background  : #696;
   #color       : #fff;
-  
+
   #line-height : calc(2 * var(--radius) - 2px);
   #text-align  : center;
-  background-image: url("fld10.png");    
+  background-image: url("fld10.png");
 }
 
 .tree details[open] > summary::before{
   #content : '-';
-  background-image: url("fld10.png");     
+  background-image: url("fld10.png");
 }
 
 .dir {font-size:20px; color:green}
@@ -189,17 +188,18 @@ h2 {
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
-  background-color:#D3DEDC;
+  background-color:#F0ECE3;
   padding:15px;
 }
 
-    
-.folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}    
- 
+
+.folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}
+
 .detail{font-size:14px; color:darkgray; font-style:normal italic}
-    
-    
+
+
 .floatingmenu {
+    font-family: Arial, Helvetica, sans-serif;
     position: fixed; margin-left:83%;
     background-color:bisque;
     border: 2px solid #FFE4C4;
@@ -213,24 +213,53 @@ h2 {
     top: 50%;
     /*left: 50%;*/
     transform: translate(-50%, -50%);
-    
-    }    
-    
-    
-.detailsInfo{    
+
+    }
+
+
+.detailsInfo{
+    font-family: Arial, Helvetica, sans-serif;
     padding:10px;
+
 }
-    
-    
+
+
 .outer{
-    
+
     width:100%;
     height:600px;
     background-color:white;
     margin:0 auto;
     }
-    
-    
+
+
+.tcontent{
+
+    margin-top:50px;
+}
+
+#hoveredOver {
+ font-size:12px;
+ margin-top:15px;
+ color:navy;
+ padding-top:5px;
+}
+
+.ho{
+  font-size:12px;
+  margin-top:10px;
+}
+
+#mainText{
+  font-size:14px;
+}
+
+h2{
+ margin-left:50px;
+ margin-top:40x;
+ font-family: Arial, Helvetica, sans-serif;
+
+}
 </style>
 
 </head>
@@ -240,42 +269,45 @@ h2 {
 
 <body>
 
-  
-   
 
-<div class="outer"> 
-    
+
+
+<div class="outer">
+
    <div id="detailsWindow" class="floatingmenu">
-       <div style="background-color:#4a403d; width:100%;color:white;margin-top:0px">details</div>
+       <div style="background-color:#4a403d; color:white;margin-top:0px; padding:5px;">details</div>
        <div class="detailsInfo">
-          <span id="mainText"><b>Name:</b>Window with some menus</span><br/>
-          <span id="hoveredOver" style="color:green;">XXXXX</span>
-       </div>   
-    </div> 
-    
+          <span id="mainText">---</span><br/>
+          <div class="ho">
+            <i>In:&nbsp;&nbsp;</i><span id="hoveredOver">---</span>
+          </div>
+       </div>
+    </div>
+
 <div id="container">
-    
-<div class="tableOfDictionaries">
-<h2>Lorem Ipsum Dolor Sit Amet</h2>    
-    <ul><li><a href="#d2-279677">anotherDir</a></li><li><a href="#d1-801254">SomeDir</a></li><li><a href="#d1-926472">YetAnotherDir</a></li></ul>
-</div>      
+
+
+<h2>Περιεχόμενα</h2>
+<div class="tcontent">
 
 <ul class="tree">
   <li>
     <details open>
       <summary class="folder"><img src="html/fld7.png" style="margin-left:-7px;margin-right:5px;">
-          exampleDir(2 - 2)
+          exampleDir
       </summary>
         <ul>
-           <li id="d1-801254"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 2 | 1, 4 )</span></summary><ul><li id="d2-279677"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir / anotherDir')"><img src='html/txt.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anotherDir\aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [22/02/2021, 09:12:35])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir / anotherDir')"><img src='html/accdb.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anotherDir\anotherFile.accdb" target="_blank" rel="noopener noreferrer">anotherFile.accdb</a> (520192, [04/01/2022, 22:02:23])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (20201, [30/12/2022, 13:16:27])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anExcelFile.xlsx" target="_blank" rel="noopener noreferrer">anExcelFile.xlsx</a> (6165, [22/02/2021, 09:13:09])</li></ul></details></li><li id="d1-926472"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir / YetAnotherDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\YetAnotherDir\aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [02/01/2023, 13:24:18])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\HOHOHOanExcelFile.xlsx" target="_blank" rel="noopener noreferrer">HOHOHOanExcelFile.xlsx</a> (6165, [30/12/2022, 13:16:27])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\randomImage.jpg" target="_blank" rel="noopener noreferrer">randomImage.jpg</a> (15715, [02/01/2023, 13:24:18])</li>
+           <li id="d1-140316"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 2 | 1, 4 )</span></summary><ul><li id="d2-411150"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir / anotherDir')"><img src='html/txt.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anotherDir\aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [22/02/2021, 09:12:35])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir / anotherDir')"><img src='html/accdb.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anotherDir\anotherFile.accdb" target="_blank" rel="noopener noreferrer">anotherFile.accdb</a> (520192, [04/01/2022, 22:02:23])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (20201, [30/12/2022, 13:16:27])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir / SomeDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\SomeDir\anExcelFile.xlsx" target="_blank" rel="noopener noreferrer">anExcelFile.xlsx</a> (6165, [22/02/2021, 09:13:09])</li></ul></details></li><li id="d1-84649"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir / YetAnotherDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\YetAnotherDir\aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [02/01/2023, 13:24:18])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\HOHOHOanExcelFile.xlsx" target="_blank" rel="noopener noreferrer">HOHOHOanExcelFile.xlsx</a> (6165, [30/12/2022, 13:16:27])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir\randomImage.jpg" target="_blank" rel="noopener noreferrer">randomImage.jpg</a> (15715, [02/01/2023, 13:24:18])</li>
         </ul>
       </details>
     </li>
 </ul>
 
-</div>
+</div> <!-- tcontent -->
 
-</div> <!--outer div -->
+</div> <!-- container -->
+
+</div> <!--outer -->
 
 
 </body>
