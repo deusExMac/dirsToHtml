@@ -1,7 +1,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-<title></title>
+<title>${TITLE}</title>
     
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
@@ -189,7 +189,7 @@ h2 {
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
-  background-color:#E8DFCA;
+  background-color:${BGCOLOR};
   padding:15px;
 }
 
@@ -269,10 +269,10 @@ h2 {
   <li>
     <details open>
       <summary class="folder"><img src="html/fld7.png" style="margin-left:-7px;margin-right:5px;">
-          exampleDir(3 - 3)
+          ${INITIALDIRECTORY}(${LNDIRS} - ${LNFILES})
       </summary>
         <ul>
-           <li id="d1-800298"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 3 | 1, 5 )</span></summary><ul><li id="d2-190999"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir/SomeDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir/SomeDir/anotherDir')"><img src='html/txt.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anotherDir/aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [23/01/2022, 13:51:48])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir/SomeDir/anotherDir')"><img src='html/accdb.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anotherDir/anotherFile.accdb" target="_blank" rel="noopener noreferrer">anotherFile.accdb</a> (520192, [23/01/2022, 13:51:48])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir/SomeDir')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (6148, [27/12/2022, 23:54:12])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir/SomeDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (20201, [27/12/2022, 07:31:40])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir/SomeDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anExcelFile.xlsx" target="_blank" rel="noopener noreferrer">anExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li></ul></details></li><li id="d1-401868"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('exampleDir/YetAnotherDir')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/YetAnotherDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [23/01/2022, 13:51:48])</li></ul></details></li><li id="d1-317058"><details ><summary class='folder fsitem' onmouseover="showTextPath('exampleDir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>untitled folder<span class='detail'>(<font color='red'><i>1</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [28/12/2022, 10:05:24])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/HOHOHOanExcelFile.xlsx" target="_blank" rel="noopener noreferrer">HOHOHOanExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li><li class="fle fsitem" onmouseover="showTextPath('exampleDir')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/randomImage.jpg" target="_blank" rel="noopener noreferrer">randomImage.jpg</a> (15715, [01/01/2023, 12:42:04])</li>
+           ${SUBDIRECTORY}
         </ul>
       </details>
     </li>
