@@ -1,0 +1,325 @@
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+<title>${TITLE}</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<script>
+
+   function showPath(elem){
+       //alert(elem.innerText);
+       e = document.getElementById("hoveredOver");
+       e.innerText = '[' + elem.innerText + ']';
+   }
+
+
+   function showTextPath(oName, parentPath, rType){
+       e = document.getElementById("hoveredOver");
+       rName = document.getElementById("mainText");
+       iPlace = document.getElementById("icon");
+
+
+       e.innerText = parentPath ;
+
+       if (rType == 'dir') {
+          iPlace.innerHTML = '<img src="html/fld7.png">';
+          rName.innerHTML = oName;
+       } else {
+          iPlace.innerHTML = '<img src="html/' + rType + '.png' + '">';
+          rName.innerHTML = oName;
+       }
+
+   }
+
+
+
+
+    </script>
+<style>
+
+
+.tableOfDictionaries ul li {
+  list-style: none;
+  padding-left: 50px;
+  padding-top:10px;
+  position: relative;
+}
+
+.tableOfDictionaries ul li:before {
+  content: "";
+  position: absolute;
+  top: 0px;
+  left: 5px;
+  display: inline-block;
+  height: 30px;
+  width: 30px;
+  background-size: contain;
+  background-image: url("html/fld5.png");
+}
+
+
+
+
+.tableOfDictionaries {
+  column-count: 2;
+  column-gap: 30px;
+  column-rule: 1px solid green;
+
+  margin:20px;
+  word-wrap: break-word;
+  padding:20px;
+  background-color:yellow;
+}
+
+
+h2 {
+  column-span: all;
+}
+
+
+.tree{
+  --spacing : 1.5rem;
+  --radius  : 10px;
+}
+
+.tree li{
+  display      : block;
+  position     : relative;
+  padding-left : calc(2 * var(--spacing) - var(--radius) - 2px);
+  margin-top:10px;
+  margin-bottom:10px;
+}
+
+.tree ul{
+  #margin-left  : calc(var(--radius) - var(--spacing));
+  padding-left : 0;
+
+}
+
+.tree ul li{
+  border-left : 2px solid green;
+
+}
+
+.tree ul li:last-child{
+  border-color : transparent;
+}
+
+.tree ul li::before{
+  content      : '';
+  display      : block;
+  position     : absolute;
+  top          : calc(var(--spacing) / -2);
+  left         : -2px;
+  width        : calc(var(--spacing) + 2px);
+  height       : calc(var(--spacing) + 1px);
+  border       : solid green;
+
+  border-width : 0 0 2px 2px;
+
+  background-image: url("html/fld5.png");
+}
+
+
+.tree summary{
+  display : block;
+  cursor  : pointer;
+}
+
+.tree summary::marker,
+.tree summary::-webkit-details-marker{
+  display : none;
+}
+
+.tree summary:focus{
+  outline : none;
+}
+
+.tree summary:focus-visible{
+  outline : 1px dotted #000;
+}
+
+.tree li::after,
+.tree summary::before{
+  content       : '';
+  display       : block;
+  position      : absolute;
+  /**
+  top           : calc(var(--spacing) / 2 - var(--radius));
+  left          : calc(var(--spacing) - var(--radius) - 1px);
+  width         : calc(2 * var(--radius));
+  height        : calc(2 * var(--radius));
+  border-radius : 50%;
+  **/
+  /*background    : #ddd;*/
+
+}
+
+.tree summary::before{
+  #content     : '+';
+  z-index     : 1;
+  #background  : #696;
+  #color       : #fff;
+
+  #line-height : calc(2 * var(--radius) - 2px);
+  #text-align  : center;
+  background-image: url("fld10.png");
+}
+
+.tree details[open] > summary::before{
+  #content : '-';
+  background-image: url("fld10.png");
+}
+
+.dir {font-size:20px; color:green}
+
+#container {
+  border: 2px solid #fafab9;
+  margin:auto;
+  width:70%;
+  background-color:${BGCOLOR};
+  padding:15px;
+}
+
+
+.folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}
+
+.detail{font-size:14px; color:darkgray; font-style:normal italic}
+
+
+.floatingmenu {
+    font-family: Arial, Helvetica, sans-serif;
+    position: fixed; margin-left:83%;
+    background-color:bisque;
+    border: 2px solid #FFE4C4;
+    z-index     : 999;
+    /*margin:auto;*/
+    width:30%;
+    /*margin-top:40px;*/
+    /*float:right;
+    margin-right:calc(100vh-30px);
+    */
+    top: 50%;
+    /*left: 50%;*/
+    transform: translate(-50%, -50%);
+    border: 1px #615e5a solid;
+
+    }
+
+
+.detailsInfo{
+    font-family: Arial, Helvetica, sans-serif;
+    padding:10px;
+
+}
+
+
+.outer{
+
+    width:100%;
+    height:600px;
+    background-color:white;
+    margin:0 auto;
+    }
+
+
+.tcontent{
+
+    margin-top:50px;
+}
+
+#hoveredOver {
+ font-size:12px;
+ margin-top:15px;
+ color:navy;
+ padding-top:5px;
+}
+
+.ho{
+  font-size:12px;
+  margin-top:10px;
+}
+
+#mainText{
+  font-size:14px;
+}
+
+h2{
+ margin-left:50px;
+ margin-top:40x;
+ font-family: Arial, Helvetica, sans-serif;
+}
+
+#icon {
+
+  border:2px red dashed;
+  display:inline:block;
+  margin:0 auto;
+}
+
+#fname {
+
+   border: 1px green dotted;
+   display:inline:block;
+   margin:0 auto;
+
+}
+
+
+</style>
+
+</head>
+
+
+
+
+<body>
+
+
+
+
+<div class="outer">
+
+   <div id="detailsWindow" class="floatingmenu">
+       <div style="background-color:#4a403d; color:white;margin-top:0px; padding:5px;">details</div>
+       <div class="detailsInfo">
+          <div style="border:3px navy solid;">
+              <div id="icon"></div><div id="fname"><span id="mainText">---</span></div>
+              <br/>
+          </div>
+          <div class="ho">
+            <i>In:&nbsp;&nbsp;</i><span id="hoveredOver">---</span>
+          </div>
+       </div>
+    </div>
+
+<div id="container">
+
+
+<h2>Περιεχόμενα</h2>
+<div class="tcontent">
+
+<ul class="tree">
+  <li>
+    <details open>
+      <summary class="folder"><img src="html/fld7.png" style="margin-left:-7px;margin-right:5px;">
+          ${INITIALDIRECTORY}
+      </summary>
+        <ul>
+           ${SUBDIRECTORY}
+        </ul>
+      </details>
+    </li>
+</ul>
+
+</div> <!-- tcontent -->
+
+</div> <!-- container -->
+
+</div> <!--outer -->
+
+
+</body>
+
+</html>
