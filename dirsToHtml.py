@@ -92,6 +92,15 @@ def printHelp():
     print("-x [pattern]: exclude files having [pattern] in name. You may add as many -x arguments as you like. If [patttern] is a valid file name, patterns are loaded from that file.")
     sys.exit(0)
 
+
+
+
+
+def strToBool(v):
+  return v.lower() in ("yes", "true", "t", "1")
+
+
+
 #
 # Takes as input a string that is a data size measurement
 # and converts it to bytes returning is at an integer.
@@ -133,6 +142,7 @@ def strToBytes( amount ):
 def generateDefaultConfiguration():
     cS = configparser.RawConfigParser(allow_no_value=True)
     cS.add_section('traversal')
+    cS.add_section('export')
     cS.add_section('html')
     cS.add_section('json')
     cS.add_section('search')
@@ -144,6 +154,44 @@ def generateDefaultConfiguration():
     return(cS)
 
 
+def updateConfiguration( c, ar ):
+   
+    if ar['directory'] != '':
+       c.set('traversal', 'directory', ar['directory'] )
+    else:
+        if c.get('traversal', 'directory', fallback='') == '':
+           c.set('traversal', 'directory', 'exampleDir' )
+
+    if ar['nonrecursive']:
+       c.set('traversal', 'nonrecursive', 'True' )
+
+      
+    c.set('traversal', 'included', ar['included'])
+    c.set('traversal', 'excluded', ar['excluded'])
+    c.set('traversal', 'maxlevel', ar['maxlevel'])
+
+
+    
+    c.set('export', 'exportformat', ar['exportformat'] )
+     
+    c.set('html', 'htmltemplate', ar['htmltemplate'] ) 
+    c.set('html', 'outputhtmlfile', ar['outputhtmlfile'])
+    c.set('html', 'cssfile', ar['cssfile'])
+    c.set('html', 'urlencode', ar['urlencode'] )
+    c.set('html', 'introduction', ar['introduction'] )
+    c.set('html', 'title', ar['title'] )
+    c.set('html', 'opendirectories', ar['opendirectories'] )
+
+    c.set('search', 'searchquery', ar['searchquery'] )
+    c.set('search', 'nofiles', ar['nofiles'] )
+    c.set('search', 'nodirectories', ar['nodirectories'])
+    
+
+def printConfiguation(cfg):
+     for s in cfg.sections():
+         print("Section [", s, "]", sep="")
+         for key, value in cfg[s].items():
+             print( "\t-", key, "=", value)
 
 
 
@@ -203,7 +251,7 @@ def main():
    cmdArgParser.add_argument('searchquery', nargs=argparse.REMAINDER, default=[])
 
    
-   # Automatically open outfile with a browser displaying it when exporting
+   # Automatically open the outputfile with a browser when exporting
    # directory structure  
    cmdArgParser.add_argument('-D', '--displayoutput', action='store_true')
    
@@ -244,7 +292,8 @@ def main():
         #config['htmltemplate'] = args['htmltemplate']
         config.set('html', 'htmltemplate', args['htmltemplate'] )
 
-     
+  updateConfiguration( config, args )
+  printConfiguation(config)
 
 
   # TODO: Here, override any config setting with args setting, if set
@@ -268,7 +317,7 @@ def main():
      print("\n>>>Program starting with following options:")
      print("\t-Root directory:", args['directory'])
      print("\t-Max level:", args['maxlevel'])
-     print("\t-Recursive directories:", not args['nonrecursive'])
+     print("\t-Recursive directories:", not config.getboolean('traversal', 'nonrecursive', fallback=False ) )
      print("\t-Output file:", args['outputhtmlfile'])
      print("\t-Html encoding:", "???")
      print("\t-Color cycling:", "???")
@@ -305,7 +354,7 @@ def main():
         print(30*'*')
         dCnts = utilities.jsonTraverseDirectory(args['directory'],
                                                 1,
-                                                not args['nonrecursive'],
+                                                not config.getboolean('traversal', 'nonrecursive', fallback=False ),
                                                 args['maxlevel'],
                                                 "(?i)\.ds_store",
                                                 "",
@@ -368,7 +417,7 @@ def main():
   
           dL = []
           fL = []
-          d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not args['nonrecursive'],
+          d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not config.getboolean('traversal', 'nonrecursive', fallback=False ),
                                                       args['maxlevel'], args['excluded'], args['included'],
                                                       dL, fL, args['urlencode'],
                                                       config.get('html', 'directoryTemplate', fallback=''),
@@ -437,7 +486,7 @@ def main():
      
      status, ntotal, nfound = utilities.searchDirectories(args['directory'],
                                                   1,
-                                                  not args['nonrecursive'],
+                                                  not config.getboolean('traversal', 'nonrecursive', fallback=False ),
                                                   args['maxlevel'],
                                                   args['excluded'],                                                  
                                                   args['included'],
