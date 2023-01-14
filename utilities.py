@@ -28,7 +28,7 @@ import clrprint
 # TODO: do an aligned version of printPath???
 
 def printPath(parent, resourceName, delim, color='red'):
-    print( parent,'/', sep='', end='')
+    print( parent,'\\', sep='', end='')
     parts = resourceName.split(delim)
     for idx, p in enumerate(parts):
         if idx%2 == 1:
@@ -465,6 +465,7 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
             print( lvl*"-", nScanned, ')', normalizedPathJoin(root, encounteredDirectory), "lvl:", lvl )
 
         directoryPath = normalizedPathJoin(root, encounteredDirectory)
+        #print(f'\tChecking {directoryPath}')
         parentPath = os.path.dirname( directoryPath )
 
         if matchDirectories:
@@ -500,6 +501,7 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
 
           nScanned += 1
           fullPath = normalizedPathJoin(root, encounteredFile)
+          #print(f'\tChecking {fullPath}')
           if vrb:
             print( lvl*"-", nScanned, ')', fullPath, "lvl:", lvl )
 
