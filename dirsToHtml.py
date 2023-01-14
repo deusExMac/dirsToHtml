@@ -227,7 +227,7 @@ def main():
   configFile = args['config']
   config = generateDefaultConfiguration()
   if os.path.exists(configFile):
-     print('Loading configuration from [', configFile, ']', sep='' ) 
+     print('\n\nLoading configuration from [', configFile, ']\n', sep='' ) 
      config.read(configFile)
      #print( config.get('html', 'directoryTemplate', fallback='${DIRECTORYNAME}') )
 
@@ -286,7 +286,10 @@ def main():
   if args['mode'] == 'export':
 
      if args['exportformat'] == 'json':
-        print('Exporting in json format') 
+        #print('Exporting in json format')
+        print(30*'*')
+        print('* Entering JSON export mode...')
+        print(30*'*')
         dCnts = utilities.jsonTraverseDirectory(args['directory'],
                                                 1,
                                                 not args['nonrecursive'],
@@ -312,9 +315,12 @@ def main():
           # traverseDirectory (html output)
           #
           ###################################################
-   
+          print(30*'*')
+          print('* Entering HTML export mode...')
+          print(30*'*')
           print(f'Exporting {args["directory"]} in html...') 
-          print('Using template file:', config.get('html', 'htmltemplate', fallback='html/template1.html'))
+          print('\tUsing template file:', config.get('html', 'htmltemplate', fallback='html/template1.html'))
+          print('\tSaving output to:', args['outputhtmlfile'])
           # Read template file. Exit in case of error
           htmlTemplate = ""
           try:
@@ -404,7 +410,11 @@ def main():
   ###################################################
   if args['mode'] == 'search':
 
-     print('Searching for', args['included'])
+     print(30*'*')
+     print('* Entering SEARCH mode...')
+     print(30*'*')
+     print(f"Searching for {args['included']} in {args['directory']}\n\n")
+     print("Result list:")
      args['included'] = '(' + args['included'] + ')'  
      results=[]
      fCriteria = {'minfilesize': strToBytes(args['minfilesize']),
@@ -429,7 +439,7 @@ def main():
 
      
      
-     print('Found:', nfound, 'Checked:', ntotal, '\n')
+     print('\n\n', 30*'#', '\n # Found:', nfound, 'Checked:', ntotal, '\n', 30*'#', '\n')
      if nfound > 0:
 
        while True:
