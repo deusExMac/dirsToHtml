@@ -165,26 +165,52 @@ def updateConfiguration( c, ar ):
     if ar['nonrecursive']:
        c.set('traversal', 'nonrecursive', 'True' )
 
-      
-    c.set('traversal', 'included', ar['included'])
-    c.set('traversal', 'excluded', ar['excluded'])
-    c.set('traversal', 'maxlevel', ar['maxlevel'])
+    if ar['included'] != '':  
+       c.set('traversal', 'included', ar['included'])
+
+    if ar['excluded'] != '':   
+       c.set('traversal', 'excluded', ar['excluded'])
+
+    if ar['maxlevel'] != '':   
+       c.set('traversal', 'maxlevel', ar['maxlevel'])
 
 
-    
-    c.set('export', 'exportformat', ar['exportformat'] )
-     
-    c.set('html', 'htmltemplate', ar['htmltemplate'] ) 
-    c.set('html', 'outputhtmlfile', ar['outputhtmlfile'])
-    c.set('html', 'cssfile', ar['cssfile'])
-    c.set('html', 'urlencode', ar['urlencode'] )
-    c.set('html', 'introduction', ar['introduction'] )
-    c.set('html', 'title', ar['title'] )
-    c.set('html', 'opendirectories', ar['opendirectories'] )
+    if ar['exportformat'] != '': 
+       c.set('export', 'exportformat', ar['exportformat'] )
 
-    c.set('search', 'searchquery', ar['searchquery'] )
-    c.set('search', 'nofiles', ar['nofiles'] )
-    c.set('search', 'nodirectories', ar['nodirectories'])
+    if ar['htmltemplate'] != '': 
+       c.set('html', 'htmltemplate', ar['htmltemplate'] )
+
+    if ar['outputhtmlfile'] != '':   
+       c.set('html', 'outputhtmlfile', ar['outputhtmlfile'])
+
+    if ar['cssfile'] != '':        
+       c.set('html', 'cssfile', ar['cssfile'])
+
+    if ar['urlencode']:        
+       c.set('html', 'urlencode', ar['urlencode'] )
+
+    if ar['introduction'] != '':         
+       c.set('html', 'introduction', ar['introduction'] )
+
+    if ar['title'] != '':    
+       c.set('html', 'title', ar['title'] )
+
+    if ar['opendirectories'] != '':   
+       c.set('html', 'opendirectories', ar['opendirectories'] )
+
+    if ar['searchquery']:
+       c.set('search', 'searchquery', ' '.join(ar['searchquery']) )
+
+    if ar['nofiles']:   
+       c.set('search', 'nofiles', 'True' )
+
+    if ar['nodirectories']:   
+       c.set('search', 'nodirectories', 'True')
+
+    if ar['debug']:
+        c.set('traversal', 'debug', 'True') 
+
     
 
 def printConfiguation(cfg):
@@ -222,7 +248,7 @@ def main():
    cmdArgParser.add_argument('-NR', '--nonrecursive', action='store_true')
    cmdArgParser.add_argument('-X', '--excluded', default="")
    cmdArgParser.add_argument('-C', '--included', default="")
-   cmdArgParser.add_argument('-L', '--maxlevel', type=int, default=-1)
+   cmdArgParser.add_argument('-L', '--maxlevel', default='')
    cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
    cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
 
@@ -263,7 +289,7 @@ def main():
    #cmdArgParser.add_argument('-m', '--mode', default="export")
    # Export format
    # Two values supported: html and json
-   cmdArgParser.add_argument('-f', '--exportformat', default="html")
+   cmdArgParser.add_argument('-f', '--exportformat', default="")
 
 
    
@@ -292,6 +318,8 @@ def main():
         #config['htmltemplate'] = args['htmltemplate']
         config.set('html', 'htmltemplate', args['htmltemplate'] )
 
+
+
   updateConfiguration( config, args )
   printConfiguation(config)
 
@@ -305,38 +333,46 @@ def main():
   #
   # Set mode appropriately based on arguments
   #
-  if args['searchquery']:
-     args['mode'] = 'search'
+  if config.get('search', 'searchquery', fallback='') != '':
+     config.set('export', 'mode', 'search')
      # make a capturing group from regex given
      # TODO: check if it is already a capturing group
-     args['included'] =  args['searchquery'][0]  
+     args['included'] =  args['searchquery'][0]
+     config.set('traversal', 'included', config.get('search', 'searchquery', fallback='') )
   else:
-     args['mode'] = 'export' 
+     config.set('export', 'mode', 'export') 
+     
   
-  if args['debug']:
+  if config.getboolean('traversal', 'debug', fallback=False):
      print("\n>>>Program starting with following options:")
-     print("\t-Root directory:", args['directory'])
-     print("\t-Max level:", args['maxlevel'])
+     print("\t-Root directory:", config.get('traversal', 'directory', fallback='exampleDir') )
+     print("\t-Max level:", config.get('traversal', 'maxlevel', fallback='-1') )
      print("\t-Recursive directories:", not config.getboolean('traversal', 'nonrecursive', fallback=False ) )
-     print("\t-Output file:", args['outputhtmlfile'])
+     print("\t-Output file:", config.get('html', 'outputhtmlfile', fallback='index.html') )
      print("\t-Html encoding:", "???")
      print("\t-Color cycling:", "???")
      print("\t-Debug mode:", "???" )
-     print("\t-Excluded file list:", args['excluded'])
-     print("\t-Included file list:", args['included'])
-     print("\t-Mode:", args['mode'])
-     print("\t-Format:", args['exportformat'])
-     print("\t-Template file:", args['htmltemplate'])
-     print("\t-Style sheet:", args['cssfile'])
-     print("\t-Title text:", args['introduction'])
-     print("\t-Intro text:", args['title'])
+     print("\t-Excluded file list:", config.get('traversal', 'excluded', fallback='') )
+     print("\t-Included file list:", config.get('traversal', 'included', fallback='') )
+     print("\t-Mode:", config.get('export', 'mode', fallback='export'))
+     print("\t-Format:", config.get('export', 'exportformat', fallback='html'))
+     print("\t-Template file:", config.get('html', 'htmltemplate', fallback='html/template3.html') )
+     print("\t-Style sheet:", config.get('html', 'cssfile', fallback='') )
+     print("\t-Title text:", config.get('html', 'introduction', fallback='')  )
+     print("\t-Intro text:", config.get('html', 'title', fallback='') )
+     print("\t-Include directories in search:", not config.getboolean('search', 'nodirectories', fallback=False) )
+     print("\t-Include files in search:", not config.getboolean('search', 'nofiles', fallback=False) )
 
 
 
-  if (not os.path.isdir(args['directory'])):
+
+  if (not os.path.isdir( config.get('traversal', 'directory', fallback='exampleDir') )):
       print("\n\nError:Root directory [", args['directory'],"] is not a valid directory. Please make sure that the directory exists and is accessible.\n")
       sys.exit(-2)
 
+
+  # TODO: Added for debugging reasons. 
+  sys.exit(-8)
 
   
   ###################################################
