@@ -132,6 +132,11 @@ def strToBytes( amount ):
 
 def generateDefaultConfiguration():
     cS = configparser.RawConfigParser(allow_no_value=True)
+    cS.add_section('traversal')
+    cS.add_section('html')
+    cS.add_section('json')
+    cS.add_section('search')
+    
     cS.add_section('Rules')
     cS.add_section('Crawler')
     cS.add_section('Storage')
@@ -172,6 +177,8 @@ def main():
    cmdArgParser.add_argument('-L', '--maxlevel', type=int, default=-1)
    cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
    cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
+
+   # Search related
    # If set, don't search for files. 
    cmdArgParser.add_argument('-F', '--nofiles', action='store_true')
    # If set, don't search for directories
@@ -240,7 +247,11 @@ def main():
      
 
 
+  # TODO: Here, override any config setting with args setting, if set
+  #       Below this point, only config[xxx] expressions should be used. 
   
+
+
    
   #
   # Set mode appropriately based on arguments
