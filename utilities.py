@@ -476,6 +476,7 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
               nFound += 1
               matchingPaths.append(directoryPath)
               print('\t', nFound, ') ', sep='', end='')
+              clrprint.clrprint('[D] ', clr='green', end='')
               printPath(parentPath, matchedDirName, '/', 'green')
                   
         if recursive:
@@ -524,6 +525,7 @@ def searchDirectories(root=".//", lvl=1, recursive = True, maxLevel=-1,
             nFound += 1
             matchingPaths.append(fullPath)
             print('\t', nFound, ') ', sep='', end='')
+            clrprint.clrprint('[F] ', clr='red', end='')
             printPath( parentPath, matchedFileName, '/', 'red' ) 
 
     except KeyboardInterrupt:

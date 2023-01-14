@@ -172,7 +172,9 @@ def main():
    cmdArgParser.add_argument('-L', '--maxlevel', type=int, default=-1)
    cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
    cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
+   # If set, don't search for files. 
    cmdArgParser.add_argument('-F', '--nofiles', action='store_true')
+   # If set, don't search for directories
    cmdArgParser.add_argument('-Y', '--nodirectories', action='store_true')
    
   
@@ -227,7 +229,7 @@ def main():
   configFile = args['config']
   config = generateDefaultConfiguration()
   if os.path.exists(configFile):
-     print('\n\nLoading configuration from [', configFile, ']\n', sep='' ) 
+     print('\n\nLoading configuration settings from [', configFile, ']\n', sep='' ) 
      config.read(configFile)
      #print( config.get('html', 'directoryTemplate', fallback='${DIRECTORYNAME}') )
 
@@ -391,6 +393,8 @@ def main():
           print('\nDirectory [', args['directory'] , ']:')
           print("\tTotal number of directories:", d)
           print("\tTotal number of files:", f)
+          
+          
   
           with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
                f.write(htmlTemplate)
@@ -445,7 +449,7 @@ def main():
        while True:
            
          try:  
-           command = input('Open which file?(enter 1 up until ' + str(nfound) + ')>>')
+           command = input('Which file to open?(enter number from 1 up until ' + str(nfound) + '. Type q to quit.)>>')
            if command=='':
               continue
          
