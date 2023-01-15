@@ -141,6 +141,7 @@ def strToBytes( amount ):
 
 def generateDefaultConfiguration():
     cS = configparser.RawConfigParser(allow_no_value=True)
+    cS.add_section('operation')
     cS.add_section('traversal')
     cS.add_section('export')
     cS.add_section('html')
@@ -188,7 +189,7 @@ def updateConfiguration( c, ar ):
        c.set('html', 'cssfile', ar['cssfile'])
 
     if ar['urlencode']:        
-       c.set('html', 'urlencode', ar['urlencode'] )
+       c.set('html', 'urlencode', 'True' )
 
     if ar['introduction'] != '':         
        c.set('html', 'introduction', ar['introduction'] )
@@ -196,8 +197,12 @@ def updateConfiguration( c, ar ):
     if ar['title'] != '':    
        c.set('html', 'title', ar['title'] )
 
-    if ar['opendirectories'] != '':   
-       c.set('html', 'opendirectories', ar['opendirectories'] )
+    if ar['opendirectories']:   
+       c.set('html', 'opendirectories', 'True' )
+
+    if ar['displayoutput']:   
+       c.set('html', 'displayoutput', 'True' )
+
 
     if ar['searchquery']:
        c.set('search', 'searchquery', ' '.join(ar['searchquery']) )
@@ -211,6 +216,11 @@ def updateConfiguration( c, ar ):
     if ar['debug']:
         c.set('traversal', 'debug', 'True') 
 
+    if ar['minfilesize'] != '':
+       c.set('traversal', 'minfilesize', ar['minfilesize'])
+
+    if ar['maxfilesize'] != '':
+       c.set('traversal', 'maxfilesize', ar['maxfilesize'])    
     
 
 def printConfiguation(cfg):
@@ -249,8 +259,8 @@ def main():
    cmdArgParser.add_argument('-X', '--excluded', default="")
    cmdArgParser.add_argument('-C', '--included', default="")
    cmdArgParser.add_argument('-L', '--maxlevel', default='')
-   cmdArgParser.add_argument('-S', '--minfilesize',  default='-1')
-   cmdArgParser.add_argument('-Z', '--maxfilesize',  default='-1')
+   cmdArgParser.add_argument('-S', '--minfilesize',  default='')
+   cmdArgParser.add_argument('-Z', '--maxfilesize',  default='')
 
    # Search related
    # If set, don't search for files. 
@@ -334,13 +344,13 @@ def main():
   # Set mode appropriately based on arguments
   #
   if config.get('search', 'searchquery', fallback='') != '':
-     config.set('export', 'mode', 'search')
+     config.set('operation', 'mode', 'search')
      # make a capturing group from regex given
      # TODO: check if it is already a capturing group
-     args['included'] =  args['searchquery'][0]
+     #args['included'] =  args['searchquery'][0]
      config.set('traversal', 'included', config.get('search', 'searchquery', fallback='') )
   else:
-     config.set('export', 'mode', 'export') 
+     config.set('operation', 'mode', 'export') 
      
   
   if config.getboolean('traversal', 'debug', fallback=False):
@@ -354,7 +364,7 @@ def main():
      print("\t-Debug mode:", "???" )
      print("\t-Excluded file list:", config.get('traversal', 'excluded', fallback='') )
      print("\t-Included file list:", config.get('traversal', 'included', fallback='') )
-     print("\t-Mode:", config.get('export', 'mode', fallback='export'))
+     print("\t-Mode:", config.get('operation', 'mode', fallback='export'))
      print("\t-Format:", config.get('export', 'exportformat', fallback='html'))
      print("\t-Template file:", config.get('html', 'htmltemplate', fallback='html/template3.html') )
      print("\t-Style sheet:", config.get('html', 'cssfile', fallback='') )
@@ -367,12 +377,12 @@ def main():
 
 
   if (not os.path.isdir( config.get('traversal', 'directory', fallback='exampleDir') )):
-      print("\n\nError:Root directory [", args['directory'],"] is not a valid directory. Please make sure that the directory exists and is accessible.\n")
+      print("\n\nError:Root directory [", config.get('traversal', 'directory', fallback='exampleDir'),"] is not a valid directory. Please make sure that the directory exists and is accessible.\n")
       sys.exit(-2)
 
 
   # TODO: Added for debugging reasons. 
-  sys.exit(-8)
+  #sys.exit(-8)
 
   
   ###################################################
@@ -381,14 +391,14 @@ def main():
   #
   ###################################################
 
-  if args['mode'] == 'export':
+  if config.get('operation', 'mode', fallback='export') == 'export':
 
-     if args['exportformat'] == 'json':
+     if config.get('export', 'exportformat', fallback='html') == 'json':
         #print('Exporting in json format')
         print(30*'*')
         print('* Entering JSON export mode...')
         print(30*'*')
-        dCnts = utilities.jsonTraverseDirectory(args['directory'],
+        dCnts = utilities.jsonTraverseDirectory(config.get('traversal', 'directory', fallback='exampleDir'),
                                                 1,
                                                 not config.getboolean('traversal', 'nonrecursive', fallback=False ),
                                                 args['maxlevel'],
@@ -406,7 +416,7 @@ def main():
      
         #sys.exit(-1)
            
-     elif args['exportformat'] == 'html':
+     elif config.get('export', 'exportformat', fallback='html') == 'html':
   
           ###################################################
           #
@@ -418,7 +428,7 @@ def main():
           print(30*'*')
           print(f'Exporting {args["directory"]} in html...') 
           print('\tUsing template file:', config.get('html', 'htmltemplate', fallback='html/template1.html'))
-          print('\tSaving output to:', args['outputhtmlfile'])
+          print('\tSaving output to:', config.get('html', 'outputhtmlfile', fallback='index.html') )
           # Read template file. Exit in case of error
           htmlTemplate = ""
           try:
@@ -432,30 +442,37 @@ def main():
           
           # Check if introdution is a file. If so, read its contents
           # and use this as the introduction to the html export.
-          if (os.path.isfile( args['introduction'])):
+          if (os.path.isfile(config.get('html', 'introduction', fallback='')) ):
               try:
-                with open(args['introduction']) as f:
-                     args['introduction'] = f.read() # replace it
+                with open( config.get('html', 'introduction', fallback='') ) as f:
+                     #args['introduction'] = f.read() 
+                     config.set('html', 'introduction', f.read() ) # replace it
               except Exception as introLoadEx:
-                     print('ERROR: Error reading file [', args['introduction'], ']')
+                     print('ERROR: Error reading file [', config.get('html', 'introduction', fallback=''), ']')
                      sys.exit(-1)
 
 
           #    
           # Replace all pseudovariables in the template file
           #
-          htmlTemplate = htmlTemplate.replace("${CSSFILE}", args['cssfile'])
+          htmlTemplate = htmlTemplate.replace("${CSSFILE}", config.get('html', 'cssfile', fallback='html/style.css') )
           htmlTemplate = htmlTemplate.replace("${BGCOLOR}", random.choice(backgroundPalette) )
-          htmlTemplate = htmlTemplate.replace("${INTROTEXT}", args['introduction'] )
-          htmlTemplate = htmlTemplate.replace("${TITLE}", args['title'] )
+          htmlTemplate = htmlTemplate.replace("${INTROTEXT}", config.get('html', 'introduction', fallback='') )
+          htmlTemplate = htmlTemplate.replace("${TITLE}", config.get('html', 'title', fallback='') )
 
 
   
           dL = []
           fL = []
-          d, f, ld, lf, traversalResult = utilities.traverseDirectory(args['directory'], 1,  not config.getboolean('traversal', 'nonrecursive', fallback=False ),
-                                                      args['maxlevel'], args['excluded'], args['included'],
-                                                      dL, fL, args['urlencode'],
+          d, f, ld, lf, traversalResult = utilities.traverseDirectory(
+                                                      config.get('traversal', 'directory', fallback='exampleDir'),
+                                                      1,
+                                                      not config.getboolean('traversal', 'nonrecursive', fallback=False),
+                                                      config.getint('traversal', 'maxlevel', fallback=-1),
+                                                      config.get('traversal', 'excluded', fallback=''),
+                                                      config.get('traversal', 'included', fallback=''),
+                                                      dL, fL,
+                                                      config.getboolean('html', 'urlencode', fallback=False),
                                                       config.get('html', 'directoryTemplate', fallback=''),
                                                       config.get('html', 'fileTemplate', fallback=''),
                                                       False)
@@ -463,7 +480,7 @@ def main():
 
           # Replace OPENSTATE pseudovariable that specifies if
           # directories should be shown expanded or not.
-          if args['opendirectories']:
+          if config.getboolean('html', 'opendirectories', fallback=False):
              traversalResult = traversalResult.replace("${OPENSTATE}", "open")
           else:
              traversalResult = traversalResult.replace("${OPENSTATE}", "") 
@@ -473,7 +490,7 @@ def main():
           # Replace pseudovariables for source directory in the template file - 
           # source directory is not returned by traversals.
           #    
-          htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", args['directory'] )
+          htmlTemplate = htmlTemplate.replace("${INITIALDIRECTORY}", config.get('traversal', 'directory', fallback='exampleDir') )
           htmlTemplate = htmlTemplate.replace("${SUBDIRECTORY}", traversalResult )
           htmlTemplate = htmlTemplate.replace("${LNDIRS}", str(ld) )
           htmlTemplate = htmlTemplate.replace("${LNFILES}", str(lf) )
@@ -486,19 +503,21 @@ def main():
 
           htmlTemplate = htmlTemplate.replace('${LISTOFDIRECTORIES}', tod)
           
-          print('\nDirectory [', args['directory'] , ']:')
+          print('\nDirectory [', config.get('traversal', 'directory', fallback='exampleDir') , ']:')
           print("\tTotal number of directories:", d)
           print("\tTotal number of files:", f)
           
           
   
-          with io.open(args['outputhtmlfile'], 'w', encoding='utf8') as f:
+          with io.open(config.get('html', 'outputhtmlfile', fallback='index.html'), 'w', encoding='utf8') as f:
                f.write(htmlTemplate)
 
-          if args['displayoutput']:
-             outputFullPath = os.path.join(os.getcwd(), args['outputhtmlfile'])
+          if config.getboolean('html', 'displayoutput', fallback=False):
+             outputFullPath = os.path.join(os.getcwd(), config.get('html', 'outputhtmlfile', fallback='index.html') )
              webbrowser.open('file://' + outputFullPath)
-
+     else:
+          print('Invalid export format:', config.get('export', 'exportformat', fallback='html') )
+          sys.exit(-9)
            
 
 
@@ -508,33 +527,36 @@ def main():
   # searchDirectories
   #
   ###################################################
-  if args['mode'] == 'search':
+  if config.get('operation', 'mode', fallback='export') == 'search':
 
      print(30*'*')
      print('* Entering SEARCH mode...')
      print(30*'*')
-     print(f"Searching for {args['included']} in {args['directory']}\n\n")
+     print(f"Searching for {config.get('traversal', 'included', fallback='')} in {args['directory']}\n\n")
      print("Result list:")
-     args['included'] = '(' + args['included'] + ')'  
+     config.set('traversal', 'included', "("+config.get('traversal', 'included', fallback='') +")" )
+     #args['included'] = '(' + args['included'] + ')'  
      results=[]
-     fCriteria = {'minfilesize': strToBytes(args['minfilesize']),
-                  'maxfilesize': strToBytes(args['maxfilesize'])}
+     fCriteria = {'minfilesize': strToBytes(config.get('traversal', 'minfilesize', fallback='-1') ),
+                  'maxfilesize': strToBytes(config.get('traversal', 'maxfilesize', fallback='-1') )}
      
-     status, ntotal, nfound = utilities.searchDirectories(args['directory'],
+     status, ntotal, nfound = utilities.searchDirectories(
+                                                  config.get('traversal', 'directory', fallback='exampleDir'),
                                                   1,
                                                   not config.getboolean('traversal', 'nonrecursive', fallback=False ),
-                                                  args['maxlevel'],
-                                                  args['excluded'],                                                  
-                                                  args['included'],
-                                                  not args['nodirectories'],
-                                                  not args['nofiles'],
+                                                  config.getint('traversal', 'maxlevel', fallback=-1),
+                                                  config.get('traversal', 'excluded', fallback=''),                                                  
+                                                  config.get('traversal', 'included', fallback=''),
+                                                  not config.getboolean('search', 'nodirectories', fallback=False),
+                                                  not config.getboolean('search', 'nofiles', fallback=False),
                                                   fCriteria,
-                                                  results, 0, 0, args['debug'])
+                                                  results, 0, 0,
+                                                  config.getboolean('traversal', 'debug', fallback=False) )
      
      
      
-     absRootPath = args['directory']
-     if not os.path.isabs(args['directory']):
+     absRootPath = config.get('traversal', 'directory', fallback='exampleDir')
+     if not os.path.isabs(absRootPath):
         absRootPath = os.getcwd()
 
      
@@ -545,7 +567,7 @@ def main():
        while True:
            
          try:  
-           command = input('Which file to open?(enter number from 1 up until ' + str(nfound) + '. Type q to quit.)>>')
+           command = input('Which file to open?(enter number from 1 up until ' + str(nfound) + '. Type q to quit.) >> ')
            if command=='':
               continue
          
