@@ -250,11 +250,13 @@ def main():
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-j', 'paramname':'numiterations', 'default':'1000'}} )
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-h', 'paramname':'mounia', 'default':'False'}} )
   pL.append( {'param': {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'paramname':'maxlevel', 'default':''}} )
-  conf = applicationConfiguration.applicationConfiguration(cfgParamSpec=pL)
-  print( conf.getSections() )
+  pL.append( {'param': {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'paramname':'nonrecursive', 'default':''}} )
+  conf = applicationConfiguration.applicationConfiguration(argSpec=pL)
+  print( conf.getSpecificationSections() )
 
   conf.printConfiguration()
   conf.overwriteConfiguration()
+  print(40*'==')
   conf.printConfiguration()
   sys.exit(-10)
   '''

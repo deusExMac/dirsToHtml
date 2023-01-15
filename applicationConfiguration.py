@@ -7,22 +7,22 @@ import configparser
 
 class applicationConfiguration:
 
-      def __init__(self, cfgParamSpec=None, cfgFile=None, cmdArgs=None, cfgFileArgParamName='config'):
+      def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config'):
           self.configFile = cfgFile
-          self.cmdArguments = cmdArgs
-          self.sectionParameters = cfgParamSpec
+          self.passedArguments = cmdArgs
+          self.argumentSpecification = argSpec
+          #cfgFileArgParamName
           
+          self.passedArguments = self.parseArguments()
+          #print( self.passedArguments )
           
-          self.cmdArguments = self.parseArguments()
-          #print( self.cmdArguments )
-          
-          #print('Reading file', self.cmdArguments.get(cfgFileArgParamName, 'xxx') )
+          #print('Reading file', self.passedArguments.get(cfgFileArgParamName, 'xxx') )
           self.config = self.defaultConfiguration()
-          if os.path.exists(self.cmdArguments.get(cfgFileArgParamName, 'xxx')):
+          if os.path.exists(self.passedArguments.get(configFileArgument, 'xxx')):
              self.config = configparser.RawConfigParser(allow_no_value=True)
-             self.config.read(self.cmdArguments.get(cfgFileArgParamName, 'xxx'))
+             self.config.read(self.passedArguments.get(configFileArgument, 'xxx'))
           else:
-              print('File does not exist:', self.cmdArguments.get(cfgFileArgParamName, 'xxx'))
+              print('File does not exist:', self.passedArguments.get(configFileArgument, 'xxx'))
           
 
 
@@ -31,7 +31,7 @@ class applicationConfiguration:
       def  defaultConfiguration(self, sectionList=None):          
            sL = sectionList
            if sL is None:
-              sL = list( self.getSections() )
+              sL = list( self.getSpecificationSections() )
 
            c = configparser.RawConfigParser(allow_no_value=True) 
            for s in sL:
@@ -40,10 +40,10 @@ class applicationConfiguration:
            return(c)
 
 
-      def getSections(self, paramSpec=None):
+      def getSpecificationSections(self, paramSpec=None):
 
           if paramSpec is None:
-             paramSpec = self.sectionParameters
+             paramSpec = self.argumentSpecification
              
           scts = set()
           for p in paramSpec:
@@ -54,9 +54,9 @@ class applicationConfiguration:
 
 
       def getParameterByName( self, paramName ):
-          for p in self.sectionParameters:
+          for p in self.argumentSpecification:
               if p['param']['paramname'].lower() == paramName.lower():
-                 return(p['param']['section'])
+                 return(p)
 
           return(None)      
 
@@ -80,19 +80,22 @@ class applicationConfiguration:
 
       def overwriteConfiguration(self):
 
-          argSections = list( self.getSections() )
-          for k,v in self.cmdArguments.items():
-              print('Checking', k, v)
-              if v.strip() == '':
+          
+          for k,v in self.passedArguments.items():
+              #print('Checking', k, v)
+              if isinstance(v, str) and v.strip() == '':
                  continue
                 
-              sectionName = self.getParameterByName(k)
-              #print('Checking section', sectionName) 
-              if sectionName.lower() not in self.config.sections():
-                 #print('Adding section', sectionName) 
-                 self.config.add_section(sectionName)
-                 
-              self.config.set(sectionName, k, v)
+              argSpec = self.getParameterByName(k)
+              #print('Found:', argSpec) 
+              if argSpec['param']['section'].lower() not in self.config.sections():
+                 self.config.add_section(argSpec['param']['section'])
+
+              if argSpec['param']['datatype'].lower() == 'boolean':
+                 if self.passedArguments[k]:  
+                    self.config.set(argSpec['param']['section'], k, 'True') 
+              else:    
+                 self.config.set(argSpec['param']['section'], k, v)
               
 
 
@@ -104,7 +107,7 @@ class applicationConfiguration:
           seenParamNames = []
           cmdArgs = argparse.ArgumentParser(description='Command line arguments', add_help=False)
           #d1 = {'param': {'section' : 'sectionname', 'datatype': 'bool', 'switch': '-k', 'paramname':'someuniquename', 'default':''}}
-          for p in self.sectionParameters:
+          for p in self.argumentSpecification:
                # Check if switch and/or paramname has been seen again i.e.
                # is duplicate. Duplicate switches/parameter names are fatal and
                # argument parsing stops.
@@ -113,8 +116,12 @@ class applicationConfiguration:
 
                if p['param']['paramname'].lower() in seenSwitches:
                   raise Exception("Dublicate parameter name", p['param']['switch'], "detected.") 
-                
-               cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], default=p['param']['default'])
+
+               if p['param']['datatype'].lower() == 'boolean':
+                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], action='store_true') 
+               else:    
+                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], default=p['param']['default'])
+
                seenSwitches.append( p['param']['switch'] )
                seenParamNames.append(p['param']['paramname'].lower() )
                
