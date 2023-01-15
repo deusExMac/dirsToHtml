@@ -55,7 +55,7 @@ import random
 
 import webbrowser
 
-
+import applicationConfiguration
 import utilities
 
 
@@ -201,7 +201,7 @@ def updateConfiguration( c, ar ):
        c.set('html', 'opendirectories', 'True' )
 
     if ar['displayoutput']:   
-       c.set('html', 'displayoutput', 'True' )
+       c.set('export', 'displayoutput', 'True' )
 
 
     if ar['searchquery']:
@@ -242,7 +242,23 @@ def printConfiguation(cfg):
 
 def main():
 
+  # Next is for testing purposes only; to check applicationConfiguration class  
+  '''  
+  pL = []
+  pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'paramname':'config', 'default':'fsNavigator.conf'}} )
+  pL.append( {'param': {'section' : 'sec1', 'datatype': 'int', 'switch': '-k', 'paramname':'numclusters', 'default':''}} )
+  pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-j', 'paramname':'numiterations', 'default':'1000'}} )
+  pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-h', 'paramname':'mounia', 'default':'False'}} )
+  pL.append( {'param': {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'paramname':'maxlevel', 'default':''}} )
+  conf = applicationConfiguration.applicationConfiguration(cfgParamSpec=pL)
+  print( conf.getSections() )
 
+  conf.printConfiguration()
+  conf.overwriteConfiguration()
+  conf.printConfiguration()
+  sys.exit(-10)
+  '''
+  
   # 
   # Parse command line arguments - if any
   #
@@ -331,7 +347,7 @@ def main():
 
 
   updateConfiguration( config, args )
-  printConfiguation(config)
+  #printConfiguation(config)
 
 
   # TODO: Here, override any config setting with args setting, if set
@@ -401,20 +417,20 @@ def main():
         dCnts = utilities.jsonTraverseDirectory(config.get('traversal', 'directory', fallback='exampleDir'),
                                                 1,
                                                 not config.getboolean('traversal', 'nonrecursive', fallback=False ),
-                                                args['maxlevel'],
-                                                "(?i)\.ds_store",
-                                                "",
-                                                args['urlencode'])
+                                                config.getint('traversal', 'maxlevel', fallback=-1),
+                                                config.get('traversal', 'excluded', fallback=''),
+                                                config.get('traversal', 'included', fallback=''),
+                                                config.getboolean('html', 'urlencode', fallback=False))
                                           
         print( json.dumps(dCnts) )
         with open("fsStructure.json", "w") as outfile:
           json.dump(dCnts, outfile)
 
-        if args['displayoutput']:
+        if config.getboolean('export', 'displayoutput', fallback=False):
            outputFullPath = os.path.join(os.getcwd(), 'fsStructure.json')
            webbrowser.open('file://' + outputFullPath)
      
-        #sys.exit(-1)
+        
            
      elif config.get('export', 'exportformat', fallback='html') == 'html':
   
@@ -429,6 +445,34 @@ def main():
           print(f'Exporting {args["directory"]} in html...') 
           print('\tUsing template file:', config.get('html', 'htmltemplate', fallback='html/template1.html'))
           print('\tSaving output to:', config.get('html', 'outputhtmlfile', fallback='index.html') )
+
+
+          dL = []
+          fL = []
+          d, f, ld, lf, traversalResult = utilities.traverseDirectory(
+                                                      config.get('traversal', 'directory', fallback='exampleDir'),
+                                                      1,
+                                                      not config.getboolean('traversal', 'nonrecursive', fallback=False),
+                                                      config.getint('traversal', 'maxlevel', fallback=-1),
+                                                      config.get('traversal', 'excluded', fallback=''),
+                                                      config.get('traversal', 'included', fallback=''),
+                                                      dL, fL,
+                                                      config.getboolean('html', 'urlencode', fallback=False),
+                                                      config.get('html', 'directoryTemplate', fallback=''),
+                                                      config.get('html', 'fileTemplate', fallback=''),
+                                                      False)
+
+
+          #
+          #
+          # Prepare html output using the html template
+          #
+          # TODO: needs refactoring
+          #
+          #
+
+
+          
           # Read template file. Exit in case of error
           htmlTemplate = ""
           try:
@@ -462,22 +506,7 @@ def main():
 
 
   
-          dL = []
-          fL = []
-          d, f, ld, lf, traversalResult = utilities.traverseDirectory(
-                                                      config.get('traversal', 'directory', fallback='exampleDir'),
-                                                      1,
-                                                      not config.getboolean('traversal', 'nonrecursive', fallback=False),
-                                                      config.getint('traversal', 'maxlevel', fallback=-1),
-                                                      config.get('traversal', 'excluded', fallback=''),
-                                                      config.get('traversal', 'included', fallback=''),
-                                                      dL, fL,
-                                                      config.getboolean('html', 'urlencode', fallback=False),
-                                                      config.get('html', 'directoryTemplate', fallback=''),
-                                                      config.get('html', 'fileTemplate', fallback=''),
-                                                      False)
-
-
+          
           # Replace OPENSTATE pseudovariable that specifies if
           # directories should be shown expanded or not.
           if config.getboolean('html', 'opendirectories', fallback=False):
@@ -508,12 +537,14 @@ def main():
           print("\tTotal number of files:", f)
           
           
-  
           with io.open(config.get('html', 'outputhtmlfile', fallback='index.html'), 'w', encoding='utf8') as f:
                f.write(htmlTemplate)
 
-          if config.getboolean('html', 'displayoutput', fallback=False):
-             outputFullPath = os.path.join(os.getcwd(), config.get('html', 'outputhtmlfile', fallback='index.html') )
+          if config.getboolean('export', 'displayoutput', fallback=False):
+             outputFullPath = config.get('html', 'outputhtmlfile', fallback='index.html')
+             if not os.path.isabs(outputFullPath):
+                outputFullPath = os.path.join(os.getcwd(), config.get('html', 'outputhtmlfile', fallback='index.html') )
+
              webbrowser.open('file://' + outputFullPath)
      else:
           print('Invalid export format:', config.get('export', 'exportformat', fallback='html') )

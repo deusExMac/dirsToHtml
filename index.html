@@ -2,47 +2,58 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 <title></title>
-
+    
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 <script>
-
+    
    function showPath(elem){
        //alert(elem.innerText);
        e = document.getElementById("hoveredOver");
        e.innerText = '[' + elem.innerText + ']';
    }
 
-
-   function showTextPath(oName, parentPath, rType){
+    
+   function showTextPath(parentPath){
        e = document.getElementById("hoveredOver");
-       rName = document.getElementById("mainText");
-       iPlace = document.getElementById("icon");
+       e.innerText = 'Path:' + parentPath ;
+   }     
+    
+    
+   $(document).ready(function(){
 
+  //when mouse is over, save initial value and replace with newText
+  function hover_in(newText, $this){
+      
+    console.log(newText);
+    //$("#mainText").text('<b>Name:</b>' + $this.text() ) 
+    $("#mainText").html('<b>Name:</b>' + $this.text())  
+    /*#$this.data('initialText', $this.text());
+    $this.text(newText);*/
+  }
 
-       e.innerText = parentPath ;
+  //when mouse is over, replace with initial value
+  function hover_out($this){
+    //$this.text($this.data('initialText'));
+  }
 
-       if (rType == 'dir') {
-          iPlace.innerHTML = '<img src="html/fld7.png">';
-          rName.innerHTML = oName;
-       } else {
-          iPlace.innerHTML = '<img src="html/' + rType + '.png' + '">';
-          rName.innerHTML = oName;
-       }
-
-   }
-
-
-
-
-    </script>
+  $('.fsitem').hover(
+    function(){
+      hover_in("NEW TEXT", $(this));
+    }, 
+    function() {
+      hover_out($(this));
+  });
+});
+       
+    </script>    
 <style>
-
-
+    
+            
 .tableOfDictionaries ul li {
   list-style: none;
   padding-left: 50px;
-  padding-top:10px;
+  padding-top:10px;    
   position: relative;
 }
 
@@ -57,26 +68,26 @@
   background-size: contain;
   background-image: url("html/fld5.png");
 }
+    
 
-
-
-
+    
+    
 .tableOfDictionaries {
   column-count: 2;
   column-gap: 30px;
   column-rule: 1px solid green;
-
+  
   margin:20px;
-  word-wrap: break-word;
+  word-wrap: break-word; 
   padding:20px;
-  background-color:yellow;
+  background-color:yellow;   
 }
 
-
+    
 h2 {
   column-span: all;
 }
-
+    
 
 .tree{
   --spacing : 1.5rem;
@@ -113,15 +124,15 @@ h2 {
   top          : calc(var(--spacing) / -2);
   left         : -2px;
   width        : calc(var(--spacing) + 2px);
-  height       : calc(var(--spacing) + 1px);
+  height       : calc(var(--spacing) + 1px);  
   border       : solid green;
-
+     
   border-width : 0 0 2px 2px;
-
-  background-image: url("html/fld5.png");
+  
+  background-image: url("html/fld5.png");    
 }
 
-
+    
 .tree summary{
   display : block;
   cursor  : pointer;
@@ -145,15 +156,15 @@ h2 {
   content       : '';
   display       : block;
   position      : absolute;
-  /**
+  /**    
   top           : calc(var(--spacing) / 2 - var(--radius));
   left          : calc(var(--spacing) - var(--radius) - 1px);
   width         : calc(2 * var(--radius));
   height        : calc(2 * var(--radius));
   border-radius : 50%;
-  **/
+  **/    
   /*background    : #ddd;*/
-
+  
 }
 
 .tree summary::before{
@@ -161,15 +172,15 @@ h2 {
   z-index     : 1;
   #background  : #696;
   #color       : #fff;
-
+  
   #line-height : calc(2 * var(--radius) - 2px);
   #text-align  : center;
-  background-image: url("fld10.png");
+  background-image: url("fld10.png");    
 }
 
 .tree details[open] > summary::before{
   #content : '-';
-  background-image: url("fld10.png");
+  background-image: url("fld10.png");     
 }
 
 .dir {font-size:20px; color:green}
@@ -178,18 +189,17 @@ h2 {
   border: 2px solid #fafab9;
   margin:auto;
   width:70%;
-  background-color:#E8DFCA;
+  background-color:#F0EBE3;
   padding:15px;
 }
 
-
-.folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}
-
+    
+.folder { font-size:18px; color:#000000; font-weight:normal; font-family: Arial, Helvetica, sans-serif;}    
+ 
 .detail{font-size:14px; color:darkgray; font-style:normal italic}
-
-
+    
+    
 .floatingmenu {
-    font-family: Arial, Helvetica, sans-serif;
     position: fixed; margin-left:83%;
     background-color:bisque;
     border: 2px solid #FFE4C4;
@@ -203,73 +213,24 @@ h2 {
     top: 50%;
     /*left: 50%;*/
     transform: translate(-50%, -50%);
-    border: 1px #615e5a solid;
-
-    }
-
-
-.detailsInfo{
-    font-family: Arial, Helvetica, sans-serif;
+    
+    }    
+    
+    
+.detailsInfo{    
     padding:10px;
-
 }
-
-
+    
+    
 .outer{
-
+    
     width:100%;
     height:600px;
     background-color:white;
     margin:0 auto;
     }
-
-
-.tcontent{
-
-    margin-top:50px;
-}
-
-#hoveredOver {
- font-size:12px;
- margin-top:15px;
- color:navy;
- padding-top:5px;
-}
-
-.ho{
-  font-size:12px;
-  margin-top:10px;
-}
-
-#mainText{
-  font-size:14px;
-}
-
-h2{
- margin-left:50px;
- margin-top:40x;
- font-family: Arial, Helvetica, sans-serif;
-}
-
-#icon {
-
-  /*border:2px red dashed;*/
-  display: inline-block;
     
-}
-
-#fname {
-
-   /*border: 2px green dotted;*/
-   display: inline-block;
-   margin-left:10px;    
-
-}
-
-img {  
-   object-fit: cover;  
-}  
-
+    
 </style>
 
 </head>
@@ -279,48 +240,42 @@ img {
 
 <body>
 
+  
+   
 
-
-
-<div class="outer">
-
+<div class="outer"> 
+    
    <div id="detailsWindow" class="floatingmenu">
-       <div style="background-color:#4a403d; color:white;margin-top:0px; padding:5px;">details</div>
+       <div style="background-color:#4a403d; width:100%;color:white;margin-top:0px">details</div>
        <div class="detailsInfo">
-          <div>
-              <div id="icon"></div><div id="fname"><span id="mainText">---</span></div>
-              <br/>
-          </div>
-          <div class="ho">
-            <i>In:&nbsp;&nbsp;</i><span id="hoveredOver">---</span>
-          </div>
-       </div>
-    </div>
-
+          <span id="mainText"><b>Name:</b>Window with some menus</span><br/>
+          <span id="hoveredOver" style="color:green;">XXXXX</span>
+       </div>   
+    </div> 
+    
 <div id="container">
-
-
-<h2>Περιεχόμενα</h2>
-<div class="tcontent">
+    
+<div class="tableOfDictionaries">
+<h2>Lorem Ipsum Dolor Sit Amet</h2>    
+    <ul><li><a href="#d2-562054">anotherDir</a></li><li><a href="#d1-9730">SomeDir</a></li><li><a href="#d1-861846">YetAnotherDir</a></li><li><a href="#d1-757839">untitled folder</a></li></ul>
+</div>      
 
 <ul class="tree">
   <li>
     <details open>
       <summary class="folder"><img src="html/fld7.png" style="margin-left:-7px;margin-right:5px;">
-          /Users/manolistzagarakis/econ/2018-2019
+          exampleDir(3 - 3)
       </summary>
         <ul>
-           <li id="d1-203479"><details ><summary class='folder fsitem' onmouseover="showTextPath('DiaxeirishVasewnDedomenwn', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>DiaxeirishVasewnDedomenwn<span class='detail'>(<font color='red'><i>1</i></font>, 2, 1 | 2, 1 )</span></summary><ul><li id="d2-920271"><details ><summary class='folder fsitem' onmouseover="showTextPath('Lectures', '/Users/manolistzagarakis/econ/2018-2019/DiaxeirishVasewnDedomenwn', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Lectures<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-766462"><details ><summary class='folder fsitem' onmouseover="showTextPath('exams', '/Users/manolistzagarakis/econ/2018-2019/DiaxeirishVasewnDedomenwn', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>exams<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019/DiaxeirishVasewnDedomenwn', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/DiaxeirishVasewnDedomenwn/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [25/02/2019, 10:06:02])</li></ul></details></li><li id="d1-583861"><details ><summary class='folder fsitem' onmouseover="showTextPath('EisagwghHYkaiEfarmoges', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>EisagwghHYkaiEfarmoges<span class='detail'>(<font color='red'><i>1</i></font>, 4, 4 | 4, 4 )</span></summary><ul><li id="d2-803711"><details ><summary class='folder fsitem' onmouseover="showTextPath('Exams', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Exams<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-193870"><details ><summary class='folder fsitem' onmouseover="showTextPath('Excel-Project', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Excel-Project<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-594994"><details ><summary class='folder fsitem' onmouseover="showTextPath('Lectures', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Lectures<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-929803"><details ><summary class='folder fsitem' onmouseover="showTextPath('Python-Project', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Python-Project<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (6148, [06/01/2022, 13:45:39])</li><li class="fle fsitem" onmouseover="showTextPath('OmadesExetashsJan2019.doc', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges/OmadesExetashsJan2019.doc" target="_blank" rel="noopener noreferrer">OmadesExetashsJan2019.doc</a> (38912, [19/02/2019, 10:30:48])</li><li class="fle fsitem" onmouseover="showTextPath('TmhmataPouExasanMathimata.txt', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'txt')"><img src='html/txt.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges/TmhmataPouExasanMathimata.txt" target="_blank" rel="noopener noreferrer">TmhmataPouExasanMathimata.txt</a> (117, [19/02/2019, 10:30:48])</li><li class="fle fsitem" onmouseover="showTextPath('Ύλη μαθήματος_Ιανουάριος2019.docx', '/Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges', 'docx')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/EisagwghHYkaiEfarmoges/Ύλη μαθήματος_Ιανουάριος2019.docx" target="_blank" rel="noopener noreferrer">Ύλη μαθήματος_Ιανουάριος2019.docx</a> (51666, [19/02/2019, 10:30:48])</li></ul></details></li><li id="d1-857224"><details ><summary class='folder fsitem' onmouseover="showTextPath('Erasmus', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Erasmus<span class='detail'>(<font color='red'><i>1</i></font>, 2, 1 | 2, 1 )</span></summary><ul><li id="d2-606772"><details ><summary class='folder fsitem' onmouseover="showTextPath('EarinoExamino', '/Users/manolistzagarakis/econ/2018-2019/Erasmus', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>EarinoExamino<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-102166"><details ><summary class='folder fsitem' onmouseover="showTextPath('Xeimerino-EixagwghHY', '/Users/manolistzagarakis/econ/2018-2019/Erasmus', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Xeimerino-EixagwghHY<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019/Erasmus', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Erasmus/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [25/02/2019, 12:19:24])</li></ul></details></li><li id="d1-460966"><details ><summary class='folder fsitem' onmouseover="showTextPath('Postgraduate', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Postgraduate<span class='detail'>(<font color='red'><i>1</i></font>, 5, 12 | 5, 12 )</span></summary><ul><li id="d2-160684"><details ><summary class='folder fsitem' onmouseover="showTextPath('Aithseis-2018-2019-Axiologisi', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Aithseis-2018-2019-Axiologisi<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-420228"><details ><summary class='folder fsitem' onmouseover="showTextPath('Diplomas', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Diplomas<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-403951"><details ><summary class='folder fsitem' onmouseover="showTextPath('Exams', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Exams<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-284437"><details ><summary class='folder fsitem' onmouseover="showTextPath('Lectures', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Lectures<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-136891"><details ><summary class='folder fsitem' onmouseover="showTextPath('Projects', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Projects<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (6148, [26/06/2019, 12:22:16])</li><li class="fle fsitem" onmouseover="showTextPath('OLD-ALSO-TOBEPRINTED-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/OLD-ALSO-TOBEPRINTED-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx" target="_blank" rel="noopener noreferrer">OLD-ALSO-TOBEPRINTED-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx</a> (13552, [19/02/2019, 10:31:14])</li><li class="fle fsitem" onmouseover="showTextPath('OLD-Parousiologio-TOBEPRINTED (2).xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/OLD-Parousiologio-TOBEPRINTED (2).xlsx" target="_blank" rel="noopener noreferrer">OLD-Parousiologio-TOBEPRINTED (2).xlsx</a> (13535, [19/02/2019, 10:31:14])</li><li class="fle fsitem" onmouseover="showTextPath('OLD-Parousiologio-TOBEPRINTED.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/OLD-Parousiologio-TOBEPRINTED.xlsx" target="_blank" rel="noopener noreferrer">OLD-Parousiologio-TOBEPRINTED.xlsx</a> (10772, [19/02/2019, 10:31:14])</li><li class="fle fsitem" onmouseover="showTextPath('OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019-v2.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019-v2.xlsx" target="_blank" rel="noopener noreferrer">OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019-v2.xlsx</a> (15851, [19/02/2019, 10:31:14])</li><li class="fle fsitem" onmouseover="showTextPath('OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx" target="_blank" rel="noopener noreferrer">OLD-ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx</a> (15232, [19/02/2019, 10:31:14])</li><li class="fle fsitem" onmouseover="showTextPath('TO-BE-PRINTED-ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/TO-BE-PRINTED-ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx" target="_blank" rel="noopener noreferrer">TO-BE-PRINTED-ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx</a> (11183, [19/02/2019, 10:31:40])</li><li class="fle fsitem" onmouseover="showTextPath('d3_05_e01_prosklisi_ekdilosis_endiaferontos_erga_v5-tzagara.docx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'docx')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/d3_05_e01_prosklisi_ekdilosis_endiaferontos_erga_v5-tzagara.docx" target="_blank" rel="noopener noreferrer">d3_05_e01_prosklisi_ekdilosis_endiaferontos_erga_v5-tzagara.docx</a> (64295, [19/02/2019, 10:31:00])</li><li class="fle fsitem" onmouseover="showTextPath('Επικουρικό κόστος-Tantoula.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/Επικουρικό κόστος-Tantoula.xlsx" target="_blank" rel="noopener noreferrer">Επικουρικό κόστος-Tantoula.xlsx</a> (12657, [19/02/2019, 10:31:42])</li><li class="fle fsitem" onmouseover="showTextPath('ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx" target="_blank" rel="noopener noreferrer">ΠΑΡΟΥΣΙΟΛΟΓΙΟ ΠΜΣ 2018-2019.xlsx</a> (15851, [19/02/2019, 10:31:42])</li><li class="fle fsitem" onmouseover="showTextPath('ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx" target="_blank" rel="noopener noreferrer">ΠΜΣ 2018-2019_ΕΓΓΕΓΡΑΜΜΕΝΟΙ ΦΟΙΤΗΤΕΣ.xlsx</a> (15723, [19/02/2019, 10:31:42])</li><li class="fle fsitem" onmouseover="showTextPath('Χρονοδιάγραμμα Εφαρμοσμένη Μικρο-οικονομετρία 2018-2019.xlsx', '/Users/manolistzagarakis/econ/2018-2019/Postgraduate', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/Postgraduate/Χρονοδιάγραμμα Εφαρμοσμένη Μικρο-οικονομετρία 2018-2019.xlsx" target="_blank" rel="noopener noreferrer">Χρονοδιάγραμμα Εφαρμοσμένη Μικρο-οικονομετρία 2018-2019.xlsx</a> (11783, [19/02/2019, 10:31:42])</li></ul></details></li><li id="d1-468146"><details ><summary class='folder fsitem' onmouseover="showTextPath('ThemataPsifiakisOikonomias', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>ThemataPsifiakisOikonomias<span class='detail'>(<font color='red'><i>1</i></font>, 2, 1 | 2, 1 )</span></summary><ul><li id="d2-574323"><details ><summary class='folder fsitem' onmouseover="showTextPath('Lectures', '/Users/manolistzagarakis/econ/2018-2019/ThemataPsifiakisOikonomias', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>Lectures<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li id="d2-512625"><details ><summary class='folder fsitem' onmouseover="showTextPath('exams', '/Users/manolistzagarakis/econ/2018-2019/ThemataPsifiakisOikonomias', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>exams<span class='detail'>(<font color='red'><i>2</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019/ThemataPsifiakisOikonomias', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/ThemataPsifiakisOikonomias/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [19/02/2019, 10:36:18])</li></ul></details></li><li id="d1-257936"><details ><summary class='folder fsitem' onmouseover="showTextPath('YpodoxiPrwtoetwn-2018', '/Users/manolistzagarakis/econ/2018-2019', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>YpodoxiPrwtoetwn-2018<span class='detail'>(<font color='red'><i>1</i></font>, 0, 7 | 0, 7 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('WelcomeTalk-compfac.pdf', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'pdf')"><img src='html/pdf.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/WelcomeTalk-compfac.pdf" target="_blank" rel="noopener noreferrer">WelcomeTalk-compfac.pdf</a> (1636529, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('WelcomeTalk-compfac.pptx', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/WelcomeTalk-compfac.pptx" target="_blank" rel="noopener noreferrer">WelcomeTalk-compfac.pptx</a> (2613148, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('dsc_0003.jpg', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/dsc_0003.jpg" target="_blank" rel="noopener noreferrer">dsc_0003.jpg</a> (1091779, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('eclass.jpg', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/eclass.jpg" target="_blank" rel="noopener noreferrer">eclass.jpg</a> (228202, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('econ-Site.jpg', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/econ-Site.jpg" target="_blank" rel="noopener noreferrer">econ-Site.jpg</a> (370816, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('map-Labs.jpg', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/map-Labs.jpg" target="_blank" rel="noopener noreferrer">map-Labs.jpg</a> (325704, [19/02/2019, 10:31:50])</li><li class="fle fsitem" onmouseover="showTextPath('progress.jpg', '/Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/YpodoxiPrwtoetwn-2018/progress.jpg" target="_blank" rel="noopener noreferrer">progress.jpg</a> (101264, [19/02/2019, 10:31:50])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', '/Users/manolistzagarakis/econ/2018-2019', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="file:///Users/manolistzagarakis/econ/2018-2019/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (12292, [19/02/2019, 10:36:18])</li>
+           <li id="d1-9730"><details ><summary class='folder fsitem' onmouseover="showTextPath('SomeDir', 'exampleDir', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>SomeDir<span class='detail'>(<font color='red'><i>1</i></font>, 1, 3 | 1, 5 )</span></summary><ul><li id="d2-562054"><details ><summary class='folder fsitem' onmouseover="showTextPath('anotherDir', 'exampleDir/SomeDir', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>anotherDir<span class='detail'>(<font color='red'><i>2</i></font>, 0, 2 | 0, 2 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('aFile.txt', 'exampleDir/SomeDir/anotherDir', 'txt')"><img src='html/txt.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anotherDir/aFile.txt" target="_blank" rel="noopener noreferrer">aFile.txt</a> (0, [23/01/2022, 13:51:48])</li><li class="fle fsitem" onmouseover="showTextPath('anotherFile.accdb', 'exampleDir/SomeDir/anotherDir', 'accdb')"><img src='html/accdb.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anotherDir/anotherFile.accdb" target="_blank" rel="noopener noreferrer">anotherFile.accdb</a> (520192, [23/01/2022, 13:51:48])</li></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', 'exampleDir/SomeDir', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (6148, [27/12/2022, 23:54:12])</li><li class="fle fsitem" onmouseover="showTextPath('aWordDocument.docx', 'exampleDir/SomeDir', 'docx')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (20201, [27/12/2022, 07:31:40])</li><li class="fle fsitem" onmouseover="showTextPath('anExcelFile.xlsx', 'exampleDir/SomeDir', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/SomeDir/anExcelFile.xlsx" target="_blank" rel="noopener noreferrer">anExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li></ul></details></li><li id="d1-861846"><details ><summary class='folder fsitem' onmouseover="showTextPath('YetAnotherDir', 'exampleDir', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>YetAnotherDir<span class='detail'>(<font color='red'><i>1</i></font>, 0, 1 | 0, 1 )</span></summary><ul><li class="fle fsitem" onmouseover="showTextPath('aWordDocument.docx', 'exampleDir/YetAnotherDir', 'docx')"><img src='html/docx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/YetAnotherDir/aWordDocument.docx" target="_blank" rel="noopener noreferrer">aWordDocument.docx</a> (28931, [23/01/2022, 13:51:48])</li></ul></details></li><li id="d1-757839"><details ><summary class='folder fsitem' onmouseover="showTextPath('untitled folder', 'exampleDir', 'dir')"><img src='html/fld7.png' width="24" height="24"  style='margin-left:-7px;margin-right:5px;'>untitled folder<span class='detail'>(<font color='red'><i>1</i></font>, 0, 0 | 0, 0 )</span></summary><ul></ul></details></li><li class="fle fsitem" onmouseover="showTextPath('.DS_Store', 'exampleDir', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/.DS_Store" target="_blank" rel="noopener noreferrer">.DS_Store</a> (8196, [28/12/2022, 10:05:24])</li><li class="fle fsitem" onmouseover="showTextPath('HOHOHOanExcelFile.xlsx', 'exampleDir', 'xlsx')"><img src='html/xlsx.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/HOHOHOanExcelFile.xlsx" target="_blank" rel="noopener noreferrer">HOHOHOanExcelFile.xlsx</a> (6165, [23/01/2022, 13:51:48])</li><li class="fle fsitem" onmouseover="showTextPath('randomImage.jpg', 'exampleDir', 'ukn')"><img src='html/ukn.png' width="24" height="24" style='margin-left:-7px;margin-right:5px;'><a href="exampleDir/randomImage.jpg" target="_blank" rel="noopener noreferrer">randomImage.jpg</a> (15715, [01/01/2023, 12:42:04])</li>
         </ul>
       </details>
     </li>
 </ul>
 
-</div> <!-- tcontent -->
+</div>
 
-</div> <!-- container -->
-
-</div> <!--outer -->
+</div> <!--outer div -->
 
 
 </body>
