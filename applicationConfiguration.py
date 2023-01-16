@@ -7,24 +7,30 @@ import configparser
 
 class applicationConfiguration:
 
+      # Singleton
+      #__shared_state = {}
+      
       def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config', defaultConfigFile='default.conf'):
+
+          # Singleton
+          #self.__dict__ = self.__shared_state
+            
           self.configFile = cfgFile
           self.passedArguments = cmdArgs
           self.argumentSpecification = argSpec
-          #cfgFileArgParamName
+          
           
           self.passedArguments = self.parseArguments()
-          #print( self.passedArguments )
-          
-          #print('Reading file', self.passedArguments.get(cfgFileArgParamName, 'xxx') )
-          self.config = self.defaultConfiguration()          
-          if os.path.exists(self.passedArguments.get(configFileArgument, defaultConfigFile)):
-             self.config = configparser.RawConfigParser(allow_no_value=True)
-             self.config.read(self.passedArguments.get(configFileArgument, defaultConfigFile))
-          else:
-              print('File does not exist:', self.passedArguments.get(configFileArgument, defaultConfigFile))
-          
 
+          self.config = self.defaultConfiguration()
+          if self.passedArguments is not None:
+             if os.path.exists(self.passedArguments.get(configFileArgument, defaultConfigFile)):
+                self.config = configparser.RawConfigParser(allow_no_value=True)
+                self.config.read(self.passedArguments.get(configFileArgument, defaultConfigFile))
+             else:
+                 print('File does not exist:', self.passedArguments.get(configFileArgument, defaultConfigFile))
+          
+          self.overwriteConfiguration()
 
 
 
@@ -32,7 +38,11 @@ class applicationConfiguration:
            sL = sectionList
            if sL is None:
               sL = list( self.getSpecificationSections() )
+              
 
+           if not sL:
+              return(None)
+            
            c = configparser.RawConfigParser(allow_no_value=True) 
            for s in sL:
                c.add_section(s)
@@ -44,7 +54,10 @@ class applicationConfiguration:
 
           if paramSpec is None:
              paramSpec = self.argumentSpecification
-             
+
+          if self.argumentSpecification is None:
+             return(())
+            
           scts = set()
           for p in paramSpec:
               scts.add( p['param']['section'].lower() )
@@ -80,7 +93,9 @@ class applicationConfiguration:
 
       def overwriteConfiguration(self):
 
-          
+          if self.argumentSpecification is None:
+              return(None)
+            
           for k,v in self.passedArguments.items():
               
                               
@@ -107,6 +122,9 @@ class applicationConfiguration:
 
       def parseArguments(self):
 
+          if self.argumentSpecification is None:
+             return(None)
+            
           seenSwitches = []
           seenParamNames = []
           cmdArgs = argparse.ArgumentParser(description='Command line arguments', add_help=False)
