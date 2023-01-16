@@ -8,6 +8,8 @@ import configparser
 class applicationConfiguration:
 
       # Singleton
+      # Also, implement this:
+      #   https://stackoverflow.com/questions/50804826/explain-python-singleton-class
       #__shared_state = {}
       
       def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config', defaultConfigFile='default.conf'):
