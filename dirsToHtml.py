@@ -251,6 +251,7 @@ def main():
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-h', 'paramname':'mounia', 'default':'False'}} )
   pL.append( {'param': {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'paramname':'maxlevel', 'default':''}} )
   pL.append( {'param': {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'paramname':'nonrecursive', 'default':''}} )
+  pL.append( {'param': {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'paramname':'displayoutput', 'default':''}} )
   conf = applicationConfiguration.applicationConfiguration(argSpec=pL)
   print( conf.getSpecificationSections() )
 
@@ -258,6 +259,7 @@ def main():
   conf.overwriteConfiguration()
   print(40*'==')
   conf.printConfiguration()
+
   sys.exit(-10)
   '''
   

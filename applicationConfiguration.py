@@ -7,7 +7,7 @@ import configparser
 
 class applicationConfiguration:
 
-      def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config'):
+      def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config', defaultConfigFile='default.conf'):
           self.configFile = cfgFile
           self.passedArguments = cmdArgs
           self.argumentSpecification = argSpec
@@ -17,12 +17,12 @@ class applicationConfiguration:
           #print( self.passedArguments )
           
           #print('Reading file', self.passedArguments.get(cfgFileArgParamName, 'xxx') )
-          self.config = self.defaultConfiguration()
-          if os.path.exists(self.passedArguments.get(configFileArgument, 'xxx')):
+          self.config = self.defaultConfiguration()          
+          if os.path.exists(self.passedArguments.get(configFileArgument, defaultConfigFile)):
              self.config = configparser.RawConfigParser(allow_no_value=True)
-             self.config.read(self.passedArguments.get(configFileArgument, 'xxx'))
+             self.config.read(self.passedArguments.get(configFileArgument, defaultConfigFile))
           else:
-              print('File does not exist:', self.passedArguments.get(configFileArgument, 'xxx'))
+              print('File does not exist:', self.passedArguments.get(configFileArgument, defaultConfigFile))
           
 
 
@@ -36,7 +36,7 @@ class applicationConfiguration:
            c = configparser.RawConfigParser(allow_no_value=True) 
            for s in sL:
                c.add_section(s)
-
+           
            return(c)
 
 
@@ -82,12 +82,16 @@ class applicationConfiguration:
 
           
           for k,v in self.passedArguments.items():
-              #print('Checking', k, v)
+              
+                              
+              argSpec = self.getParameterByName(k)
+              if argSpec is None:
+                 print('No such specification found:', k)
+                 raise Exception("No argument specification for", k)
+
               if isinstance(v, str) and v.strip() == '':
                  continue
-                
-              argSpec = self.getParameterByName(k)
-              #print('Found:', argSpec) 
+                 
               if argSpec['param']['section'].lower() not in self.config.sections():
                  self.config.add_section(argSpec['param']['section'])
 
