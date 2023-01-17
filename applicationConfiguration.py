@@ -57,13 +57,11 @@ print(s1.c2)
 
 class applicationConfiguration:
 
-      # TODO: Singleton pattern here
-      
-      def __init__(self, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):
+      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):
    
                     
           self.argumentSpecification = argSpec
-          #self.passedArguments = pArgs
+          self.argumentList = argList
           
           
           self.passedArguments = self.handleArguments()
@@ -198,9 +196,15 @@ class applicationConfiguration:
                seenParamNames.append(p['param']['paramname'].lower() )
                
           try:
-              knownArgs, unknownArgs = cmdArgs.parse_known_args()
-              args = vars( knownArgs )
+              if self.argumentList is not None:
+                 print('Parsing existing arg list')   
+                 args = vars( cmdArgs.parse_args(self.argumentList) )
+              else:   
+                 knownArgs, unknownArgs = cmdArgs.parse_known_args()
+                 args = vars( knownArgs )
+                 
               return(args)
+            
           except Exception as argEx:
               print('Argument error:', str(argEx))
               return( {} )
@@ -213,7 +217,9 @@ class applicationConfiguration:
           cfg = self.defaultConfiguration()
 
           print('>>> Loading file', cfgFile)
-          if os.path.exists( cfgFile ):
+          if not os.path.exists( cfgFile ):
+             print('File', cfgFile, 'not found.')   
+          else:      
                 cfg = configparser.RawConfigParser(allow_no_value=True)
                 cfg.read(cfgFile)
 
@@ -229,7 +235,7 @@ class appConfig(applicationConfiguration):
       
       instance = None
 
-      def __new__(cls, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):
+      def __new__(cls, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
             print('\tCreating instance')
@@ -238,7 +244,7 @@ class appConfig(applicationConfiguration):
         return cls.instance
 
 
-      def __init__(self, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):          
-          super().__init__(argSpec, configFileArgument, defaultConfigFile)
+      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):          
+          super().__init__(argSpec, argList, configFileArgument, defaultConfigFile)
    
 
