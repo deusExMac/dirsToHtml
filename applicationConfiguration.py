@@ -52,19 +52,25 @@ print(s1.c2)
 '''
 
 
+
+      
+
 class applicationConfiguration:
 
       # TODO: Singleton pattern here
       
-      def __init__(self, argSpec=None, cfgFile=None, cmdArgs=None, configFileArgument='config', defaultConfigFile='default.conf'):
+      def __init__(self, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):
    
-          self.configFile = cfgFile
-          self.passedArguments = cmdArgs
+                    
           self.argumentSpecification = argSpec
+          #self.passedArguments = pArgs
           
           
-          self.passedArguments = self.parseArguments()
+          self.passedArguments = self.handleArguments()
+          print('Calling handleConfigurationFile with', self.passedArguments.get(configFileArgument, defaultConfigFile))
+          self.config = self.handleConfigurationFile( self.passedArguments.get(configFileArgument, defaultConfigFile) )
 
+          ''' 
           self.config = self.defaultConfiguration()
           if self.passedArguments is not None:
              if os.path.exists(self.passedArguments.get(configFileArgument, defaultConfigFile)):
@@ -72,8 +78,9 @@ class applicationConfiguration:
                 self.config.read(self.passedArguments.get(configFileArgument, defaultConfigFile))
              else:
                  print('File does not exist:', self.passedArguments.get(configFileArgument, defaultConfigFile))
-          
+          '''
           self.overwriteConfiguration()
+
 
 
 
@@ -83,8 +90,8 @@ class applicationConfiguration:
               sL = list( self.getSpecificationSections() )
               
 
-           if not sL:
-              return(None)
+           #if not sL:
+           #   return(None)
             
            c = configparser.RawConfigParser(allow_no_value=True) 
            for s in sL:
@@ -98,8 +105,8 @@ class applicationConfiguration:
           if paramSpec is None:
              paramSpec = self.argumentSpecification
 
-          if self.argumentSpecification is None:
-             return(())
+          if paramSpec is None:
+             return(()) # return empty set
             
           scts = set()
           for p in paramSpec:
@@ -161,12 +168,12 @@ class applicationConfiguration:
               
 
 
+     
 
-
-      def parseArguments(self):
+      def handleArguments(self):
 
           if self.argumentSpecification is None:
-             return(None)
+             return({})
             
           seenSwitches = []
           seenParamNames = []
@@ -196,5 +203,42 @@ class applicationConfiguration:
               return(args)
           except Exception as argEx:
               print('Argument error:', str(argEx))
-              return( None )
+              return( {} )
+
+
+         
+
+      def handleConfigurationFile(self, cfgFile): 
+
+          cfg = self.defaultConfiguration()
+
+          print('>>> Loading file', cfgFile)
+          if os.path.exists( cfgFile ):
+                cfg = configparser.RawConfigParser(allow_no_value=True)
+                cfg.read(cfgFile)
+
+          return(cfg)      
+          
+
+
+
+
+
+# Singleton (or the Highlander: there can only be one)
+class appConfig(applicationConfiguration):
+      
+      instance = None
+
+      def __new__(cls, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):
+        if cls.instance is None:
+            cls.instance = super().__new__(cls)
+            print('\tCreating instance')
+
+        print('\tReturning instance')
+        return cls.instance
+
+
+      def __init__(self, argSpec=None, configFileArgument='config', defaultConfigFile='default.conf'):          
+          super().__init__(argSpec, configFileArgument, defaultConfigFile)
+   
 

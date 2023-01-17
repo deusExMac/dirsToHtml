@@ -243,7 +243,7 @@ def printConfiguation(cfg):
 def main():
 
   # Next is for testing purposes only; to check applicationConfiguration class  
-  ''' 
+   
   pL = []
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'paramname':'config', 'default':'fsNavigator.conf'}} )
   pL.append( {'param': {'section' : 'sec1', 'datatype': 'int', 'switch': '-k', 'paramname':'numclusters', 'default':''}} )
@@ -252,20 +252,24 @@ def main():
   pL.append( {'param': {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'paramname':'maxlevel', 'default':''}} )
   pL.append( {'param': {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'paramname':'nonrecursive', 'default':''}} )
   pL.append( {'param': {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'paramname':'displayoutput', 'default':''}} )
-  conf = applicationConfiguration.applicationConfiguration(argSpec=pL)
-  print( conf.getSpecificationSections() )
+
+  conf = applicationConfiguration.appConfig(argSpec=pL)
+  #print( conf.getSpecificationSections() )
   
   conf.printConfiguration()
 
-  anotherConf = applicationConfiguration.applicationConfiguration()
+
+  print(40*'==') 
+  anotherConf = applicationConfiguration.appConfig()
 
   #conf.overwriteConfiguration()
-  print(40*'==')
-  conf.printConfiguration()
-  print(40*'++')
+  
+  #conf.printConfiguration()
+  #print(40*'++')
   anotherConf.printConfiguration()
+  print(40*'++')
   sys.exit(-10)
-  '''
+  
   
   # 
   # Parse command line arguments - if any
