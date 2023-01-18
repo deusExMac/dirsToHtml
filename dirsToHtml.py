@@ -245,7 +245,7 @@ def main():
   # Next is for testing purposes only; to check applicationConfiguration class  
    
   pL = []
-  pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'paramname':'config', 'default':'fsNavigator.conf'}} )
+  #pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'paramname':'config', 'default':'fsNavigator.conf'}} )
   pL.append( {'param': {'section' : 'sec1', 'datatype': 'int', 'switch': '-k', 'paramname':'numclusters', 'default':''}} )
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-j', 'paramname':'numiterations', 'default':'1000'}} )
   pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-h', 'paramname':'mounia', 'default':'False'}} )
