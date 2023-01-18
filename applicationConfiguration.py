@@ -249,37 +249,36 @@ class appConfig(applicationConfiguration):
    
 
 
-########################################
+########################################################
 #
 #
 #     commandArguments
+#     Parsing command line arguments
+#     ONLY for application shells.
+#
+#     NOT for arguments passed via the OS
+#
 #     TODO: Not tested. 
 #   
-#######################################
+#######################################################
 
 class commandArguments:
 
-      def __init__(sef, argSpec=[], cmdString='', cmdList=[], sep=' '):
-          self.separator = sep
-          self.commandString = cmdString
-          self.argumentList = cmdList
+     
 
-          self.argumentSpecification = argSpec
-          self.passedArguments = self.handleArguments()
+     @staticmethod
+     def prepareArguments(argSpec=[]):
+         pass
+      
 
-
-
-
-      def handleArguments(self):
-
-          if self.argumentSpecification is None:
-             return({})
-            
+     @staticmethod
+     def parseListArguments(argSpec=[], argList=[]):
+         
           seenSwitches = []
           seenParamNames = []
           cmdArgs = argparse.ArgumentParser(description='Command line arguments', add_help=False)
           #d1 = {'param': {'section' : 'sectionname', 'datatype': 'bool', 'switch': '-k', 'paramname':'someuniquename', 'default':''}}
-          for p in self.argumentSpecification:
+          for p in argSpec:
                # Check if switch and/or paramname has been seen again i.e.
                # is duplicate. Duplicate switches/parameter names are fatal and
                # argument parsing stops.
@@ -298,16 +297,23 @@ class commandArguments:
                seenParamNames.append(p['param']['paramname'].lower() )
                
           try:
-              if self.argumentList:
-                 #print('Parsing existing arg list')   
-                 args = vars( cmdArgs.parse_args(self.argumentList) )
-              elif self.commandString != '':
-                   args = vars( cmdArgs.parse_args( self.commandString.split(self.separator)[1:]) )  
-              else:   
-                 args = {}
-                 
+                
+              args = vars( cmdArgs.parse_args(argList) )
+
+                  
               return(args)
             
           except Exception as argEx:
               print('Argument error:', str(argEx))
               return( {} )    
+
+
+
+
+     @staticmethod
+     def parseStringArguments(argSpec=[], argString='', sep=' ', startPos=1):
+            
+          if argString is None:
+             return( {} )   
+
+          return( commandArguments.parseListArguments( argSpec=argSpec, argList=argString.split(sep)[startPos:] ) )

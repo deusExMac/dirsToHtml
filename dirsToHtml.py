@@ -268,7 +268,16 @@ def main():
   #print(40*'++')
   anotherConf.printConfiguration()
   print(40*'++')
+
+  s = input('Give command line command: ')
+  aaa = applicationConfiguration.commandArguments.parseStringArguments(argSpec=pL, argString=s)
+  print(aaa)
   sys.exit(-10)
+
+
+
+
+
   
   
   # 
