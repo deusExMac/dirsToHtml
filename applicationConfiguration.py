@@ -57,7 +57,7 @@ print(s1.c2)
 
 class applicationConfiguration:
 
-      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', conf=None):
+      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):
    
                     
           self.argumentSpecification = argSpec
@@ -65,8 +65,9 @@ class applicationConfiguration:
           
           
           self.passedArguments = self.handleArguments()
-          if conf is not None:
-             self.config = conf
+          if cfg is not None:
+             print('Setting external configuration. Not loading from file...')    
+             self.config = cfg
           else:   
              print('Calling handleConfigurationFile with', self.passedArguments.get(configFileArgument, defaultConfigFile))
              self.config = self.handleConfigurationFile( self.passedArguments.get(configFileArgument, defaultConfigFile) )
@@ -243,7 +244,7 @@ class appConfig(applicationConfiguration):
       
       instance = None
 
-      def __new__(cls, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):
+      def __new__(cls, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
             print('\tCreating instance')
@@ -252,8 +253,8 @@ class appConfig(applicationConfiguration):
         return cls.instance
 
 
-      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):          
-          super().__init__(argSpec, argList, configFileArgument, defaultConfigFile)
+      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):          
+          super().__init__(argSpec, argList, configFileArgument, defaultConfigFile, cfg)
    
 
 

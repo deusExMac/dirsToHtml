@@ -255,7 +255,11 @@ def main():
   pL.append( {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'argname':'nonrecursive', 'nargs':'?', 'default':''} )
   pL.append( {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'argname':'displayoutput', 'nargs':'?', 'default':''} )
   pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '-sonia', 'argname':'argsonia', 'nargs':'?', 'default':''} )
-  conf = applicationConfiguration.appConfig(argSpec=pL)
+
+  config = generateDefaultConfiguration()
+  config.read('fsNavigator.conf')
+  
+  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=config)
   #print( conf.getSpecificationSections() )
   
   conf.printConfiguration()
