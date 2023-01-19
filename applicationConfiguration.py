@@ -57,7 +57,7 @@ print(s1.c2)
 
 class applicationConfiguration:
 
-      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf'):
+      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', conf=None):
    
                     
           self.argumentSpecification = argSpec
@@ -65,8 +65,11 @@ class applicationConfiguration:
           
           
           self.passedArguments = self.handleArguments()
-          print('Calling handleConfigurationFile with', self.passedArguments.get(configFileArgument, defaultConfigFile))
-          self.config = self.handleConfigurationFile( self.passedArguments.get(configFileArgument, defaultConfigFile) )
+          if conf is not None:
+             self.config = conf
+          else:   
+             print('Calling handleConfigurationFile with', self.passedArguments.get(configFileArgument, defaultConfigFile))
+             self.config = self.handleConfigurationFile( self.passedArguments.get(configFileArgument, defaultConfigFile) )
 
           ''' 
           self.config = self.defaultConfiguration()
@@ -203,15 +206,9 @@ class applicationConfiguration:
                seenParamNames.append(p['argname'].lower() )
                
           try:
-              '''
-              if self.argumentList is not None:
-                 print('Parsing existing arg list')   
-                 args = vars( cmdArgs.parse_args(self.argumentList) )
-              else:
-              '''
+                
               knownArgs = cmdArgs.parse_args()
               args = vars( knownArgs )
-              #uargs = vars( unknownArgs )
               print('\t\t PARSED: Found these arguments:', args)
                  
               return(args)
@@ -260,6 +257,12 @@ class appConfig(applicationConfiguration):
    
 
 
+
+
+
+
+
+
 ########################################################
 #
 #
@@ -274,8 +277,6 @@ class appConfig(applicationConfiguration):
 #######################################################
 
 class commandArguments:
-
-     
 
      @staticmethod
      def prepareArguments(argSpec=[]):
@@ -294,10 +295,10 @@ class commandArguments:
                # is duplicate. Duplicate switches/parameter names are fatal and
                # argument parsing stops.
                if p['switch'] in seenSwitches:
-                  raise Exception("Dublicate switch", p['switch'], "detected.") 
+                  raise Exception("Duplicate switch", p['switch'], "detected.") 
 
                if p['argname'].lower() in seenSwitches:
-                  raise Exception("Dublicate parameter name", p['switch'], "detected.") 
+                  raise Exception("Duplicate parameter name", p['switch'], "detected.") 
 
                if p['datatype'].lower() == 'boolean':
                   cmdArgs.add_argument(p['switch'], '--' + p['argname'], action='store_true') 
