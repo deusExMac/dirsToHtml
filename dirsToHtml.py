@@ -242,6 +242,8 @@ def printConfiguation(cfg):
 
 def main():
 
+
+  '''
   # Next is for testing purposes only; to check applicationConfiguration class  
    
   pL = []
@@ -252,7 +254,7 @@ def main():
   pL.append( {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'argname':'maxlevel', 'nargs':'?', 'default':''} )
   pL.append( {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'argname':'nonrecursive', 'nargs':'?', 'default':''} )
   pL.append( {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'argname':'displayoutput', 'nargs':'?', 'default':''} )
-
+  pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '-sonia', 'argname':'argsonia', 'nargs':'?', 'default':''} )
   conf = applicationConfiguration.appConfig(argSpec=pL)
   #print( conf.getSpecificationSections() )
   
@@ -274,7 +276,7 @@ def main():
   aaa = applicationConfiguration.commandArguments.parseStringArguments(argSpec=pL, argString=s)
   print(aaa)
   sys.exit(-10)
-
+  '''
 
 
 

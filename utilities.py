@@ -28,7 +28,7 @@ import clrprint
 # TODO: do an aligned version of printPath???
 
 def printPath(parent, resourceName, delim, color='red'):
-    print( parent,'/', sep='', end='')
+    print( os.path.normpath(parent+'\\'), sep='', end='')
     parts = resourceName.split(delim)
     for idx, p in enumerate(parts):
         if idx%2 == 1:

@@ -161,8 +161,8 @@ class applicationConfiguration:
               if argSpec['section'].lower() not in self.config.sections():
                  self.config.add_section(argSpec['section'])
 
-              cValue = self.config.get(argSpec['section'], k, fallback=None)
-              if cValue is None:
+              confValue = self.config.get(argSpec['section'], k, fallback=None)
+              if confValue is None:
                  print('\tSection [', argSpec['section'], '] Parameter [', k, '] not found in configuration')   
               
               if argSpec['datatype'].lower() == 'boolean':
