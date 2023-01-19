@@ -108,15 +108,15 @@ class applicationConfiguration:
             
           scts = set()
           for p in paramSpec:
-              scts.add( p['param']['section'].lower() )
+              scts.add( p['section'].lower() )
 
           return(scts)    
 
 
 
-      def getParameterByName( self, paramName ):
+      def getArgumentSpecificationByName( self, paramName ):
           for p in self.argumentSpecification:
-              if p['param']['paramname'].lower() == paramName.lower():
+              if p['argname'].lower() == paramName.lower():
                  return(p)
 
           return(None)      
@@ -146,23 +146,30 @@ class applicationConfiguration:
             
           for k,v in self.passedArguments.items():
               
-                              
-              argSpec = self.getParameterByName(k)
+              argSpec = self.getArgumentSpecificationByName(k)
               if argSpec is None:
                  print('No such specification found:', k)
                  raise Exception("No argument specification for", k)
 
-              if isinstance(v, str) and v.strip() == '':
+              if v is None:
+                 print('\tSection [', argSpec['section'], '] Parameter [', k, '] NOT SET in arguments')      
                  continue
+            
+              #if isinstance(v, str) and v.strip() == '':
+              #   continue
                  
-              if argSpec['param']['section'].lower() not in self.config.sections():
-                 self.config.add_section(argSpec['param']['section'])
+              if argSpec['section'].lower() not in self.config.sections():
+                 self.config.add_section(argSpec['section'])
 
-              if argSpec['param']['datatype'].lower() == 'boolean':
+              cValue = self.config.get(argSpec['section'], k, fallback=None)
+              if cValue is None:
+                 print('\tSection [', argSpec['section'], '] Parameter [', k, '] not found in configuration')   
+              
+              if argSpec['datatype'].lower() == 'boolean':
                  if self.passedArguments[k]:  
-                    self.config.set(argSpec['param']['section'], k, 'True') 
+                    self.config.set(argSpec['section'], k, 'True') 
               else:    
-                 self.config.set(argSpec['param']['section'], k, v)
+                 self.config.set(argSpec['section'], k, v)
               
 
 
@@ -175,33 +182,37 @@ class applicationConfiguration:
             
           seenSwitches = []
           seenParamNames = []
-          cmdArgs = argparse.ArgumentParser(description='Command line arguments', add_help=False)
-          #d1 = {'param': {'section' : 'sectionname', 'datatype': 'bool', 'switch': '-k', 'paramname':'someuniquename', 'default':''}}
+          cmdArgs = argparse.ArgumentParser(description='Command line arguments', add_help=False)          
           for p in self.argumentSpecification:
                # Check if switch and/or paramname has been seen again i.e.
                # is duplicate. Duplicate switches/parameter names are fatal and
                # argument parsing stops.
-               if p['param']['switch'] in seenSwitches:
-                  raise Exception("Dublicate switch", p['param']['switch'], "detected.") 
+               if p['switch'] in seenSwitches:
+                  raise Exception("Dublicate switch", p['switch'], "detected.") 
 
-               if p['param']['paramname'].lower() in seenSwitches:
-                  raise Exception("Dublicate parameter name", p['param']['switch'], "detected.") 
+               if p['argname'].lower() in seenSwitches:
+                  raise Exception("Dublicate parameter name", p['switch'], "detected.") 
 
-               if p['param']['datatype'].lower() == 'boolean':
-                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], action='store_true') 
+               #print('\tAdding for', p['argname'], 'nargs=', p['nargs'])
+               if p['datatype'].lower() == 'boolean':
+                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], action='store_true') 
                else:    
-                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], default=p['param']['default'])
+                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], nargs='?') #default=p['default']
 
-               seenSwitches.append( p['param']['switch'] )
-               seenParamNames.append(p['param']['paramname'].lower() )
+               seenSwitches.append( p['switch'] )
+               seenParamNames.append(p['argname'].lower() )
                
           try:
+              '''
               if self.argumentList is not None:
                  print('Parsing existing arg list')   
                  args = vars( cmdArgs.parse_args(self.argumentList) )
-              else:   
-                 knownArgs, unknownArgs = cmdArgs.parse_known_args()
-                 args = vars( knownArgs )
+              else:
+              '''
+              knownArgs = cmdArgs.parse_args()
+              args = vars( knownArgs )
+              #uargs = vars( unknownArgs )
+              print('\t\t PARSED: Found these arguments:', args)
                  
               return(args)
             
@@ -282,19 +293,19 @@ class commandArguments:
                # Check if switch and/or paramname has been seen again i.e.
                # is duplicate. Duplicate switches/parameter names are fatal and
                # argument parsing stops.
-               if p['param']['switch'] in seenSwitches:
-                  raise Exception("Dublicate switch", p['param']['switch'], "detected.") 
+               if p['switch'] in seenSwitches:
+                  raise Exception("Dublicate switch", p['switch'], "detected.") 
 
-               if p['param']['paramname'].lower() in seenSwitches:
-                  raise Exception("Dublicate parameter name", p['param']['switch'], "detected.") 
+               if p['argname'].lower() in seenSwitches:
+                  raise Exception("Dublicate parameter name", p['switch'], "detected.") 
 
-               if p['param']['datatype'].lower() == 'boolean':
-                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], action='store_true') 
+               if p['datatype'].lower() == 'boolean':
+                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], action='store_true') 
                else:    
-                  cmdArgs.add_argument(p['param']['switch'], '--' + p['param']['paramname'], default=p['param']['default'])
+                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], default=p['default'])
 
-               seenSwitches.append( p['param']['switch'] )
-               seenParamNames.append(p['param']['paramname'].lower() )
+               seenSwitches.append( p['switch'] )
+               seenParamNames.append(p['argname'].lower() )
                
           try:
                 
