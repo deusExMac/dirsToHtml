@@ -159,9 +159,10 @@ class applicationConfiguration:
                  print('\tSection [', argSpec['section'], '] Parameter [', k, '] NOT SET in arguments')      
                  continue
             
-              #if isinstance(v, str) and v.strip() == '':
-              #   continue
-                 
+              # At this point, the argument has a value. 
+
+              # Check if the section, specified by the ARGUMENT
+              # exists in the loaded CONFIGURATION. If not, create it the section. 
               if argSpec['section'].lower() not in self.config.sections():
                  self.config.add_section(argSpec['section'])
 

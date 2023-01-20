@@ -257,9 +257,10 @@ def main():
   pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '-sonia', 'argname':'argsonia', 'nargs':'?', 'default':''} )
 
   config = generateDefaultConfiguration()
+  
   config.read('fsNavigator.conf')
   
-  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=config)
+  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=None)
   #print( conf.getSpecificationSections() )
   
   conf.printConfiguration()
