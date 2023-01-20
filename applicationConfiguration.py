@@ -57,7 +57,7 @@ print(s1.c2)
 
 class applicationConfiguration:
 
-      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):
+      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf', cfg=None):
    
                     
           self.argumentSpecification = argSpec
@@ -167,7 +167,8 @@ class applicationConfiguration:
                     self.config.set(argSpec['section'], k, 'True') 
               else:
                  if argSpec['section'].lower() not in self.config.sections():
-                       self.config.add_section(argSpec['section'])      
+                       self.config.add_section(argSpec['section'])
+                  
                  self.config.set(argSpec['section'], k, v)
               
 
@@ -195,8 +196,11 @@ class applicationConfiguration:
                #print('\tAdding for', p['argname'], 'nargs=', p['nargs'])
                if p['datatype'].lower() == 'boolean':
                   cmdArgs.add_argument(p['switch'], '--' + p['argname'], action='store_true') 
-               else:    
-                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], nargs=p['nargs']) #default=p['default']
+               else:
+                  if p['nargs'] == argparse.REMAINDER:
+                     cmdArgs.add_argument(p['argname'], nargs=p['nargs'], default=p['default']) 
+                  else:
+                     cmdArgs.add_argument(p['switch'], '--' + p['argname'], nargs=p['nargs'], default=p['default']) #default=p['default']
 
                seenSwitches.append( p['switch'] )
                seenParamNames.append(p['argname'].lower() )
@@ -219,7 +223,10 @@ class applicationConfiguration:
       def handleConfigurationFile(self, cfgFile): 
 
           cfg = self.defaultConfiguration()
-
+          if cfgFile is None:
+             return(cfg)   
+          #cfg = configparser.RawConfigParser(allow_no_value=True)
+          
           print('>>> Loading file', cfgFile)
           if not os.path.exists( cfgFile ):
              print('File', cfgFile, 'not found.')   
@@ -233,13 +240,21 @@ class applicationConfiguration:
 
 
 
-
+########################################################
+#
+#
 # Singleton (or the Highlander: there can only be one)
+#
+#      
+#   
+#######################################################
+
+
 class appConfig(applicationConfiguration):
       
       instance = None
 
-      def __new__(cls, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):
+      def __new__(cls, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf', cfg=None):
         if cls.instance is None:
             cls.instance = super().__new__(cls)
             print('\tCreating instance')
@@ -248,7 +263,7 @@ class appConfig(applicationConfiguration):
         return cls.instance
 
 
-      def __init__(self, argSpec=None, argList=None, configFileArgument='', defaultConfigFile='default.conf', cfg=None):          
+      def __init__(self, argSpec=None, argList=None, configFileArgument='config', defaultConfigFile='default.conf', cfg=None):          
           super().__init__(argSpec, argList, configFileArgument, defaultConfigFile, cfg)
    
 
@@ -260,7 +275,6 @@ class appConfig(applicationConfiguration):
 
 
 ########################################################
-#
 #
 #     commandArguments
 #     Parsing command line arguments

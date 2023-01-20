@@ -243,24 +243,26 @@ def printConfiguation(cfg):
 def main():
 
 
-  '''
+  
   # Next is for testing purposes only; to check applicationConfiguration class  
    
   pL = []
-  #pL.append( {'param': {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'paramname':'config', 'default':'fsNavigator.conf'}} )
-  pL.append( {'section' : 'sec1', 'datatype': 'int', 'switch': '-k', 'argname':'numclusters', 'nargs':'?', 'default':''} )
-  pL.append( {'section' : 'sec2', 'datatype': 'str', 'switch': '-j', 'argname':'numiterations', 'nargs':'?', 'default':'1000'} )
+  pL.append( {'section' : 'sec2', 'datatype': 'str', 'switch': '-c', 'argname':'config', 'nargs':'?', 'default':'fsNavigator.conf'} )
+  pL.append( {'section' : 'sec1', 'datatype': 'int', 'switch': '-k', 'argname':'numclusters', 'nargs':'?', 'default':None} )
+  pL.append( {'section' : 'sec2', 'datatype': 'str', 'switch': '-j', 'argname':'numiterations', 'nargs':'?', 'default':None} )
   pL.append( {'section' : 'sec2', 'datatype': 'str', 'switch': '-h', 'argname':'mounia', 'nargs':'?', 'default':'False'} )
-  pL.append( {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'argname':'maxlevel', 'nargs':'?', 'default':''} )
+  pL.append( {'section' : 'traversal', 'datatype': 'int', 'switch': '-L', 'argname':'maxlevel', 'nargs':'?', 'default':None} )
   pL.append( {'section' : 'traversal', 'datatype': 'boolean', 'switch': '-NR', 'argname':'nonrecursive', 'nargs':'?', 'default':''} )
-  pL.append( {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'argname':'displayoutput', 'nargs':'?', 'default':''} )
-  pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '-sonia', 'argname':'argsonia', 'nargs':'?', 'default':''} )
+  pL.append( {'section' : 'export', 'datatype': 'boolean', 'switch': '-D', 'argname':'displayoutput', 'nargs':'?', 'default':None} )
+  pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '-sonia', 'argname':'argsonia', 'nargs':'?', 'default':None} )
+  pL.append( {'section' : 'export', 'datatype': 'str', 'switch': '', 'argname':'searchquery', 'nargs':argparse.REMAINDER, 'default':[]} )
+
 
   config = generateDefaultConfiguration()
   
   config.read('fsNavigator.conf')
   
-  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=config)
+  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=None)
   #print( conf.getSpecificationSections() )
 
   print(50*'()')
@@ -283,7 +285,7 @@ def main():
   print(aaa)
   sys.exit(-10)
   
-  '''
+  
 
 
 
