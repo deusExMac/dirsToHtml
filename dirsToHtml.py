@@ -243,7 +243,7 @@ def printConfiguation(cfg):
 def main():
 
 
-  
+  '''
   # Next is for testing purposes only; to check applicationConfiguration class  
    
   pL = []
@@ -260,9 +260,10 @@ def main():
   
   config.read('fsNavigator.conf')
   
-  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=None)
+  conf = applicationConfiguration.appConfig(argSpec=pL, cfg=config)
   #print( conf.getSpecificationSections() )
-  
+
+  print(50*'()')
   conf.printConfiguration()
 
   sys.exit(-10)
@@ -282,7 +283,7 @@ def main():
   print(aaa)
   sys.exit(-10)
   
-
+  '''
 
 
 

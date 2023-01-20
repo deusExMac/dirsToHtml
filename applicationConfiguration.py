@@ -72,15 +72,7 @@ class applicationConfiguration:
              print('Calling handleConfigurationFile with', self.passedArguments.get(configFileArgument, defaultConfigFile))
              self.config = self.handleConfigurationFile( self.passedArguments.get(configFileArgument, defaultConfigFile) )
 
-          ''' 
-          self.config = self.defaultConfiguration()
-          if self.passedArguments is not None:
-             if os.path.exists(self.passedArguments.get(configFileArgument, defaultConfigFile)):
-                self.config = configparser.RawConfigParser(allow_no_value=True)
-                self.config.read(self.passedArguments.get(configFileArgument, defaultConfigFile))
-             else:
-                 print('File does not exist:', self.passedArguments.get(configFileArgument, defaultConfigFile))
-          '''
+          
           self.overwriteConfiguration()
 
 
@@ -147,7 +139,8 @@ class applicationConfiguration:
 
           if self.argumentSpecification is None:
               return(None)
-            
+
+          # Iterate over all passed arguments  
           for k,v in self.passedArguments.items():
               
               argSpec = self.getArgumentSpecificationByName(k)
@@ -160,20 +153,21 @@ class applicationConfiguration:
                  continue
             
               # At this point, the argument has a value. 
-
-              # Check if the section, specified by the ARGUMENT
-              # exists in the loaded CONFIGURATION. If not, create it the section. 
-              if argSpec['section'].lower() not in self.config.sections():
-                 self.config.add_section(argSpec['section'])
-
+              
               confValue = self.config.get(argSpec['section'], k, fallback=None)
               if confValue is None:
                  print('\tSection [', argSpec['section'], '] Parameter [', k, '] not found in configuration')   
               
               if argSpec['datatype'].lower() == 'boolean':
-                 if self.passedArguments[k]:  
+                 if self.passedArguments[k]:
+                    # Check if the section, specified by the ARGUMENT
+                    # exists in the loaded CONFIGURATION. If not, create it the section. 
+                    if argSpec['section'].lower() not in self.config.sections():
+                       self.config.add_section(argSpec['section'])   
                     self.config.set(argSpec['section'], k, 'True') 
-              else:    
+              else:
+                 if argSpec['section'].lower() not in self.config.sections():
+                       self.config.add_section(argSpec['section'])      
                  self.config.set(argSpec['section'], k, v)
               
 
@@ -202,7 +196,7 @@ class applicationConfiguration:
                if p['datatype'].lower() == 'boolean':
                   cmdArgs.add_argument(p['switch'], '--' + p['argname'], action='store_true') 
                else:    
-                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], nargs='?') #default=p['default']
+                  cmdArgs.add_argument(p['switch'], '--' + p['argname'], nargs=p['nargs']) #default=p['default']
 
                seenSwitches.append( p['switch'] )
                seenParamNames.append(p['argname'].lower() )
