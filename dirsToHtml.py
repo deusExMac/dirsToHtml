@@ -243,7 +243,7 @@ def printConfiguation(cfg):
 def main():
 
 
-  
+  '''
   # Next is for testing purposes only; to check applicationConfiguration class  
    
   pL = []
@@ -284,7 +284,7 @@ def main():
   aaa = applicationConfiguration.commandArguments.parseStringArguments(argSpec=pL, argString=s)
   print(aaa)
   sys.exit(-10)
-  
+  '''
   
 
 
