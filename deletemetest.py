@@ -92,34 +92,38 @@ with keyboard.Listener(on_press=on_press, on_release=on_release) as listener:
 showFiles = False
 breakINTR = False
 
+'''
 def handler(signum):
    if signum == signal.SIGUSR1:
        print('user defined interrupt!')
        breakINTR = True
 
 signal.signal(signal.SIGUSR1, handler)
-
+'''
 
 
 
 def compare( dir1, dir2, xP='' ):
     global   breakINTR
-    
-    print(dir1, dir2)
+
+    # make absolute
+    absDir1 = os.path.abspath(dir1)
+    absDir2 = os.path.abspath(dir2)
+    print(absDir1, absDir2)
     nonExistent = BloomFilter(max_elements=10000, error_rate=0.1)
     fsStats = {'nD':0, 'nDC':0, 'nDM':0, 'nDF':0, 'nF':0, 'nFC':0, 'nFM':0, 'nFF':0 }
     
     # traverse root directory, and list directories as dirs and files as files
     try:
           
-      for root, dirs, files in os.walk(dir1):
-
-        if breakINTR:
-           input('>>>')
-           breakINTR = False
+      for root, dirs, files in os.walk(absDir1):
            
            
         if xP!= '' and re.search(xP, root):  
+           continue
+
+        if root == absDir1:
+           clrprint('[SKIPPING]', clr='purple')
            continue
 
         fsStats['nD'] += 1
@@ -136,9 +140,10 @@ def compare( dir1, dir2, xP='' ):
         clrprint('[NO]', clr='o')
         
         # Get relative part           
-        rp = os.path.relpath(root, dir1)
-        print('\t', dir2 + os.sep + rp, end='')
-        if not os.path.isdir(dir2 + os.sep + rp):
+        rp = os.path.relpath(root, absDir1)
+        print(f'\t[RELATIVE PATH of {root} with {absDir1}]', rp)
+        print('\t', absDir2 + os.sep + rp, end='')
+        if not os.path.isdir(absDir2 + os.sep + rp):
            #print(root)
            clrprint(' [Does not exist]', clr='red')
            nonExistent.add( str(root) )
@@ -171,7 +176,7 @@ def compare( dir1, dir2, xP='' ):
 
 
 
-fsD = compare("/Users/manolistzagarakis/users", "/Users/manolistzagarakis/users-NEW", '\.svn')
+fsD = compare("exampleDir", "etc", '\.svn')
 print(fsD)
 sys.exit(-2)
 
