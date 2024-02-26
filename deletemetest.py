@@ -123,7 +123,7 @@ def compare( dir1, dir2, xP='' ):
            continue
 
         if root == absDir1:
-           clrprint('[SKIPPING]', clr='purple')
+           clrprint(f'[SKIPPING] {root}', clr='purple')
            continue
 
         fsStats['nD'] += 1
@@ -168,16 +168,24 @@ def compare( dir1, dir2, xP='' ):
 
 
 
+from  filecmp import dircmp
+
+def diffDirs(dir1, dir2, shallow=True):
+    result = dircmp(dir1, dir2)
+    #result.report()
+    return(result)
+    
+      
 
 
 
 
 
 
+#fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
+#clrprint(fsD, clr='green')
 
-
-fsD = compare("exampleDir", "etc", '\.svn')
-print(fsD)
+dff = diffDirs("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", False)
 sys.exit(-2)
 
 maxIter = 3
