@@ -176,16 +176,80 @@ def diffDirs(dir1, dir2, shallow=True):
     return(result)
     
       
+import os.path
+
+def is_same(dir1, dir2):
+    """
+    Compare two directory trees content.
+    Return False if they differ, True is they are the same.
+    """
+    compared = dircmp(dir1, dir2)
+    print(f'Comparison of {dir1} and {dir2}:')
+    print('\tleft_only:', compared.left_only)
+    print('\tright_only:', compared.right_only)
+    print('\tcommon:', compared.common_dirs)
+    
+    if (compared.left_only or compared.right_only or compared.diff_files 
+        or compared.funny_files):
+        return False
+      
+    for subdir in compared.common_dirs:
+        if not is_same(os.path.join(dir1, subdir), os.path.join(dir2, subdir)):
+            return False
+      
+    return True
+
+
+
+
+from os.path import join
+from filecmp import dircmp
+
+def handleDirectory(side='right', path=''):\
+    print(f'\t[{side}] {path}')
+
+
+
+
+def find_uncommon(L_dir, R_dir, dirOnly=False, dirHandler=None, fileHandler=None):
+    print(f'Doing {L_dir}, {R_dir}')
+    dcmp = dircmp(L_dir, R_dir)
+    if dirOnly:
+       L_only = [join(L_dir, f) for f in dcmp.left_only if os.path.isdir( join(L_dir, f)  )]
+       R_only = [join(R_dir, f) for f in dcmp.right_only if os.path.isdir( join(R_dir, f)  )]  
+    else:       
+       L_only = [join(L_dir, f) for f in dcmp.left_only ]
+       R_only = [join(R_dir, f) for f in dcmp.right_only]
+
+    if dirHandler:  
+       for d in L_only:
+           dirHandler('left', d)
+       for d in R_only:
+           dirHandler('right', d)  
+
+       
+    
+    for sub_dir in dcmp.common_dirs:
+        new_L, new_R = find_uncommon(join(L_dir, sub_dir), join(R_dir, sub_dir), dirOnly, dirHandler, fileHandler)
+        L_only.extend(new_L)
+        R_only.extend(new_R)
+        
+    return L_only, R_only
 
 
 
 
 
+#r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
+#print(r)
+
+a, b = find_uncommon(L_dir="F:\\home\\econ\\2012-2013", R_dir="F:\\home\\econ\\2013-2014", dirOnly=True, dirHandler=handleDirectory)
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
 
-dff = diffDirs("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", False)
+#dff = diffDirs("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", False)
+#dff.report()
 sys.exit(-2)
 
 maxIter = 3
