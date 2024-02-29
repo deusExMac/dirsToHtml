@@ -205,7 +205,16 @@ def is_same(dir1, dir2):
 from os.path import join
 from filecmp import dircmp
 
-def handleDirectory(side='right', path=''):\
+
+def defaultDH(side, path):
+    print(f'\t[D] [{side}] {path}')
+
+def defaultFH(side, path):
+    print(f'\t[F] [{side}] {path}')
+
+
+
+def customDirectoryHandler(side='right', path=''):\
     print(f'\t[{side}] {path}')
 
 
@@ -215,8 +224,8 @@ def handleDirectory(side='right', path=''):\
 # Seems to work. More testing needed though.
 # 
 #
-def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=None, fileHandler=None):
-    print(f'Doing {L_dir}, {R_dir}')
+def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaultFH):
+    print(f'Comparing {L_dir}, {R_dir}', end='')
     dcmp = dircmp(L_dir, R_dir)
     if dirOnly:
        L_only = [join(L_dir, f) for f in dcmp.left_only if os.path.isdir( join(L_dir, f)  )]
@@ -231,7 +240,8 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=None, fileHandler=None):
        for d in R_only:
            dirHandler('right', d)  
 
-       
+    if (not L_only) and (not R_only):
+       print('   [Same content].')   
     
     for sub_dir in dcmp.common_dirs:
         new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), dirOnly, dirHandler, fileHandler)
@@ -247,7 +257,7 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=None, fileHandler=None):
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
 
-a, b = fsDiff(L_dir="F:\\home\\econ\\2012-2013", R_dir="F:\\home\\econ\\2015-2016", dirOnly=True, dirHandler=handleDirectory)
+a, b = fsDiff(L_dir="/Users/manolistzagarakis/users", R_dir="/Users/manolistzagarakis/users-NEW", dirOnly=True)
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
@@ -259,7 +269,7 @@ sys.exit(-2)
 maxIter = 3
 n = 0
 # traverse root directory, and list directories as dirs and files as files
-for root, dirs, files in os.walk("/Users/manolistzagarakis"):
+for root, dirs, files in os.walk("/Users/manolistzagarakis/users/"):
     path = root.split(os.sep)
     #print(path[1:])
     #print('[D]', os.path.abspath(os.sep.join(path[1:])) )
