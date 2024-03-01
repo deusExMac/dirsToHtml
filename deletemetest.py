@@ -202,6 +202,13 @@ def is_same(dir1, dir2):
 
 
 
+
+
+
+
+
+
+
 from os.path import join
 from filecmp import dircmp
 
@@ -234,12 +241,17 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaul
        L_only = [join(L_dir, f) for f in dcmp.left_only ]
        R_only = [join(R_dir, f) for f in dcmp.right_only]
 
+
+    # TODO: Is this correct?
+    #lc, rc = len(L_only), len(R_only)
+    
     if dirHandler:  
        for d in L_only:
            dirHandler('left', d)
        for d in R_only:
            dirHandler('right', d)  
 
+    # TODO: Check this...
     if (not L_only) and (not R_only):
        print('   [Same content].')   
     
