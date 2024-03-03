@@ -225,6 +225,7 @@ def customDirectoryHandler(side='right', path=''):\
     print(f'\t[{side}] {path}')
 
 
+totalFSObjects = 0
 
 #
 # Returns the differences between two directories in terms of files and directories
@@ -232,7 +233,13 @@ def customDirectoryHandler(side='right', path=''):\
 # 
 #
 def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaultFH):
-    print(f'Comparing {L_dir}, {R_dir}', end='')
+  global totalFSObjects
+
+  localTotal = 0
+  print(f'{40*"+"}\nComparing\n\t[{L_dir}]\n\tto\n\t[{R_dir}]\n')
+  # TODO: is this correct/
+  L_only, R_only = [], []
+  try:  
     dcmp = dircmp(L_dir, R_dir)
     if dirOnly:
        L_only = [join(L_dir, f) for f in dcmp.left_only if os.path.isdir( join(L_dir, f)  )]
@@ -253,14 +260,27 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaul
 
     # TODO: Check this...
     if (not L_only) and (not R_only):
-       print('   [Same content].')   
+       print('[Same content].')   
+
+    print(f'\t\tl_only={len(L_only)} r_only={len(R_only)} common={len(dcmp.common_dirs)}')
+    localTotal = len(L_only) + len(R_only) + len(dcmp.common_dirs)
     
+    print(f'{40*"-"}')
     for sub_dir in dcmp.common_dirs:
-        new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), dirOnly, dirHandler, fileHandler)
+        dirHandler('common', join(L_dir, sub_dir))  
+        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), dirOnly, dirHandler, fileHandler)
         L_only.extend(new_L)
         R_only.extend(new_R)
-        
-    return L_only, R_only
+        localTotal = localTotal + lt
+
+    print(f'returning {localTotal}')    
+    return localTotal, L_only, R_only
+
+  except KeyboardInterrupt:
+         print(f'\nInterupted. Terminating: Total:{localTotal} L:{len(L_only)} R:{len(R_only)}')
+         sys.exit(-2)
+          
+          
 
 
 
@@ -269,7 +289,7 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaul
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
 
-a, b = fsDiff(L_dir="/Users/manolistzagarakis/users", R_dir="/Users/manolistzagarakis/users-NEW", dirOnly=True)
+t, a, b = fsDiff(L_dir="exampleDir/someDir", R_dir="exampleDir/someDir2", dirOnly=True)
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
@@ -277,6 +297,14 @@ a, b = fsDiff(L_dir="/Users/manolistzagarakis/users", R_dir="/Users/manolistzaga
 #dff = diffDirs("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", False)
 #dff.report()
 sys.exit(-2)
+
+
+
+
+
+
+
+
 
 maxIter = 3
 n = 0
