@@ -213,16 +213,16 @@ from os.path import join
 from filecmp import dircmp
 
 
-def defaultDH(side, path):
-    print(f'\t[D] [{side}] {path}')
+def defaultDH(l=1, side='right', path=''):
+    print('\t'*l, f'[D] [{side}] {path}', sep='')
 
-def defaultFH(side, path):
-    print(f'\t[F] [{side}] {path}')
+def defaultFH(l=1, side='right', path=''):
+    print('\t'*l, f'[F] [{side}] {path}', sep='')
 
 
 
-def customDirectoryHandler(side='right', path=''):\
-    print(f'\t[{side}] {path}')
+def customDirectoryHandler(l=1, side='right', path=''):\
+    print('\t'*l, f'[{side}] {path}', sep='')
 
 
 totalFSObjects = 0
@@ -232,11 +232,13 @@ totalFSObjects = 0
 # Seems to work. More testing needed though.
 # 
 #
-def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaultFH):
+def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, dirHandler=defaultDH, fileHandler=defaultFH):
   global totalFSObjects
 
   localTotal = 0
-  print(f'{40*"+"}\nComparing\n\t[{L_dir}]\n\tto\n\t[{R_dir}]\n')
+  prefix = '\t'*lvl
+  print(prefix + f'{40*"+"}')
+  print(prefix, f'[{lvl}] Comparing\n', prefix, f'[{L_dir}]\n', prefix, 'to\n', prefix, f'[{R_dir}]\n', sep='')
   # TODO: is this correct/
   L_only, R_only = [], []
   try:  
@@ -248,36 +250,35 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaul
        L_only = [join(L_dir, f) for f in dcmp.left_only ]
        R_only = [join(R_dir, f) for f in dcmp.right_only]
 
-
-    # TODO: Is this correct?
-    #lc, rc = len(L_only), len(R_only)
-    
+   
     if dirHandler:  
        for d in L_only:
-           dirHandler('left', d)
+           dirHandler(lvl, 'left', d)
        for d in R_only:
-           dirHandler('right', d)  
+           dirHandler(lvl, 'right', d)  
 
     # TODO: Check this...
     if (not L_only) and (not R_only):
-       print('[Same content].')   
+       print(prefix + '[Same content].')   
 
-    print(f'\t\tl_only={len(L_only)} r_only={len(R_only)} common={len(dcmp.common_dirs)}')
+    print(prefix + f'l_only={len(L_only)} r_only={len(R_only)} common={len(dcmp.common_dirs)}')
     localTotal = len(L_only) + len(R_only) + len(dcmp.common_dirs)
     
-    print(f'{40*"-"}')
+    
     for sub_dir in dcmp.common_dirs:
-        dirHandler('common', join(L_dir, sub_dir))  
-        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), dirOnly, dirHandler, fileHandler)
+        dirHandler(lvl, 'common', join(L_dir, sub_dir))  
+        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), (lvl+1), dirOnly, dirHandler, fileHandler)
         L_only.extend(new_L)
         R_only.extend(new_R)
+        print(prefix,  f'>> From level below {lt}', sep='')
         localTotal = localTotal + lt
 
-    print(f'returning {localTotal}')    
+    print(prefix + f'returning {localTotal}')
+    print(prefix + f'{40*"-"}')
     return localTotal, L_only, R_only
 
   except KeyboardInterrupt:
-         print(f'\nInterupted. Terminating: Total:{localTotal} L:{len(L_only)} R:{len(R_only)}')
+         print(f'\nInterupted. Terminating: Total:{localTotal}')
          sys.exit(-2)
           
           
@@ -289,7 +290,7 @@ def fsDiff(L_dir, R_dir, dirOnly=False, dirHandler=defaultDH, fileHandler=defaul
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
 
-t, a, b = fsDiff(L_dir="exampleDir/someDir", R_dir="exampleDir/someDir2", dirOnly=True)
+t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/tzag", dirOnly=True)
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
