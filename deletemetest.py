@@ -225,6 +225,18 @@ def customDirectoryHandler(l=1, side='right', path=''):\
     print('\t'*l, f'[{side}] {path}', sep='')
 
 
+def matches(mF, fname):
+    #print(f'matchfilter:{mF} filename:{fname}') 
+    if mF == '' or mF is None:
+       return(True)
+
+    if re.search(mF, fname) is not None:
+       return(True)
+      
+    return(False)  
+
+
+
 totalFSObjects = 0
 
 #
@@ -232,7 +244,7 @@ totalFSObjects = 0
 # Seems to work. More testing needed though.
 # 
 #
-def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, dirHandler=defaultDH, fileHandler=defaultFH):
+def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaultDH, fileHandler=defaultFH):
   global totalFSObjects
 
   localTotal = 0
@@ -244,11 +256,11 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, dirHandler=defaultDH, fileHandler
   try:  
     dcmp = dircmp(L_dir, R_dir)
     if dirOnly:
-       L_only = [join(L_dir, f) for f in dcmp.left_only if os.path.isdir( join(L_dir, f)  )]
-       R_only = [join(R_dir, f) for f in dcmp.right_only if os.path.isdir( join(R_dir, f)  )]  
+       L_only = [join(L_dir, f) for f in dcmp.left_only if  os.path.isdir( join(L_dir, f)  ) and matches(matchFilter, f)  ]
+       R_only = [join(R_dir, f) for f in dcmp.right_only if os.path.isdir( join(R_dir, f)  ) and matches(matchFilter, f)]  
     else:       
-       L_only = [join(L_dir, f) for f in dcmp.left_only ]
-       R_only = [join(R_dir, f) for f in dcmp.right_only]
+       L_only = [join(L_dir, f) for f in dcmp.left_only if matches(matchFilter, f) ]
+       R_only = [join(R_dir, f) for f in dcmp.right_only if matches(matchFilter, f)]
 
    
     if dirHandler:  
@@ -267,7 +279,7 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, dirHandler=defaultDH, fileHandler
     
     for sub_dir in dcmp.common_dirs:
         dirHandler(lvl, 'common', join(L_dir, sub_dir))  
-        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), (lvl+1), dirOnly, dirHandler, fileHandler)
+        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), (lvl+1), dirOnly, matchFilter, dirHandler, fileHandler)
         L_only.extend(new_L)
         R_only.extend(new_R)
         print(prefix,  f'>> From level below {lt}', sep='')
@@ -290,7 +302,7 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, dirHandler=defaultDH, fileHandler
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
 
-t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/tzag", dirOnly=True)
+t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/", lvl=1, dirOnly=False, matchFilter='(?i)^(?!t|w|r|a).*')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
