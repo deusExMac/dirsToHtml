@@ -213,19 +213,52 @@ from os.path import join
 from filecmp import dircmp
 
 
-def defaultDH(l=1, side='right', path=''):
+def defaultDH(l=1, side='right', path='') -> None:
+    """
+      Default Directory Handler displaying only formatted side and path of Directories
+      
+      :param l: current level of traversal.
+      :param side: left or right sided directory the object specified by path belongs to
+      :param path: full path of object.
+      :return: None
+    """
     print('\t'*l, f'[D] [{side}] {path}', sep='')
 
+
+
 def defaultFH(l=1, side='right', path=''):
+    """
+      Default File Handler displaying only formatted side and path of Files
+      
+      :param l: current level of traversal.
+      :param side: left or right sided directory the object specified by path belongs to
+      :param path: full path of object.
+      :return: None
+    """  
     print('\t'*l, f'[F] [{side}] {path}', sep='')
 
 
 
-def customDirectoryHandler(l=1, side='right', path=''):\
+
+
+
+def customDirectoryHandler(l=1, side='right', path='') -> None:
     print('\t'*l, f'[{side}] {path}', sep='')
 
 
-def matches(mF, fname):
+
+
+
+
+def matches(mF, fname) -> bool:
+    """
+      Returns if the file name matches pattern specified in mF
+      
+      :param mF: regular expression a file name must match. Empty string for no filter.
+      :param fname: file name to check regular expression agains. NOTE: No full path expected
+      :return: Boolean indicating if file name matches pattern
+    """
+    
     #print(f'matchfilter:{mF} filename:{fname}') 
     if mF == '' or mF is None:
        return(True)
@@ -236,21 +269,33 @@ def matches(mF, fname):
     return(False)  
 
 
-
-totalFSObjects = 0
-
 #
-# Returns the differences between two directories in terms of files and directories
+#
+# Returns only the differences between two directories in terms of files and directories
 # Seems to work. More testing needed though.
 # 
 #
 def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaultDH, fileHandler=defaultFH):
-  global totalFSObjects
+
+  """
+       Traverses recursively directories and calculates the differences (in terms of directories and files) between
+       two directories.
+      
+      :param L_dir: One directory path- left side
+      :param fname: Second directory path - right side
+      :param lvl: Current level of traversal
+      :param dirOnly: If True calculates differences for directories only. Otherwise, also files are taken
+      into consideration.
+      :param matchFilter: regular expression directory and file names must match. Empty string indicates no filter.
+      :param dirHandler: Function to call for each directory encountered
+      :param fileHandler:Function to call for each file encountered 
+      :return: tuple indicatins status, total objects matching, list of objects only in left side, list of objects only in right side
+  """
 
   localTotal = 0
   prefix = '\t'*lvl
-  print(prefix + f'{40*"+"}')
-  print(prefix, f'[{lvl}] Comparing\n', prefix, f'[{L_dir}]\n', prefix, 'to\n', prefix, f'[{R_dir}]\n', sep='')
+  
+  print('\t'*lvl, f'{40*"+"}\n', '\t'*lvl, f'[L:{lvl}] Comparing\n', prefix, f'[{L_dir}]\n', prefix, 'to\n', prefix, f'[{R_dir}]\n', sep='')
   # TODO: is this correct/
   L_only, R_only = [], []
   try:  
@@ -262,36 +307,54 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
        L_only = [join(L_dir, f) for f in dcmp.left_only if matches(matchFilter, f) ]
        R_only = [join(R_dir, f) for f in dcmp.right_only if matches(matchFilter, f)]
 
-   
+
+    # TODO: This is not correct. Recheck and redesign it   
     if dirHandler:  
        for d in L_only:
-           dirHandler(lvl, 'left', d)
+           if os.path.isdir(d):   
+              dirHandler(lvl, 'left', d)
+           else:
+              fileHandler(lvl, 'left', d)
+              
        for d in R_only:
-           dirHandler(lvl, 'right', d)  
+           if os.path.isdir(d):   
+              dirHandler(lvl, 'right', d)
+           else:
+              fileHandler(lvl, 'right', d)  
+            
+
 
     # TODO: Check this...
     if (not L_only) and (not R_only):
-       print(prefix + '[Same content].')   
+       print('\t'*lvl + '[Same content].')   
 
-    print(prefix + f'l_only={len(L_only)} r_only={len(R_only)} common={len(dcmp.common_dirs)}')
+    print('\t'*lvl + f'l_only={len(L_only)} r_only={len(R_only)} common={len(dcmp.common_dirs)}')
     localTotal = len(L_only) + len(R_only) + len(dcmp.common_dirs)
     
-    
+    # Handle directories having common names. I.e. traverse these and
+    # find their differences
     for sub_dir in dcmp.common_dirs:
         dirHandler(lvl, 'common', join(L_dir, sub_dir))  
-        lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), (lvl+1), dirOnly, matchFilter, dirHandler, fileHandler)
+        s, lt, new_L, new_R = fsDiff(join(L_dir, sub_dir), join(R_dir, sub_dir), (lvl+1), dirOnly, matchFilter, dirHandler, fileHandler)
         L_only.extend(new_L)
         R_only.extend(new_R)
-        print(prefix,  f'>> From level below {lt}', sep='')
+        print('\t'*lvl,  f'>> From level below {lt}', sep='')
         localTotal = localTotal + lt
 
-    print(prefix + f'returning {localTotal}')
-    print(prefix + f'{40*"-"}')
-    return localTotal, L_only, R_only
+    print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
+    return 0, localTotal, L_only, R_only
 
-  except KeyboardInterrupt:
-         print(f'\nInterupted. Terminating: Total:{localTotal}')
-         sys.exit(-2)
+  except KeyboardInterrupt as kI:
+         #
+         # Do a full/cascading unrolling. raising exceptions until
+         # top level is reached; from which it is returned
+         #
+         print(f'\n\n[L:{lvl}] Interupted in {L_dir} {R_dir}. Terminating: Total:{localTotal}')
+         if lvl > 1:
+            raise kI
+         else:
+            return( -1, localTotal, L_only, R_only )  
+         
           
           
 
@@ -302,7 +365,7 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
 
-t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/", lvl=1, dirOnly=False, matchFilter='(?i)^(?!t|w|r|a).*')
+sts, t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/", lvl=1, dirOnly=False, matchFilter='')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
