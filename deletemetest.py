@@ -209,6 +209,7 @@ def is_same(dir1, dir2):
 
 
 import keyboard
+import time
 from os.path import join
 from filecmp import dircmp
 
@@ -353,8 +354,8 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
     print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
 
     # TODO: This has issues...
-    #if keyboard.is_pressed("ctrl+k"):
-    #   input("Paused. Press any key to continue.")
+    if keyboard.is_pressed("ctrl+k"):
+       input("Paused. Press any key to continue.")
 
        
     return 0, localTotal, L_only, R_only
@@ -379,8 +380,16 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
 
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
-keyboard.on_press_key('alt', on_alt)
-sts, t, a, b = fsDiff(L_dir="F:\\home\\", R_dir="F:\\home\\HP-Backup-30-04-2022\\", lvl=1, dirOnly=False, matchFilter='')
+
+'''
+try:      
+   keyboard.on_press_key('alt', on_alt)
+except Exception as kEx:
+   print('Error hooking keypress handler:', str(kEx))
+   time.sleep(3)
+'''   
+   
+sts, t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users", R_dir="/Users/manolistzagarakis/users-NEW", lvl=1, dirOnly=False, matchFilter='')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
