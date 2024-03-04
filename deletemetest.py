@@ -208,7 +208,7 @@ def is_same(dir1, dir2):
 
 
 
-
+import keyboard
 from os.path import join
 from filecmp import dircmp
 
@@ -222,7 +222,7 @@ def defaultDH(l=1, side='right', path='') -> None:
       :param path: full path of object.
       :return: None
     """
-    print('\t'*l, f'[D] [{side}] {path}', sep='')
+    print('\t'*l, f'[{l}][D] [{side}] {path}', sep='')
 
 
 
@@ -235,7 +235,7 @@ def defaultFH(l=1, side='right', path=''):
       :param path: full path of object.
       :return: None
     """  
-    print('\t'*l, f'[F] [{side}] {path}', sep='')
+    print('\t'*l, f'[{l}][F] [{side}] {path}', sep='')
 
 
 
@@ -243,7 +243,7 @@ def defaultFH(l=1, side='right', path=''):
 
 
 def customDirectoryHandler(l=1, side='right', path='') -> None:
-    print('\t'*l, f'[{side}] {path}', sep='')
+    print('\t'*l, f'[{l}][{side}] {path}', sep='')
 
 
 
@@ -267,6 +267,15 @@ def matches(mF, fname) -> bool:
        return(True)
       
     return(False)  
+
+
+
+
+def on_alt(event):
+    if keyboard.is_pressed('ctrl'):
+        print('\n\n\nCtrl + Alt pressed')
+        input('Press any key to continue...>')
+
 
 
 #
@@ -342,6 +351,12 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
         localTotal = localTotal + lt
 
     print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
+
+    # TODO: This has issues...
+    #if keyboard.is_pressed("ctrl+k"):
+    #   input("Paused. Press any key to continue.")
+
+       
     return 0, localTotal, L_only, R_only
 
   except KeyboardInterrupt as kI:
@@ -364,8 +379,8 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
 
 #r = is_same("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects")
 #print(r)
-
-sts, t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/tzag", R_dir="/Users/manolistzagarakis/users-NEW/", lvl=1, dirOnly=False, matchFilter='')
+keyboard.on_press_key('alt', on_alt)
+sts, t, a, b = fsDiff(L_dir="F:\\home\\", R_dir="F:\\home\\HP-Backup-30-04-2022\\", lvl=1, dirOnly=False, matchFilter='')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
