@@ -355,12 +355,12 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
     print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
 
     # TODO: This has issues...
-    # On MacOS next works only when executed via the termina. Also special
+    # On MacOS next works only when executed via the terminal, NOT in IDLE or other dev environment. Also special
     # permissions need to be given to python (?) and terminal so that
     # the next can work.
     # See: https://stackoverflow.com/questions/59535456/keyboard-is-pressed-not-permitted-in-mac-os-catalina
     if keyboard.is_pressed("p"):
-       mStr = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')    
+       mStr = datetime.datetime.today().strftime('%d/%m/%Y %H:%M:%S')    
        input(f"[{mStr}] Execution paused. Press enter key to continue.")
 
        
@@ -395,7 +395,7 @@ except Exception as kEx:
    time.sleep(3)
 '''   
    
-sts, t, a, b = fsDiff(L_dir="F:\\home\\econ\\2023-2024", R_dir="F:\\home\\econ\\2022-2023", lvl=1, dirOnly=False, matchFilter='')
+sts, t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users/", R_dir="/Users/manolistzagarakis/users-NEW", lvl=1, dirOnly=True, matchFilter='')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
