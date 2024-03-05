@@ -354,6 +354,10 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
     print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
 
     # TODO: This has issues...
+    # On MacOS next works only when executed via the termina. Also special
+    # permissions need to be given to python (?) and terminal so that
+    # the next can work.
+    # See: https://stackoverflow.com/questions/59535456/keyboard-is-pressed-not-permitted-in-mac-os-catalina
     if keyboard.is_pressed("p"):
        input("Paused. Press any key to continue.")
 
