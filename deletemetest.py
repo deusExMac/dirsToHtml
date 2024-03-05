@@ -354,7 +354,7 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
     print('\t'*lvl + f'returning {localTotal}\n', '\t'*lvl, f'{40*"-"}', sep='')
 
     # TODO: This has issues...
-    if keyboard.is_pressed("ctrl+k"):
+    if keyboard.is_pressed("p"):
        input("Paused. Press any key to continue.")
 
        
