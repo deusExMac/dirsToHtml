@@ -210,6 +210,7 @@ def is_same(dir1, dir2):
 
 import keyboard
 import time
+import datetime
 from os.path import join
 from filecmp import dircmp
 
@@ -359,7 +360,8 @@ def fsDiff(L_dir, R_dir, lvl=1, dirOnly=False, matchFilter='', dirHandler=defaul
     # the next can work.
     # See: https://stackoverflow.com/questions/59535456/keyboard-is-pressed-not-permitted-in-mac-os-catalina
     if keyboard.is_pressed("p"):
-       input("Paused. Press any key to continue.")
+       mStr = datetime.datetime.today().strftime('%Y-%m-%d %H:%M:%S')    
+       input(f"[{mStr}] Execution paused. Press enter key to continue.")
 
        
     return 0, localTotal, L_only, R_only
@@ -393,7 +395,7 @@ except Exception as kEx:
    time.sleep(3)
 '''   
    
-sts, t, a, b = fsDiff(L_dir="/Users/manolistzagarakis/users", R_dir="/Users/manolistzagarakis/users-NEW", lvl=1, dirOnly=False, matchFilter='')
+sts, t, a, b = fsDiff(L_dir="F:\\home\\econ\\2023-2024", R_dir="F:\\home\\econ\\2022-2023", lvl=1, dirOnly=False, matchFilter='')
 
 #fsD = compare("F:\\home\\EAP\\2023-2024\\DAMA60\\Ergasies", "F:\\home\\econ\\2023-2024\\Postgrad\\Projects", '\.svn')
 #clrprint(fsD, clr='green')
